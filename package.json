@@ -1,0 +1,41 @@
+{
+  "name": "ai-speaking-device-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test:storage": "node --import tsx --test src/lib/storage/audioSessions.test.ts",
+    "storage:check": "node --env-file=.env.local --import tsx scripts/check-storage.ts",
+    "storage:migrate:dry-run": "node --env-file=.env.local --import tsx scripts/migrate-local-to-managed.ts --dry-run",
+    "storage:migrate": "node --env-file=.env.local --import tsx scripts/migrate-local-to-managed.ts",
+    "storage:rollback": "node --env-file=.env.local --import tsx scripts/rollback-managed-to-local.ts",
+    "storage:rollback:apply": "node --env-file=.env.local --import tsx scripts/rollback-managed-to-local.ts --apply"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
+    "@vercel/blob": "^2.6.1",
+    "next": "16.2.10",
+    "openai": "^6.48.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.10",
+    "tailwindcss": "^4",
+    "tsx": "^4.23.1",
+    "typescript": "^5"
+  },
+  "overrides": {
+    "next": {
+      "postcss": "8.5.20"
+    }
+  }
+}

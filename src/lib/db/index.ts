@@ -1,0 +1,82 @@
+import { neon, type NeonQueryFunction } from "@neondatabase/serverless";
+import { managedStorageSchemaStatements } from "@/lib/db/schema";
+
+type DatabaseRow = Record<string, unknown>;
+
+let databaseClient: NeonQueryFunction<false, false> | null = null;
+let schemaPromise: Promise<void> | null = null;
+
+export function isPostgresStorageEnabled() {
+  return process.env.PERSISTENCE_BACKEND?.trim().toLowerCase() === "postgres";
+}
+
+function getDatabaseUrl() {
+  const value = process.env.DATABASE_URL?.trim();
+
+  if (!value) {
+    throw new Error(
+      "PERSISTENCE_BACKEND=postgres nhưng DATABASE_URL chưa được cấu hình.",
+    );
+  }
+
+  return value;
+}
+
+function getDatabaseClient() {
+  if (!databaseClient) {
+    databaseClient = neon(getDatabaseUrl(), {
+      fetchOptions: { cache: "no-store" },
+    });
+  }
+
+  return databaseClient;
+}
+
+async function queryWithoutSchema<T extends DatabaseRow>(
+  query: string,
+  params: unknown[] = [],
+) {
+  return (await getDatabaseClient().query(query, params)) as T[];
+}
+
+export async function ensureDatabaseSchema() {
+  if (!isPostgresStorageEnabled()) {
+    return;
+  }
+
+  if (!schemaPromise) {
+    schemaPromise = (async () => {
+      for (const statement of managedStorageSchemaStatements) {
+        await queryWithoutSchema(statement);
+      }
+    })().catch((error) => {
+      schemaPromise = null;
+      throw error;
+    });
+  }
+
+  await schemaPromise;
+}
+
+export async function queryDatabase<T extends DatabaseRow>(
+  query: string,
+  params: unknown[] = [],
+) {
+  await ensureDatabaseSchema();
+  return queryWithoutSchema<T>(query, params);
+}
+
+export async function pingDatabase() {
+  const startedAt = Date.now();
+  const rows = await queryDatabase<{ ok: number }>("SELECT 1 AS ok");
+
+  return {
+    ok: rows[0]?.ok === 1,
+    latencyMs: Date.now() - startedAt,
+  };
+}
+
+export function resetDatabaseForTests() {
+  databaseClient = null;
+  schemaPromise = null;
+}
