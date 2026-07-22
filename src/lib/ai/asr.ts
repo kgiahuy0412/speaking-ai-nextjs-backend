@@ -4,6 +4,7 @@ import { delay } from "@/lib/latency";
 import { getOpenAIClient } from "./openai";
 import { sampleVietnameseByContext } from "./prompts";
 import { containsUnexpectedEastAsianScript } from "./languageValidation";
+import { repairVietnameseChildTranscript } from "./transcriptRepair";
 
 function assertVietnameseTranscript(text: string) {
   if (!containsUnexpectedEastAsianScript(text)) {
@@ -18,7 +19,11 @@ function assertVietnameseTranscript(text: string) {
 
 export async function transcribeVietnamese(input: ConversationRequest) {
   if (input.sourceText?.trim()) {
-    return input.sourceText.trim();
+    const sourceText = input.sourceText.trim();
+    return input.asrMode === "android_streaming" ||
+      input.asrMode === "openai_realtime"
+      ? repairVietnameseChildTranscript(sourceText)
+      : sourceText;
   }
 
   if (input.audioFile) {
@@ -45,7 +50,7 @@ export async function transcribeVietnamese(input: ConversationRequest) {
 
     assertVietnameseTranscript(vietnameseText);
 
-    return vietnameseText;
+    return repairVietnameseChildTranscript(vietnameseText);
   }
 
   await delay(320);

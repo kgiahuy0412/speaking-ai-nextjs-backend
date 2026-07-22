@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test:transcript": "node --import tsx --test src/lib/ai/transcriptRepair.test.ts",
     "test:storage": "node --import tsx --test src/lib/storage/audioSessions.test.ts",
     "storage:check": "node --env-file=.env.local --import tsx scripts/check-storage.ts",
     "storage:migrate:dry-run": "node --env-file=.env.local --import tsx scripts/migrate-local-to-managed.ts --dry-run",
