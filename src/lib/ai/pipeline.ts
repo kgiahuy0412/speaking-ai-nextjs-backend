@@ -26,6 +26,7 @@ export async function runConversationPipeline(
       input.context,
       input.childAge,
       input.clientId,
+      input.requestId,
     ),
   );
   const tts = await measureStep(() =>
@@ -45,6 +46,10 @@ export async function runConversationPipeline(
     processingMode: llm.value.mode,
     matchedRule: llm.value.matchedRule,
     textSource: llm.value.source,
+    textProvider: llm.value.textProvider,
+    textModel: llm.value.textModel,
+    textFallbackUsed: llm.value.textFallbackUsed,
+    textFallbackReason: llm.value.textFallbackReason,
     audioSource: tts.value.source,
     asrMode: input.asrMode ?? (input.audioFile ? "batch_chunks" : "text"),
     benchmark: input.benchmark,
@@ -63,6 +68,10 @@ export async function runConversationPipeline(
     asrMode: result.asrMode,
     processingMode: result.processingMode,
     textSource: result.textSource,
+    textProvider: result.textProvider,
+    textModel: result.textModel,
+    textFallbackUsed: result.textFallbackUsed,
+    textFallbackReason: result.textFallbackReason,
     audioSource: result.audioSource,
     latency: result.latency,
   });

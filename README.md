@@ -16,7 +16,7 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Translate recorded audio with Cloudflare Workers AI
+## Cloudflare-first faithful translation
 
 Configure a Cloudflare API token with the `Workers AI Read` and `Workers AI
 Write` permissions in `.env.local`:
@@ -24,13 +24,29 @@ Write` permissions in `.env.local`:
 ```env
 CLOUDFLARE_ACCOUNT_ID=your-cloudflare-account-id
 CLOUDFLARE_WORKERS_AI_API_TOKEN=your-workers-ai-token
-# Optional defaults:
-CLOUDFLARE_WORKERS_AI_MODEL=@cf/openai/whisper-large-v3-turbo
-CLOUDFLARE_AUDIO_MAX_BYTES=10485760
-CLOUDFLARE_WORKERS_AI_TIMEOUT_MS=30000
+AI_TEXT_PRIMARY_PROVIDER=cloudflare
+CLOUDFLARE_TEXT_MODEL=@cf/meta/llama-4-scout-17b-16e-instruct
+CLOUDFLARE_TEXT_TIMEOUT_MS=2500
+
+# Required for the OpenAI fallback and the existing Realtime/TTS paths.
+OPENAI_API_KEY=your-openai-api-key
+OPENAI_FAST_TEXT_MODEL=gpt-4o-mini
 ```
 
-The Flutter app sends `multipart/form-data` to `POST /api/audio/translate`:
+The Flutter API contract does not change. `/api/conversation` applies this
+order:
+
+1. reviewed exact rule or V1 text cache;
+2. Cloudflare multilingual text model with the faithful V1 prompt;
+3. OpenAI Responses fallback when Cloudflare fails, times out, is rate-limited,
+   or returns an invalid result;
+4. the existing audio cache/TTS path.
+
+`POST /api/audio/translate` remains an independent compatibility endpoint for
+direct audio translation. It is not used by the Flutter conversation pipeline
+because direct audio translation would bypass the Vietnamese exact-rule check.
+
+The compatibility endpoint accepts `multipart/form-data`:
 
 - `audio` (required): AAC, FLAC, M4A, MP3, MP4, OGG, WAV or WebM file;
 - `sourceLanguage` (optional): ISO language code, defaults to `vi`.

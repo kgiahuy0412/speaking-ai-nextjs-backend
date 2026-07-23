@@ -7,7 +7,6 @@ import {
   updateConversationHistory,
   updateConversationHistoryBatch,
 } from "@/lib/history";
-import { normalizeVietnamese } from "@/lib/normalize";
 import {
   getPromotedRule,
   promoteEnglishRule,
@@ -15,9 +14,10 @@ import {
 } from "./promotedRules";
 import { removeAiEnglishText } from "./textCache";
 import { synthesizeEnglishAudio } from "./tts";
+import { normalizeVietnameseForExactMatch } from "./exactRules";
 
 const repeatPromotionThreshold = 3;
-const promotableTextSources = new Set(["openai", "text_cache"]);
+const promotableTextSources = new Set(["cloudflare", "openai", "text_cache"]);
 const ruleTextSources = new Set([
   "phrase_rule",
   "keyword_rule",
@@ -57,8 +57,8 @@ function isSameCandidate(
   return (
     sameLearningScope(entry, conversation) &&
     entry.context === conversation.context &&
-    normalizeVietnamese(entry.vietnameseText) ===
-      normalizeVietnamese(conversation.vietnameseText) &&
+    normalizeVietnameseForExactMatch(entry.vietnameseText) ===
+      normalizeVietnameseForExactMatch(conversation.vietnameseText) &&
     normalizedEnglish(entry.englishText) ===
       normalizedEnglish(conversation.englishText) &&
     promotableTextSources.has(entry.textSource) &&
@@ -117,7 +117,7 @@ async function promoteCandidate(
       useCount: 0,
       threshold: repeatPromotionThreshold,
       message:
-        "Câu này trùng ý định nhưng khác bản dịch nên chưa tự ghi đè rule.",
+        "Câu này trùng chính xác nhưng khác bản dịch nên chưa tự ghi đè rule.",
     };
   }
 
@@ -234,7 +234,9 @@ export async function maybeLearnFromRepeatedUse(
     await updateConversationHistory({
       conversationId: conversation.conversationId,
       learningStatus:
-        conversation.textSource === "openai" ? "cached" : "observing",
+        ["cloudflare", "openai"].includes(conversation.textSource)
+          ? "cached"
+          : "observing",
       learningUseCount: useCount,
     });
 
@@ -283,7 +285,7 @@ export async function migrateApprovedHistoryLearning(clientId: string) {
     .forEach((entry) => {
       const key = [
         entry.context,
-        normalizeVietnamese(entry.vietnameseText),
+        normalizeVietnameseForExactMatch(entry.vietnameseText),
       ].join("::");
       groups.set(key, [...(groups.get(key) ?? []), entry]);
     });

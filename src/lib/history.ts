@@ -35,7 +35,7 @@ const ruleTextSources = new Set([
   "promoted_rule",
   "semantic_cache",
 ]);
-const adaptiveTextSources = new Set(["openai", "text_cache"]);
+const adaptiveTextSources = new Set(["cloudflare", "openai", "text_cache"]);
 
 let mutationQueue: Promise<void> = Promise.resolve();
 let lastMalformedSignature = "";
@@ -51,7 +51,7 @@ function initialLearningStatus(
   if (ruleTextSources.has(textSource)) {
     return "already_rule";
   }
-  if (textSource === "openai") {
+  if (["cloudflare", "openai"].includes(textSource)) {
     return "cached";
   }
   if (textSource === "text_cache") {

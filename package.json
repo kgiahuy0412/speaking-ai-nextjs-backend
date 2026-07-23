@@ -8,6 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test:cloudflare": "node --import tsx --test src/lib/ai/cloudflareWorkersAi.test.ts",
+    "test:cloudflare-text": "node --import tsx --test src/lib/ai/cloudflareText.test.ts",
+    "test:translation": "node --import tsx --test src/lib/ai/faithfulTranslation.test.ts",
     "test:transcript": "node --import tsx --test src/lib/ai/transcriptRepair.test.ts",
     "test:storage": "node --import tsx --test src/lib/storage/audioSessions.test.ts",
     "storage:check": "node --env-file=.env.local --import tsx scripts/check-storage.ts",

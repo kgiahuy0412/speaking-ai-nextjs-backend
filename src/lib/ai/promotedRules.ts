@@ -7,7 +7,6 @@ import {
 } from "node:fs/promises";
 import path from "node:path";
 import type { PracticeContext } from "@/types/conversation";
-import { normalizeVietnamese } from "@/lib/normalize";
 import { isPostgresStorageEnabled } from "@/lib/db";
 import {
   deleteRecord,
@@ -15,8 +14,11 @@ import {
   listRecords,
   putRecord,
 } from "@/lib/db/records";
+import { normalizeVietnameseForExactMatch } from "./exactRules";
+import { RULE_VERSION } from "./translationPolicy";
 
 export type PromotedRule = {
+  ruleVersion: string;
   context: PracticeContext;
   normalizedVietnameseText: string;
   originalVietnameseText: string;
@@ -43,9 +45,10 @@ function getRuleKey(
   normalizedText: string,
   clientId?: string,
 ) {
+  const versionedScope = `${RULE_VERSION}::${context}::${normalizedText}`;
   return clientId
-    ? `client:${clientId}::${context}::${normalizedText}`
-    : `${context}::${normalizedText}`;
+    ? `client:${clientId}::${versionedScope}`
+    : versionedScope;
 }
 
 async function readRules() {
@@ -102,7 +105,7 @@ export async function getPromotedRule(
   context: PracticeContext,
   clientId?: string,
 ) {
-  const normalizedText = normalizeVietnamese(vietnameseText);
+  const normalizedText = normalizeVietnameseForExactMatch(vietnameseText);
 
   if (!normalizedText) {
     return null;
@@ -142,7 +145,8 @@ export async function promoteEnglishRule(
     promotedBy?: PromotedRule["promotedBy"];
   } = {},
 ) {
-  const normalizedVietnameseText = normalizeVietnamese(vietnameseText);
+  const normalizedVietnameseText =
+    normalizeVietnameseForExactMatch(vietnameseText);
 
   if (!normalizedVietnameseText || !englishText.trim()) {
     throw new Error("Rule text is empty.");
@@ -157,6 +161,7 @@ export async function promoteEnglishRule(
     const existing = await getRecord<PromotedRule>(rulesNamespace, key);
     const now = new Date().toISOString();
     const rule: PromotedRule = {
+      ruleVersion: RULE_VERSION,
       context,
       normalizedVietnameseText,
       originalVietnameseText: vietnameseText.trim(),
@@ -186,6 +191,7 @@ export async function promoteEnglishRule(
     );
     const now = new Date().toISOString();
     const rule: PromotedRule = {
+      ruleVersion: RULE_VERSION,
       context,
       normalizedVietnameseText,
       originalVietnameseText: vietnameseText.trim(),
@@ -207,7 +213,8 @@ export async function removePromotedRule(
   context: PracticeContext,
   clientId?: string,
 ) {
-  const normalizedVietnameseText = normalizeVietnamese(vietnameseText);
+  const normalizedVietnameseText =
+    normalizeVietnameseForExactMatch(vietnameseText);
 
   if (!normalizedVietnameseText) {
     return false;
@@ -248,6 +255,7 @@ export async function getPromotedRuleAudioTexts(
         rules
           .filter(
             (rule) =>
+              rule.ruleVersion === RULE_VERSION &&
               rule.context === context &&
               (!rule.clientId || rule.clientId === clientId),
           )
@@ -264,6 +272,7 @@ export async function getPromotedRuleAudioTexts(
       Object.values(rules)
         .filter(
           (rule) =>
+            rule.ruleVersion === RULE_VERSION &&
             rule.context === context &&
             (!rule.clientId || rule.clientId === clientId),
         )
@@ -274,13 +283,17 @@ export async function getPromotedRuleAudioTexts(
 
 export async function getPromotedRulesForClient(clientId: string) {
   if (isPostgresStorageEnabled()) {
-    return listRecords<PromotedRule>(rulesNamespace, {
+    const rules = await listRecords<PromotedRule>(rulesNamespace, {
       clientId,
       limit: 100_000,
     });
+    return rules.filter((rule) => rule.ruleVersion === RULE_VERSION);
   }
 
   await promotedRulesGlobal.__aiSpeakingPromotedRulesMutationQueue;
   const rules = await readRules();
-  return Object.values(rules).filter((rule) => rule.clientId === clientId);
+  return Object.values(rules).filter(
+    (rule) =>
+      rule.clientId === clientId && rule.ruleVersion === RULE_VERSION,
+  );
 }

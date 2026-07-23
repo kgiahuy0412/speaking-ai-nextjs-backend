@@ -57,12 +57,15 @@ export type ConversationLatency = {
 
 export type ProcessingMode = "rule" | "ai" | "fallback";
 
+export type TextProvider = "cloudflare" | "openai";
+
 export type TextSource =
   | "phrase_rule"
   | "keyword_rule"
   | "promoted_rule"
   | "semantic_cache"
   | "text_cache"
+  | "cloudflare"
   | "openai"
   | "fallback";
 
@@ -98,6 +101,10 @@ export type ConversationResponse = {
   processingMode: ProcessingMode;
   matchedRule?: string;
   textSource: TextSource;
+  textProvider?: TextProvider;
+  textModel?: string;
+  textFallbackUsed?: boolean;
+  textFallbackReason?: string;
   audioSource: AudioSource;
   asrMode: AsrMode;
   benchmark?: BenchmarkMetadata;

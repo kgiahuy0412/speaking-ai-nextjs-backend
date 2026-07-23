@@ -41,12 +41,16 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!["openai", "text_cache"].includes(conversation.textSource)) {
+  if (
+    !["cloudflare", "openai", "text_cache"].includes(
+      conversation.textSource,
+    )
+  ) {
     return Response.json(
       {
         error: {
           code: "BAD_REQUEST",
-          message: "Chi nang cap cau do AI hoac text cache tao ra.",
+          message: "Chỉ nâng cấp câu do AI hoặc text cache tạo ra.",
         },
       },
       { status: 400 },

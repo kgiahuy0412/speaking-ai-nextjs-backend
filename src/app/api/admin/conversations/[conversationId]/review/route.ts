@@ -123,7 +123,7 @@ export async function PATCH(request: Request, context: ReviewRouteContext) {
   const shouldPromote =
     Boolean(conversation.clientId) &&
     (wasCorrected ||
-      ["openai", "text_cache", "promoted_rule"].includes(
+      ["cloudflare", "openai", "text_cache", "promoted_rule"].includes(
         conversation.textSource,
       ));
   let audio:
