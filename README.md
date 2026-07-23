@@ -16,6 +16,37 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Translate recorded audio with Cloudflare Workers AI
+
+Configure a Cloudflare API token with the `Workers AI Read` and `Workers AI
+Write` permissions in `.env.local`:
+
+```env
+CLOUDFLARE_ACCOUNT_ID=your-cloudflare-account-id
+CLOUDFLARE_WORKERS_AI_API_TOKEN=your-workers-ai-token
+# Optional defaults:
+CLOUDFLARE_WORKERS_AI_MODEL=@cf/openai/whisper-large-v3-turbo
+CLOUDFLARE_AUDIO_MAX_BYTES=10485760
+CLOUDFLARE_WORKERS_AI_TIMEOUT_MS=30000
+```
+
+The Flutter app sends `multipart/form-data` to `POST /api/audio/translate`:
+
+- `audio` (required): AAC, FLAC, M4A, MP3, MP4, OGG, WAV or WebM file;
+- `sourceLanguage` (optional): ISO language code, defaults to `vi`.
+
+The API calls Cloudflare with `task: "translate"` and returns an English result:
+
+```json
+{
+  "sourceLanguage": "vi",
+  "targetLanguage": "en",
+  "englishText": "I would like some water.",
+  "wordCount": 5,
+  "model": "@cf/openai/whisper-large-v3-turbo"
+}
+```
+
 ## Admin dashboard
 
 Open [http://localhost:3000/admin](http://localhost:3000/admin) to:
