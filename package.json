@@ -14,6 +14,7 @@
     "test:storage": "node --import tsx --test --test-concurrency=1 src/lib/storage/audioSessions.test.ts src/lib/storage/audio.test.ts src/lib/storage/config.test.ts src/lib/db/schema.test.ts",
     "test:ai-provider": "node --import tsx --test src/lib/ai/aiProvider.test.ts",
     "test:admin-auth": "node --import tsx --test src/lib/adminAuthCore.test.ts",
+    "test:proxy": "node --import tsx --test src/proxy.test.ts",
     "storage:check": "node --env-file=.env.local --import tsx scripts/check-storage.ts",
     "storage:migrate:dry-run": "node --env-file=.env.local --import tsx scripts/migrate-local-to-managed.ts --dry-run",
     "storage:migrate": "node --env-file=.env.local --import tsx scripts/migrate-local-to-managed.ts",
