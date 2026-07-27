@@ -41,6 +41,10 @@ export function getEnglishAudioCacheUrl(
   return getReusableAudioUrl(getAudioDescriptor(englishText, profile));
 }
 
+export function getEnglishAudioStreamUrl(englishText: string) {
+  return `/api/audio/stream?text=${encodeURIComponent(englishText)}`;
+}
+
 export async function prepareEnglishAudio(englishText: string) {
   const profile = getTtsProfile();
   const cachedUrl = await getEnglishAudioCacheUrl(englishText, profile);
@@ -53,7 +57,7 @@ export async function prepareEnglishAudio(englishText: string) {
   }
 
   return {
-    audioUrl: `/api/audio/stream?text=${encodeURIComponent(englishText)}`,
+    audioUrl: getEnglishAudioStreamUrl(englishText),
     source:
       profile.provider === "openai" ? "openai_tts" : "cloudflare_tts",
   } satisfies AudioSynthesisResult;

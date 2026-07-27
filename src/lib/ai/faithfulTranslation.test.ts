@@ -17,6 +17,7 @@ import {
   TRANSLATION_POLICY_VERSION,
 } from "./translationPolicy";
 import { findMissingTranslationRequirements } from "./translationFidelity";
+import { getOfflineIntentManifest } from "./offlineIntentManifest";
 
 test("golden set contains 50 unique faithful-translation cases", () => {
   assert.equal(faithfulTranslationGoldenSet.length, 50);
@@ -166,4 +167,14 @@ test("prompt, rule and text cache use explicit V1 versions", () => {
     ]).size,
     4,
   );
+});
+
+test("device manifest publishes reviewed rules as exact full-sentence samples", async () => {
+  const manifest = await getOfflineIntentManifest(500);
+  const exactRule = manifest.items.find((item) => item.id === "exact-V1-001");
+
+  assert.ok(exactRule);
+  assert.deepEqual(exactRule.samples, ["Mẹ ơi, con muốn mua cái này."]);
+  assert.equal(exactRule.englishText, "Mom, I want to buy this.");
+  assert.match(exactRule.audioUrl, /^\/api\/audio\/stream\?text=/);
 });

@@ -11,6 +11,7 @@ import {
   getAudioStorageBackend,
   getGeneratedAudioBlobToken,
 } from "@/lib/storage/config";
+import { queryDatabase } from "@/lib/db";
 
 const AUDIO_PUBLIC_DIR = "generated-audio";
 const immutableCacheSeconds = 31_536_000;
@@ -79,6 +80,51 @@ function localAudioUrl(fileName: string) {
   return `/api/audio/cache/${encodeURIComponent(fileName)}`;
 }
 
+function audioContentType(fileName: string) {
+  return fileName.toLowerCase().endsWith(".mp3")
+    ? "audio/mpeg"
+    : "application/octet-stream";
+}
+
+async function readPostgresAudio(fileName: string) {
+  const rows = await queryDatabase<{ content_base64: string }>(
+    `SELECT content_base64
+       FROM generated_audio
+      WHERE file_name = $1
+      LIMIT 1`,
+    [fileName],
+  );
+  const encoded = rows[0]?.content_base64;
+  return encoded ? Buffer.from(encoded, "base64") : null;
+}
+
+async function postgresAudioExists(fileName: string) {
+  const rows = await queryDatabase<{ exists: boolean }>(
+    `SELECT EXISTS(
+       SELECT 1 FROM generated_audio WHERE file_name = $1
+     ) AS exists`,
+    [fileName],
+  );
+  return rows[0]?.exists === true;
+}
+
+async function savePostgresAudio(fileName: string, audio: ArrayBuffer) {
+  const buffer = Buffer.from(audio);
+  await queryDatabase(
+    `INSERT INTO generated_audio (
+       file_name, content_base64, content_type, size_bytes
+     ) VALUES ($1, $2, $3, $4)
+     ON CONFLICT (file_name) DO NOTHING`,
+    [
+      fileName,
+      buffer.toString("base64"),
+      audioContentType(fileName),
+      buffer.byteLength,
+    ],
+  );
+  return localAudioUrl(fileName);
+}
+
 async function getBlobUrl(fileName: string) {
   try {
     return (
@@ -133,6 +179,9 @@ export async function saveGeneratedAudio(
   if (getAudioStorageBackend() === "vercel-blob") {
     return saveBlobAudio(fileName, audio);
   }
+  if (getAudioStorageBackend() === "postgres") {
+    return savePostgresAudio(fileName, audio);
+  }
 
   const relativeUrl = localAudioUrl(fileName);
   const outputDir = path.join(process.cwd(), "public", AUDIO_PUBLIC_DIR);
@@ -150,6 +199,10 @@ export async function readGeneratedAudioFile(fileName: string) {
     path.basename(fileName) !== fileName
   ) {
     return null;
+  }
+
+  if (getAudioStorageBackend() === "postgres") {
+    return readPostgresAudio(fileName);
   }
 
   const outputPath = path.join(
@@ -178,6 +231,11 @@ export async function getReusableAudioUrl(
   if (getAudioStorageBackend() === "vercel-blob") {
     return getBlobUrl(fileName);
   }
+  if (getAudioStorageBackend() === "postgres") {
+    return (await postgresAudioExists(fileName))
+      ? localAudioUrl(fileName)
+      : null;
+  }
 
   const outputPath = path.join(process.cwd(), "public", AUDIO_PUBLIC_DIR, fileName);
 
@@ -197,6 +255,9 @@ export async function saveReusableAudio(
 
   if (getAudioStorageBackend() === "vercel-blob") {
     return saveBlobAudio(fileName, audio);
+  }
+  if (getAudioStorageBackend() === "postgres") {
+    return savePostgresAudio(fileName, audio);
   }
 
   const relativeUrl = localAudioUrl(fileName);

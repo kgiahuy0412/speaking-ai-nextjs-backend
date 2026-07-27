@@ -1,5 +1,5 @@
 export type PersistenceBackend = "local" | "postgres";
-export type AudioStorageBackend = "local" | "vercel-blob";
+export type AudioStorageBackend = "local" | "postgres" | "vercel-blob";
 
 function positiveInteger(name: string, fallback: number) {
   const parsed = Number(process.env[name]);
@@ -21,10 +21,19 @@ export function getPersistenceBackend(): PersistenceBackend {
 }
 
 export function getAudioStorageBackend(): AudioStorageBackend {
-  return process.env.AUDIO_STORAGE_BACKEND?.trim().toLowerCase() ===
-    "vercel-blob"
-    ? "vercel-blob"
-    : "local";
+  const configuredBackend = process.env.AUDIO_STORAGE_BACKEND
+    ?.trim()
+    .toLowerCase();
+
+  if (
+    configuredBackend === "local" ||
+    configuredBackend === "postgres" ||
+    configuredBackend === "vercel-blob"
+  ) {
+    return configuredBackend;
+  }
+
+  return getPersistenceBackend() === "postgres" ? "postgres" : "local";
 }
 
 export function getAudioUploadLimits() {
@@ -69,6 +78,9 @@ export function getStorageConfiguration() {
     persistenceBackend,
     audioStorageBackend,
     postgresConfigured: Boolean(process.env.DATABASE_URL?.trim()),
+    postgresAudioConfigured:
+      audioStorageBackend === "postgres" &&
+      Boolean(process.env.DATABASE_URL?.trim()),
     blobConfigured: Boolean(
       process.env.GENERATED_AUDIO_BLOB_READ_WRITE_TOKEN?.trim() ||
         process.env.BLOB_READ_WRITE_TOKEN?.trim(),

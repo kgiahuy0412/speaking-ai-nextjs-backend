@@ -89,8 +89,19 @@ PERSISTENCE_BACKEND=local
 AUDIO_STORAGE_BACKEND=local
 ```
 
-For multiple backend instances, use Neon PostgreSQL for records and Vercel Blob
-for generated English audio:
+For the current MVP, PostgreSQL can persist both records and generated English
+audio across deploys and backend replicas. When `DATABASE_URL` is present and
+`AUDIO_STORAGE_BACKEND` is omitted, this mode is selected automatically:
+
+```env
+PERSISTENCE_BACKEND=postgres
+DATABASE_URL=postgresql://...
+AUDIO_STORAGE_BACKEND=postgres
+CRON_SECRET=use-a-long-random-secret
+```
+
+At larger audio volume, keep PostgreSQL for records and use Vercel Blob for
+generated English audio:
 
 ```env
 PERSISTENCE_BACKEND=postgres

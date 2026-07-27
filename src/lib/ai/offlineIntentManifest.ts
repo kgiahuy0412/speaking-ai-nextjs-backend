@@ -1,7 +1,8 @@
 import { createHash } from "node:crypto";
 import type { PracticeContext } from "@/types/conversation";
 import { semanticIntentRules } from "./semanticIntents";
-import { prepareEnglishAudio } from "./tts";
+import { getEnglishAudioStreamUrl } from "./tts";
+import { reviewedExactRulesV1 } from "./exactRules";
 
 const contexts: PracticeContext[] = ["home", "school", "outside"];
 
@@ -29,6 +30,15 @@ type MutableIntent = {
 
 function collectOfflineIntents() {
   const intents = new Map<string, MutableIntent>();
+
+  for (const rule of reviewedExactRulesV1) {
+    intents.set(`exact-${rule.id}`, {
+      id: `exact-${rule.id}`,
+      contexts: new Set(contexts),
+      samples: new Set([rule.vietnamese]),
+      englishText: rule.english,
+    });
+  }
 
   for (const context of contexts) {
     for (const rule of semanticIntentRules[context]) {
@@ -58,23 +68,17 @@ function collectOfflineIntents() {
 }
 
 export async function getOfflineIntentManifest(limit = 40) {
-  const safeLimit = Math.min(50, Math.max(30, Math.round(limit)));
+  const safeLimit = Math.min(500, Math.max(30, Math.round(limit)));
   const selected = collectOfflineIntents().slice(0, safeLimit);
-  const items: OfflineIntentManifestItem[] = await Promise.all(
-    selected.map(async (intent) => {
-      const audio = await prepareEnglishAudio(intent.englishText);
-
-      return {
-        id: intent.id,
-        contexts: contexts.filter((context) => intent.contexts.has(context)),
-        samples: [...intent.samples].sort((left, right) =>
-          left.localeCompare(right),
-        ),
-        englishText: intent.englishText,
-        audioUrl: audio.audioUrl,
-      };
-    }),
-  );
+  const items: OfflineIntentManifestItem[] = selected.map((intent) => ({
+    id: intent.id,
+    contexts: contexts.filter((context) => intent.contexts.has(context)),
+    samples: [...intent.samples].sort((left, right) =>
+      left.localeCompare(right),
+    ),
+    englishText: intent.englishText,
+    audioUrl: getEnglishAudioStreamUrl(intent.englishText),
+  }));
   const version = createHash("sha256")
     .update(JSON.stringify({ items, policy: offlineIntentPolicy }))
     .digest("hex")

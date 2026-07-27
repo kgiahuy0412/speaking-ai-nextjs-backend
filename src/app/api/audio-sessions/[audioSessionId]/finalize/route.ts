@@ -1,8 +1,7 @@
 import { createHash } from "node:crypto";
 import { runConversationPipeline } from "@/lib/ai/pipeline";
-import { maybeLearnFromRepeatedUse } from "@/lib/ai/adaptiveLearning";
+import { scheduleConversationPostResponseTasks } from "@/lib/ai/postResponseTasks";
 import { AppError, toErrorResponse } from "@/lib/errors";
-import { appendConversationHistory } from "@/lib/history";
 import {
   AudioUploadError,
   claimAudioSessionFinalize,
@@ -99,27 +98,29 @@ export async function POST(request: Request, context: RouteContext) {
       );
     }
 
-    const result = await runConversationPipeline({
-      requestId,
-      clientId: body.clientId?.trim() || undefined,
-      context: body.context,
-      childAge: body.childAge ?? 6,
-      targetLanguage: "en",
-      sessionId: body.sessionId,
-      sourceText: body.sourceText?.trim(),
-      audioFile,
-      asrMode,
-      benchmark: body.benchmark,
-    });
+    const result = await runConversationPipeline(
+      {
+        requestId,
+        clientId: body.clientId?.trim() || undefined,
+        context: body.context,
+        childAge: body.childAge ?? 6,
+        targetLanguage: "en",
+        sessionId: body.sessionId,
+        sourceText: body.sourceText?.trim(),
+        audioFile,
+        asrMode,
+        benchmark: body.benchmark,
+      },
+      { deferTextCacheWrite: true },
+    );
 
-    await appendConversationHistory(result, "audio");
-    const learning = await maybeLearnFromRepeatedUse(result);
-    const responsePayload = { ...result, learning };
+    const responsePayload = { ...result, learning: null };
     await completeAudioSessionFinalize(
       audioSessionId,
       requestHash,
       responsePayload,
     );
+    scheduleConversationPostResponseTasks(result, "audio");
     return withRequestId(Response.json(responsePayload), requestId);
   } catch (error) {
     if (finalizeClaimed && requestHash) {

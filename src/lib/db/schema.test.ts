@@ -33,6 +33,14 @@ const expectedColumns = {
     "content_base64",
     "created_at",
   ],
+  generated_audio: [
+    "file_name",
+    "content_base64",
+    "content_type",
+    "size_bytes",
+    "created_at",
+    "updated_at",
+  ],
 } as const;
 
 test("managed schema creates every required table", () => {

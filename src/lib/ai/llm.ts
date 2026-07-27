@@ -3,6 +3,7 @@ import type {
   TextProvider,
   TextSource,
 } from "@/types/conversation";
+import { after } from "next/server";
 import { normalizeVietnamese } from "@/lib/normalize";
 import { logEvent } from "@/lib/observability";
 import { getOpenAIClient } from "./openai";
@@ -326,6 +327,7 @@ export async function generateEnglishSentence(
   childAge = 6,
   clientId?: string,
   requestId?: string,
+  deferCacheWrite = false,
 ): Promise<EnglishGenerationResult> {
   const fastSentence = await resolveFastEnglishSentence(
     vietnameseText,
@@ -360,19 +362,34 @@ export async function generateEnglishSentence(
       requestId,
     );
 
-    await saveAiEnglishText(
-      vietnameseText,
-      context,
-      childAge,
-      result.englishText,
-      clientId,
-      {
-        textProvider: result.provider,
-        textModel: result.model,
-        textFallbackUsed: result.fallbackUsed,
-        textFallbackReason: result.fallbackReason,
-      },
-    );
+    const saveTextCache = () =>
+      saveAiEnglishText(
+        vietnameseText,
+        context,
+        childAge,
+        result.englishText,
+        clientId,
+        {
+          textProvider: result.provider,
+          textModel: result.model,
+          textFallbackUsed: result.fallbackUsed,
+          textFallbackReason: result.fallbackReason,
+        },
+      );
+    if (deferCacheWrite) {
+      after(async () => {
+        try {
+          await saveTextCache();
+        } catch (error) {
+          logEvent("error", "text_cache_write_failed", {
+            requestId,
+            error,
+          });
+        }
+      });
+    } else {
+      await saveTextCache();
+    }
 
     return {
       englishText: result.englishText,
@@ -410,21 +427,6 @@ export async function resolveFastEnglishSentence(
   childAge = 6,
   clientId?: string,
 ): Promise<EnglishGenerationResult | null> {
-  const promotedRule = await getPromotedRule(
-    vietnameseText,
-    context,
-    clientId,
-  );
-
-  if (promotedRule) {
-    return {
-      englishText: promotedRule.englishText,
-      mode: "rule",
-      source: "promoted_rule",
-      matchedRule: `promoted:${promotedRule.ruleVersion}:${promotedRule.normalizedVietnameseText}`,
-    };
-  }
-
   const fixedSentence = getFixedEnglishSentence(vietnameseText);
 
   if (fixedSentence) {
@@ -440,12 +442,27 @@ export async function resolveFastEnglishSentence(
     return null;
   }
 
-  const cachedSentence = await getCachedAiEnglishText(
-    vietnameseText,
-    context,
-    childAge,
-    clientId,
-  );
+  // Both values live in the same remote persistence layer in production.
+  // Looking them up concurrently removes one full database round trip from
+  // every cache miss without changing rule priority.
+  const [promotedRule, cachedSentence] = await Promise.all([
+    getPromotedRule(vietnameseText, context, clientId),
+    getCachedAiEnglishText(
+      vietnameseText,
+      context,
+      childAge,
+      clientId,
+    ),
+  ]);
+
+  if (promotedRule) {
+    return {
+      englishText: promotedRule.englishText,
+      mode: "rule",
+      source: "promoted_rule",
+      matchedRule: `promoted:${promotedRule.ruleVersion}:${promotedRule.normalizedVietnameseText}`,
+    };
+  }
 
   if (!cachedSentence) {
     return null;
