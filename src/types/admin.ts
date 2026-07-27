@@ -75,6 +75,6 @@ export type AdminOverview = {
     status: AdminReviewFilter;
     limit: number;
   };
-  securityMode: "local-development" | "admin-token" | "not-configured";
+  securityMode: "account-password" | "not-configured";
   generatedAt: string;
 };

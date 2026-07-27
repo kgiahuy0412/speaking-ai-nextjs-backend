@@ -73,9 +73,11 @@ Open [http://localhost:3000/admin](http://localhost:3000/admin) to:
 - save approved corrections as a client-scoped rule and warm its audio cache;
 - request an AI review only when needed, reusing the saved result afterward.
 
-Local development allows admin access without a token. Production requires
-`ADMIN_API_TOKEN`; copy `.env.example` to `.env.local`, set a strong value, and
-enter the same value in the admin dashboard for the current browser session.
+Admin access requires a username and password in every environment. Copy
+`.env.example` to `.env.local`, set `ADMIN_USERNAME` and a strong,
+unique `ADMIN_PASSWORD`, then restart the server and sign in at `/admin/login`.
+The signed, HTTP-only session lasts 12 hours. Changing either environment value
+invalidates every existing admin session.
 
 ## Storage modes
 

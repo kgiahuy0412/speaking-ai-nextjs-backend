@@ -42,6 +42,20 @@ function getResponseError(data: unknown, fallback: string) {
   return fallback;
 }
 
+async function fetchAdmin(
+  input: RequestInfo | URL,
+  init?: RequestInit,
+) {
+  const response = await fetch(input, init);
+
+  if (response.status === 401) {
+    window.location.replace("/admin/login");
+    throw new Error("Phiên đăng nhập quản trị đã hết hạn.");
+  }
+
+  return response;
+}
+
 function reviewStatus(
   conversation: ConversationHistoryEntry,
 ): ConversationReviewStatus {
@@ -152,8 +166,6 @@ export function AdminDashboard() {
   const [selectedClientId, setSelectedClientId] = useState("");
   const [status, setStatus] = useState<AdminReviewFilter>("unreviewed");
   const [search, setSearch] = useState("");
-  const [adminToken, setAdminToken] = useState("");
-  const [tokenInput, setTokenInput] = useState("");
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [reviewDrafts, setReviewDrafts] = useState<
     Record<string, EditableReviewStatus>
@@ -163,21 +175,9 @@ export function AdminDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
-  const adminHeaders = useCallback(
-    (withJson = false) => {
-      const headers: Record<string, string> = {};
-
-      if (withJson) {
-        headers["Content-Type"] = "application/json";
-      }
-      if (adminToken) {
-        headers["x-admin-token"] = adminToken;
-      }
-
-      return headers;
-    },
-    [adminToken],
-  );
+  const adminHeaders = useCallback((withJson = false): Record<string, string> => {
+    return withJson ? { "Content-Type": "application/json" } : {};
+  }, []);
 
   const loadOverview = useCallback(async () => {
     setIsLoading(true);
@@ -188,7 +188,7 @@ export function AdminDashboard() {
       if (selectedClientId) {
         params.set("clientId", selectedClientId);
       }
-      const response = await fetch(`/api/admin/overview?${params}`, {
+      const response = await fetchAdmin(`/api/admin/overview?${params}`, {
         cache: "no-store",
         headers: adminHeaders(),
       });
@@ -248,17 +248,6 @@ export function AdminDashboard() {
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
-      const savedToken =
-        window.sessionStorage.getItem("admin-api-token") ?? "";
-      setAdminToken(savedToken);
-      setTokenInput(savedToken);
-    }, 0);
-
-    return () => window.clearTimeout(timeoutId);
-  }, []);
-
-  useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
       void loadOverview();
     }, 0);
 
@@ -296,17 +285,6 @@ export function AdminDashboard() {
     );
   }, [overview?.conversations, search]);
 
-  function saveAdminToken() {
-    const token = tokenInput.trim();
-    window.sessionStorage.setItem("admin-api-token", token);
-    setAdminToken(token);
-    setNotice(
-      token
-        ? pick("Đã lưu mã quản trị cho phiên này.", "已为本次会话保存管理员令牌。")
-        : pick("Đã dùng chế độ local.", "已切换为本地模式。"),
-    );
-  }
-
   async function reviewConversation(
     conversation: ConversationHistoryEntry,
     verdict: EditableReviewStatus,
@@ -317,7 +295,7 @@ export function AdminDashboard() {
     setNotice(null);
 
     try {
-      const response = await fetch(
+      const response = await fetchAdmin(
         `/api/admin/conversations/${encodeURIComponent(conversation.conversationId)}/review`,
         {
           method: "PATCH",
@@ -377,6 +355,31 @@ export function AdminDashboard() {
     }
   }
 
+  async function logout() {
+    setPendingAction("logout");
+    setError(null);
+
+    try {
+      const response = await fetch("/api/admin/auth/logout", {
+        method: "POST",
+      });
+      if (!response.ok) {
+        throw new Error(
+          pick("Không thể đăng xuất. Vui lòng thử lại.", "无法退出登录，请重试。"),
+        );
+      }
+
+      window.location.replace("/admin/login");
+    } catch (logoutError) {
+      setError(
+        logoutError instanceof Error
+          ? logoutError.message
+          : pick("Không thể đăng xuất. Vui lòng thử lại.", "无法退出登录，请重试。"),
+      );
+      setPendingAction("");
+    }
+  }
+
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
       <header className="overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950 p-6 shadow-2xl shadow-slate-950/20 sm:p-8">
@@ -403,12 +406,22 @@ export function AdminDashboard() {
             <button
               type="button"
               onClick={() => void loadOverview()}
-              disabled={isLoading}
+              disabled={isLoading || pendingAction === "logout"}
               className="rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/15 disabled:cursor-wait disabled:opacity-60"
             >
               {isLoading
                 ? pick("Đang cập nhật…", "正在更新…")
                 : pick("Làm mới dữ liệu", "刷新数据")}
+            </button>
+            <button
+              type="button"
+              onClick={() => void logout()}
+              disabled={pendingAction === "logout"}
+              className="rounded-xl border border-white/15 px-4 py-2.5 text-sm font-semibold text-slate-200 transition hover:bg-white/10 disabled:cursor-wait disabled:opacity-60"
+            >
+              {pendingAction === "logout"
+                ? pick("Đang đăng xuất…", "正在退出…")
+                : pick("Đăng xuất", "退出登录")}
             </button>
           </div>
         </div>
@@ -527,34 +540,6 @@ export function AdminDashboard() {
           </label>
         </div>
       </section>
-
-      <details className="rounded-2xl border border-white/10 bg-slate-900 p-5">
-        <summary className="cursor-pointer text-sm font-semibold text-white">
-          {pick("Bảo vệ admin khi triển khai production", "生产环境的管理员保护")}
-        </summary>
-        <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-          <input
-            type="password"
-            value={tokenInput}
-            onChange={(event) => setTokenInput(event.target.value)}
-            placeholder="ADMIN_API_TOKEN"
-            className="min-w-0 flex-1 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white placeholder:text-slate-600"
-          />
-          <button
-            type="button"
-            onClick={saveAdminToken}
-            className="rounded-xl border border-slate-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800"
-          >
-            {pick("Lưu cho phiên này", "为本次会话保存")}
-          </button>
-        </div>
-        <p className="mt-3 text-xs leading-5 text-slate-500">
-          {pick(
-            "Khi chạy local, token có thể để trống. Ở production, backend từ chối API admin nếu chưa cấu hình biến môi trường ADMIN_API_TOKEN.",
-            "本地运行时令牌可以留空。在生产环境中，如果未配置 ADMIN_API_TOKEN 环境变量，后端将拒绝管理员 API 请求。",
-          )}
-        </p>
-      </details>
 
       {error ? (
         <div className="rounded-2xl border border-rose-400/30 bg-rose-400/10 px-4 py-3 text-sm text-rose-100">

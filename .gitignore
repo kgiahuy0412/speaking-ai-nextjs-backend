@@ -20,6 +20,9 @@
 # production
 /build
 
+# local AI model weights
+/models/
+
 # misc
 .DS_Store
 *.pem
