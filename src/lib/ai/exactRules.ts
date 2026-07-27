@@ -25,6 +25,21 @@ const reviewedHistoricalCorrections = [
     vietnamese: "Bố mua cái này cho con nhé.",
     english: "Dad, please buy this for me.",
   },
+  {
+    id: "V1-HIST-004",
+    vietnamese: "Đường đi xa lắm.",
+    english: "It's a long way.",
+  },
+  {
+    id: "V1-HIST-005",
+    vietnamese: "Con muốn đi sở thú.",
+    english: "I want to go to the zoo.",
+  },
+  {
+    id: "V1-HIST-006",
+    vietnamese: "Con muốn đi thư viện.",
+    english: "I want to go to the library.",
+  },
 ] as const;
 
 /**

@@ -9,6 +9,7 @@ import {
   completeAudioSessionFinalize,
   finalizeAudioUploadSession,
   releaseAudioSessionFinalize,
+  type Pcm16WavMetadata,
 } from "@/lib/storage/audioSessions";
 import type {
   AsrMode,
@@ -35,6 +36,7 @@ type FinalizeRequest = {
   sourceText?: string;
   asrMode?: AsrMode;
   mimeType?: string;
+  pcm16Wav?: Pcm16WavMetadata;
   benchmark?: BenchmarkMetadata;
 };
 
@@ -93,6 +95,7 @@ export async function POST(request: Request, context: RouteContext) {
       audioFile = await finalizeAudioUploadSession(
         audioSessionId,
         body.mimeType,
+        body.pcm16Wav,
       );
     }
 

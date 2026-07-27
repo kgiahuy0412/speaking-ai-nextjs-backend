@@ -24,6 +24,14 @@ export type BenchmarkMetadata = {
   asrConfidence?: number;
   asrFirstDeltaMs?: number;
   asrFinalAfterStopMs?: number;
+  batchTransport?: string;
+  chunkIntervalMs?: number;
+  audioChunkCount?: number;
+  uploadedAudioBytes?: number;
+  recordingSampleRate?: number;
+  sessionCreateMs?: number;
+  uploadDrainAfterStopMs?: number;
+  wavHeaderStrategy?: "uploaded_chunk" | "finalize_metadata";
 };
 
 export type ConversationRequest = {

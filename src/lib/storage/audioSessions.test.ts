@@ -81,6 +81,59 @@ test("finalize rejects a missing chunk sequence", async () => {
   );
 });
 
+test("finalize builds a WAV header from PCM metadata without a header chunk", async () => {
+  const sessionId = await sessions.createAudioUploadSession();
+  await sessions.saveAudioSessionChunk(
+    sessionId,
+    0,
+    new File([Buffer.from([1, 2])], "chunk-0.pcm"),
+  );
+  await sessions.saveAudioSessionChunk(
+    sessionId,
+    1,
+    new File([Buffer.from([3, 4])], "chunk-1.pcm"),
+  );
+
+  const file = await sessions.finalizeAudioUploadSession(
+    sessionId,
+    "audio/wav",
+    {
+      sampleRate: 48_000,
+      channelCount: 1,
+      bitsPerSample: 16,
+      pcmByteLength: 4,
+    },
+  );
+  const bytes = Buffer.from(await file.arrayBuffer());
+
+  assert.equal(bytes.subarray(0, 4).toString("ascii"), "RIFF");
+  assert.equal(bytes.readUInt32LE(24), 48_000);
+  assert.equal(bytes.readUInt32LE(40), 4);
+  assert.deepEqual([...bytes.subarray(44)], [1, 2, 3, 4]);
+});
+
+test("finalize rejects PCM metadata with a mismatched byte length", async () => {
+  const sessionId = await sessions.createAudioUploadSession();
+  await sessions.saveAudioSessionChunk(
+    sessionId,
+    0,
+    new File([Buffer.from([1, 2])], "chunk-0.pcm"),
+  );
+
+  await assert.rejects(
+    () =>
+      sessions.finalizeAudioUploadSession(sessionId, "audio/wav", {
+        sampleRate: 48_000,
+        channelCount: 1,
+        bitsPerSample: 16,
+        pcmByteLength: 4,
+      }),
+    (error: unknown) =>
+      error instanceof sessions.AudioUploadError &&
+      error.code === "INVALID_PCM_METADATA",
+  );
+});
+
 test("chunk and session byte limits are enforced", async () => {
   process.env.AUDIO_UPLOAD_MAX_CHUNK_BYTES = "4";
   const chunkLimitedSession = await sessions.createAudioUploadSession();
