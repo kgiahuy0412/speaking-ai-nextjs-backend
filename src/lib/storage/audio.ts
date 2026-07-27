@@ -75,6 +75,10 @@ function blobPath(fileName: string) {
   return `${AUDIO_PUBLIC_DIR}/${fileName}`;
 }
 
+function localAudioUrl(fileName: string) {
+  return `/api/audio/cache/${encodeURIComponent(fileName)}`;
+}
+
 async function getBlobUrl(fileName: string) {
   try {
     return (
@@ -130,7 +134,7 @@ export async function saveGeneratedAudio(
     return saveBlobAudio(fileName, audio);
   }
 
-  const relativeUrl = `/${AUDIO_PUBLIC_DIR}/${fileName}`;
+  const relativeUrl = localAudioUrl(fileName);
   const outputDir = path.join(process.cwd(), "public", AUDIO_PUBLIC_DIR);
   const outputPath = path.join(outputDir, fileName);
 
@@ -179,7 +183,7 @@ export async function getReusableAudioUrl(
 
   try {
     await access(outputPath);
-    return `/${AUDIO_PUBLIC_DIR}/${fileName}`;
+    return localAudioUrl(fileName);
   } catch {
     return null;
   }
@@ -195,7 +199,7 @@ export async function saveReusableAudio(
     return saveBlobAudio(fileName, audio);
   }
 
-  const relativeUrl = `/${AUDIO_PUBLIC_DIR}/${fileName}`;
+  const relativeUrl = localAudioUrl(fileName);
   const outputDir = path.join(process.cwd(), "public", AUDIO_PUBLIC_DIR);
   const outputPath = path.join(outputDir, fileName);
 
