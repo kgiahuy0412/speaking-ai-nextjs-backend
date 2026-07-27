@@ -1,6 +1,6 @@
 import type { PracticeContext, TextSource } from "@/types/conversation";
 import { normalizeVietnamese } from "@/lib/normalize";
-import { getOpenAIClient } from "./openai";
+import { generateAiText, getTextAiProfile } from "./aiProvider";
 import { keywordIntentRules, phraseRules } from "./phraseRules";
 import { buildEnglishInstruction } from "./prompts";
 import { getPromotedRule } from "./promotedRules";
@@ -217,18 +217,23 @@ function isUnclearShortInput(normalizedText: string) {
 }
 
 function getFallbackTextModel() {
-  return process.env.OPENAI_FAST_TEXT_MODEL ?? "gpt-4o-mini";
+  return getTextAiProfile().model;
 }
 
 function getFallbackTextTimeoutMs() {
-  const timeoutMs = Number(process.env.OPENAI_TEXT_TIMEOUT_MS ?? 2500);
+  const fallback = getTextAiProfile().provider === "cloudflare" ? 12_000 : 2_500;
+  const timeoutMs = Number(
+    process.env.OPENAI_TEXT_TIMEOUT_MS ??
+      process.env.CLOUDFLARE_TEXT_TIMEOUT_MS ??
+      fallback,
+  );
 
-  return Number.isFinite(timeoutMs) && timeoutMs > 0 ? timeoutMs : 2500;
+  return Number.isFinite(timeoutMs) && timeoutMs > 0 ? timeoutMs : fallback;
 }
 
 class TextModelTimeoutError extends Error {
   constructor(timeoutMs: number) {
-    super(`OpenAI text fallback timed out after ${timeoutMs}ms`);
+    super(`AI text fallback timed out after ${timeoutMs}ms`);
     this.name = "TextModelTimeoutError";
   }
 }
@@ -279,8 +284,8 @@ export async function generateEnglishSentence(
     };
   }
 
-  const client = getOpenAIClient();
   const fallbackSentence = "Can you say that again, please?";
+  const provider = getTextAiProfile().provider;
   const model = getFallbackTextModel();
   const timeoutMs = getFallbackTextTimeoutMs();
   let sentence = "";
@@ -288,16 +293,16 @@ export async function generateEnglishSentence(
 
   try {
     const response = await withTimeout(
-      client.responses.create({
-        model,
+      generateAiText({
         instructions: buildEnglishInstruction(context, childAge),
         input: vietnameseText,
-        max_output_tokens: 48,
+        maxOutputTokens: 64,
+        timeoutMs,
       }),
       timeoutMs,
     );
 
-    sentence = response.output_text.trim();
+    sentence = response.text.trim();
     if (containsUnexpectedEastAsianScript(sentence)) {
       sentence = "";
     }
@@ -307,7 +312,7 @@ export async function generateEnglishSentence(
         englishText: fallbackSentence,
         mode: "fallback",
         source: "fallback",
-        matchedRule: `timeout:openai_text:${model}:${timeoutMs}`,
+        matchedRule: `timeout:${provider}_text:${model}:${timeoutMs}`,
       };
     }
 
@@ -333,7 +338,7 @@ export async function generateEnglishSentence(
   return {
     englishText: sentence || fallbackSentence,
     mode: sentence ? "ai" : "fallback",
-    source: sentence ? "openai" : "fallback",
+    source: sentence ? provider : "fallback",
   };
 }
 

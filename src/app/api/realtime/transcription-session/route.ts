@@ -1,5 +1,6 @@
 import { AppError, toErrorResponse } from "@/lib/errors";
 import { getOpenAIClient } from "@/lib/ai/openai";
+import { isOpenAIConfigured } from "@/lib/ai/aiProvider";
 import {
   getRequestId,
   logEvent,
@@ -51,6 +52,14 @@ export async function POST(request: Request) {
       throw new AppError(
         "BAD_REQUEST",
         "Không tìm thấy mã thiết bị hợp lệ.",
+      );
+    }
+
+    if (!isOpenAIConfigured()) {
+      throw new AppError(
+        "ASR_FAILED",
+        "OpenAI Realtime chưa được cấu hình; ứng dụng sẽ chuyển sang Batch Chunks.",
+        503,
       );
     }
 

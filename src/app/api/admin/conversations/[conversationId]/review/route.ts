@@ -40,7 +40,10 @@ export async function PATCH(request: Request, context: ReviewRouteContext) {
       ? body.clientId.trim()
       : undefined;
 
-  if (!body || !["approved", "rejected"].includes(String(body.verdict))) {
+  if (
+    !body ||
+    !["unreviewed", "approved", "rejected"].includes(String(body.verdict))
+  ) {
     return Response.json(
       { error: { code: "BAD_REQUEST", message: "Đánh giá không hợp lệ." } },
       { status: 400 },
@@ -75,6 +78,40 @@ export async function PATCH(request: Request, context: ReviewRouteContext) {
   }
 
   const reviewedAt = new Date().toISOString();
+
+  if (body.verdict === "unreviewed") {
+    const updatedEnglish = correctedEnglish || conversation.englishText.trim();
+    const wasCorrected =
+      normalizedEnglish(updatedEnglish) !==
+      normalizedEnglish(conversation.englishText);
+    const removedRule = conversation.promotedToRule
+      ? await removePromotedRule(
+          conversation.vietnameseText,
+          conversation.context,
+          conversation.clientId,
+        )
+      : false;
+    const updated = await updateConversationHistory({
+      conversationId,
+      clientId: conversation.clientId,
+      englishText: updatedEnglish,
+      originalEnglishText: wasCorrected
+        ? conversation.originalEnglishText ?? conversation.englishText
+        : conversation.originalEnglishText,
+      reviewStatus: "unreviewed",
+      reviewedAt,
+      reviewedBy: "admin",
+      reviewNote: note,
+      promotedToRule: false,
+      learningStatus: "observing",
+      learningReason: "manual",
+    });
+
+    return Response.json({
+      conversation: updated,
+      learning: { removedRule },
+    });
+  }
 
   if (body.verdict === "rejected") {
     const [removedRule, removedCachedTexts] = await Promise.all([
@@ -123,11 +160,14 @@ export async function PATCH(request: Request, context: ReviewRouteContext) {
   const shouldPromote =
     Boolean(conversation.clientId) &&
     (wasCorrected ||
-      ["openai", "text_cache", "promoted_rule"].includes(
+      ["openai", "cloudflare", "text_cache", "promoted_rule"].includes(
         conversation.textSource,
       ));
   let audio:
-    | { audioUrl: string; source: "cache" | "openai_tts" }
+    | {
+        audioUrl: string;
+        source: "cache" | "openai_tts" | "cloudflare_tts";
+      }
     | null = null;
   let audioWarning: string | null = null;
 

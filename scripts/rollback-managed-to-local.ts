@@ -1,4 +1,5 @@
 import { list } from "@vercel/blob";
+import { loadEnvConfig } from "@next/env";
 import { cp, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { listRecordEntries } from "../src/lib/db/records";
@@ -9,6 +10,8 @@ import type { PromotedRule } from "../src/lib/ai/promotedRules";
 import type { AiTextCacheEntry } from "../src/lib/ai/textCache";
 
 const projectRoot = process.cwd();
+loadEnvConfig(projectRoot);
+
 const applyRollback = process.argv.includes("--apply");
 
 function timestamp() {

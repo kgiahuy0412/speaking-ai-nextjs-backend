@@ -64,9 +64,10 @@ export type TextSource =
   | "semantic_cache"
   | "text_cache"
   | "openai"
+  | "cloudflare"
   | "fallback";
 
-export type AudioSource = "cache" | "openai_tts";
+export type AudioSource = "cache" | "openai_tts" | "cloudflare_tts";
 
 export type ConversationReviewStatus =
   | "unreviewed"

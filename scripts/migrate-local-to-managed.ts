@@ -1,9 +1,13 @@
 import { BlobNotFoundError, head, put } from "@vercel/blob";
+import { loadEnvConfig } from "@next/env";
 import { cp, mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { ensureDatabaseSchema } from "../src/lib/db";
 import { putRecord } from "../src/lib/db/records";
-import { getGeneratedAudioBlobToken } from "../src/lib/storage/config";
+import {
+  getAudioStorageBackend,
+  getGeneratedAudioBlobToken,
+} from "../src/lib/storage/config";
 import type { DeviceProfile } from "../src/types/admin";
 import type { ConversationHistoryEntry } from "../src/types/conversation";
 import type { PromotedRule } from "../src/lib/ai/promotedRules";
@@ -12,6 +16,8 @@ import type { AiTextCacheEntry } from "../src/lib/ai/textCache";
 type JsonMap<T> = Record<string, T>;
 
 const projectRoot = process.cwd();
+loadEnvConfig(projectRoot);
+
 const dataDir = path.join(projectRoot, "data");
 const audioDir = path.join(projectRoot, "public", "generated-audio");
 const dryRun = process.argv.includes("--dry-run");
@@ -86,6 +92,7 @@ async function uploadAudio(fileName: string) {
 }
 
 async function main() {
+  const audioStorageBackend = getAudioStorageBackend();
   const [history, profiles, rules, textCache, audioFiles] = await Promise.all([
     readHistory(),
     readJson<JsonMap<DeviceProfile>>(path.join(dataDir, "device-profiles.json"), {}),
@@ -172,16 +179,18 @@ async function main() {
 
   let uploadedAudio = 0;
   let existingAudio = 0;
-  for (const fileName of audioFiles) {
-    const result = await uploadAudio(fileName);
-    uploadedAudio += result === "uploaded" ? 1 : 0;
-    existingAudio += result === "existing" ? 1 : 0;
+  if (audioStorageBackend === "vercel-blob") {
+    for (const fileName of audioFiles) {
+      const result = await uploadAudio(fileName);
+      uploadedAudio += result === "uploaded" ? 1 : 0;
+      existingAudio += result === "existing" ? 1 : 0;
+    }
   }
 
   const manifest = {
     migratedAt: new Date().toISOString(),
     source: "local",
-    destination: { records: "postgres", audio: "vercel-blob" },
+    destination: { records: "postgres", audio: audioStorageBackend },
     summary,
     uploadedAudio,
     existingAudio,

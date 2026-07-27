@@ -133,7 +133,9 @@ export function ConversationHistoryPanel({
                       >
                         {pick("Sai ý", "意思错误")}
                       </button>
-                      {["openai", "text_cache"].includes(item.textSource) ? (
+                      {["openai", "cloudflare", "text_cache"].includes(
+                        item.textSource,
+                      ) ? (
                         <button
                           type="button"
                           onClick={() => onPromote?.(item.conversationId)}

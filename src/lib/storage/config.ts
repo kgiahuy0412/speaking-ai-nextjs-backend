@@ -9,9 +9,15 @@ function positiveInteger(name: string, fallback: number) {
 }
 
 export function getPersistenceBackend(): PersistenceBackend {
-  return process.env.PERSISTENCE_BACKEND?.trim().toLowerCase() === "postgres"
-    ? "postgres"
-    : "local";
+  const configuredBackend = process.env.PERSISTENCE_BACKEND
+    ?.trim()
+    .toLowerCase();
+
+  if (configuredBackend === "postgres" || configuredBackend === "local") {
+    return configuredBackend;
+  }
+
+  return process.env.DATABASE_URL?.trim() ? "postgres" : "local";
 }
 
 export function getAudioStorageBackend(): AudioStorageBackend {

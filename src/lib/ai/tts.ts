@@ -1,9 +1,14 @@
 import { getReusableAudioUrl, saveReusableAudio } from "@/lib/storage/audio";
-import { getOpenAIClient } from "./openai";
+import type { AudioSource } from "@/types/conversation";
+import {
+  getConfiguredTtsProfile,
+  requestEnglishSpeech,
+  type TtsProfile,
+} from "./aiProvider";
 
 export type AudioSynthesisResult = {
   audioUrl: string;
-  source: "cache" | "openai_tts";
+  source: AudioSource;
 };
 
 const inFlightSynthesis = new Map<
@@ -12,25 +17,16 @@ const inFlightSynthesis = new Map<
 >();
 
 export function getTtsProfile() {
-  const configuredSpeed = Number(process.env.OPENAI_TTS_SPEED ?? 0.9);
-
-  return {
-    model: process.env.OPENAI_TTS_MODEL ?? "tts-1",
-    voice: process.env.OPENAI_TTS_VOICE ?? "alloy",
-    speed:
-      Number.isFinite(configuredSpeed) &&
-      configuredSpeed >= 0.25 &&
-      configuredSpeed <= 4
-        ? configuredSpeed
-        : 0.9,
-    extension: "mp3",
-  };
+  return getConfiguredTtsProfile();
 }
 
-function getAudioDescriptor(englishText: string) {
+function getAudioDescriptor(englishText: string, profile = getTtsProfile()) {
   return {
     text: englishText,
-    ...getTtsProfile(),
+    model: profile.model,
+    voice: profile.voice,
+    speed: profile.speed,
+    extension: profile.extension,
   };
 }
 
@@ -38,12 +34,16 @@ function getSynthesisKey(englishText: string) {
   return JSON.stringify(getAudioDescriptor(englishText));
 }
 
-export function getEnglishAudioCacheUrl(englishText: string) {
-  return getReusableAudioUrl(getAudioDescriptor(englishText));
+export function getEnglishAudioCacheUrl(
+  englishText: string,
+  profile?: TtsProfile,
+) {
+  return getReusableAudioUrl(getAudioDescriptor(englishText, profile));
 }
 
 export async function prepareEnglishAudio(englishText: string) {
-  const cachedUrl = await getEnglishAudioCacheUrl(englishText);
+  const profile = getTtsProfile();
+  const cachedUrl = await getEnglishAudioCacheUrl(englishText, profile);
 
   if (cachedUrl) {
     return {
@@ -54,12 +54,16 @@ export async function prepareEnglishAudio(englishText: string) {
 
   return {
     audioUrl: `/api/audio/stream?text=${encodeURIComponent(englishText)}`,
-    source: "openai_tts",
+    source:
+      profile.provider === "openai" ? "openai_tts" : "cloudflare_tts",
   } satisfies AudioSynthesisResult;
 }
 
-export async function synthesizeEnglishAudio(englishText: string) {
-  const cachedUrl = await getEnglishAudioCacheUrl(englishText);
+export async function synthesizeEnglishAudio(
+  englishText: string,
+): Promise<AudioSynthesisResult> {
+  const profile = getTtsProfile();
+  const cachedUrl = await getEnglishAudioCacheUrl(englishText, profile);
 
   if (cachedUrl) {
     return {
@@ -76,23 +80,15 @@ export async function synthesizeEnglishAudio(englishText: string) {
   }
 
   const synthesis = (async () => {
-    const client = getOpenAIClient();
-    const profile = getTtsProfile();
-    const speech = await client.audio.speech.create({
-      model: profile.model,
-      voice: profile.voice,
-      input: englishText,
-      response_format: "mp3",
-      speed: profile.speed,
-    });
-    const audio = await speech.arrayBuffer();
+    const speech = await requestEnglishSpeech(englishText, profile);
+    const audio = await speech.response.arrayBuffer();
 
     return {
       audioUrl: await saveReusableAudio(
-        getAudioDescriptor(englishText),
+        getAudioDescriptor(englishText, profile),
         audio,
       ),
-      source: "openai_tts",
+      source: speech.source,
     } satisfies AudioSynthesisResult;
   })();
   inFlightSynthesis.set(synthesisKey, synthesis);

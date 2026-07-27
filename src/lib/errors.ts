@@ -1,16 +1,7 @@
-import type { ApiErrorCode } from "@/types/conversation";
 import { logEvent } from "@/lib/observability";
+import { AppError } from "@/lib/appError";
 
-export class AppError extends Error {
-  constructor(
-    public readonly code: ApiErrorCode,
-    message: string,
-    public readonly status = 400,
-  ) {
-    super(message);
-    this.name = "AppError";
-  }
-}
+export { AppError } from "@/lib/appError";
 
 export function toErrorResponse(error: unknown, requestId?: string) {
   if (error instanceof AppError) {

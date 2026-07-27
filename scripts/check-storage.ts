@@ -1,4 +1,7 @@
+import { loadEnvConfig } from "@next/env";
 import { getStorageHealth } from "../src/lib/storage/health";
+
+loadEnvConfig(process.cwd());
 
 getStorageHealth()
   .then((health) => {

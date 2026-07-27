@@ -1,6 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async rewrites() {
+    return {
+      beforeFiles: [],
+      afterFiles: [],
+      fallback: [
+        {
+          source: "/generated-audio/:fileName",
+          destination: "/api/audio/cache/:fileName",
+        },
+      ],
+    };
+  },
   async headers() {
     return [
       {

@@ -8,10 +8,27 @@ export type AdminReviewFilter =
   | ConversationReviewStatus
   | "ai_suggested";
 
+export type AndroidDeviceHardware = {
+  manufacturer: string;
+  brand: string;
+  model: string;
+  androidVersion: string;
+  sdkInt: number;
+  supportedAbis: string[];
+  socManufacturer?: string;
+  socModel?: string;
+  totalRamBytes: number;
+  availableRamBytes: number;
+  totalStorageBytes: number;
+  availableStorageBytes: number;
+  reportedAt: string;
+};
+
 export type DeviceProfile = {
   clientId: string;
   deviceName: string;
   childName?: string;
+  hardware?: AndroidDeviceHardware;
   createdAt: string;
   updatedAt: string;
 };

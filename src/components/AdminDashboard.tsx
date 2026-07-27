@@ -17,6 +17,11 @@ import type {
   PracticeContext,
 } from "@/types/conversation";
 
+type EditableReviewStatus = Extract<
+  ConversationReviewStatus,
+  "unreviewed" | "approved" | "rejected"
+>;
+
 function localeText(locale: UiLocale, vietnamese: string, chinese: string) {
   return locale === "zh" ? chinese : vietnamese;
 }
@@ -53,6 +58,13 @@ function reviewStatus(
   }
 
   return "unreviewed";
+}
+
+function editableReviewStatus(
+  conversation: ConversationHistoryEntry,
+): EditableReviewStatus {
+  const status = reviewStatus(conversation);
+  return status === "approved" || status === "rejected" ? status : "unreviewed";
 }
 
 function statusLabel(status: ConversationReviewStatus, locale: UiLocale) {
@@ -128,6 +140,14 @@ export function AdminDashboard() {
     { value: "rejected", label: pick("Đã đánh dấu sai", "已标记错误") },
     { value: "all", label: pick("Tất cả", "全部") },
   ];
+  const editableStatusOptions: Array<{
+    value: EditableReviewStatus;
+    label: string;
+  }> = [
+    { value: "approved", label: pick("Đúng", "正确") },
+    { value: "rejected", label: pick("Sai", "错误") },
+    { value: "unreviewed", label: pick("Chưa duyệt", "未审核") },
+  ];
   const [overview, setOverview] = useState<AdminOverview | null>(null);
   const [selectedClientId, setSelectedClientId] = useState("");
   const [status, setStatus] = useState<AdminReviewFilter>("unreviewed");
@@ -135,9 +155,9 @@ export function AdminDashboard() {
   const [adminToken, setAdminToken] = useState("");
   const [tokenInput, setTokenInput] = useState("");
   const [drafts, setDrafts] = useState<Record<string, string>>({});
-  const [notes, setNotes] = useState<Record<string, string>>({});
-  const [deviceName, setDeviceName] = useState("");
-  const [childName, setChildName] = useState("");
+  const [reviewDrafts, setReviewDrafts] = useState<
+    Record<string, EditableReviewStatus>
+  >({});
   const [pendingAction, setPendingAction] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -195,22 +215,25 @@ export function AdminDashboard() {
         });
         return next;
       });
+      setReviewDrafts((current) => {
+        const next = { ...current };
+        data.overview?.conversations.forEach((conversation) => {
+          if (!(conversation.conversationId in next)) {
+            next[conversation.conversationId] =
+              editableReviewStatus(conversation);
+          }
+        });
+        return next;
+      });
 
       const nextSelectedClientId =
         selectedClientId ||
         (data.overview.devices.length === 1
           ? data.overview.devices[0].clientId
           : "");
-      const nextSelectedDevice = data.overview.devices.find(
-        (device) => device.clientId === nextSelectedClientId,
-      );
 
       if (!selectedClientId && nextSelectedClientId) {
         setSelectedClientId(nextSelectedClientId);
-      }
-      if (nextSelectedDevice) {
-        setDeviceName(nextSelectedDevice.deviceName);
-        setChildName(nextSelectedDevice.childName ?? "");
       }
     } catch (loadError) {
       setError(
@@ -248,9 +271,6 @@ export function AdminDashboard() {
 
   function selectDevice(clientId: string) {
     setSelectedClientId(clientId);
-    const device = overview?.devices.find((item) => item.clientId === clientId);
-    setDeviceName(device?.deviceName ?? "");
-    setChildName(device?.childName ?? "");
   }
 
   const devicesById = useMemo(
@@ -289,9 +309,9 @@ export function AdminDashboard() {
 
   async function reviewConversation(
     conversation: ConversationHistoryEntry,
-    verdict: "approved" | "rejected",
+    verdict: EditableReviewStatus,
   ) {
-    const actionKey = `${conversation.conversationId}:${verdict}`;
+    const actionKey = `${conversation.conversationId}:save`;
     setPendingAction(actionKey);
     setError(null);
     setNotice(null);
@@ -306,7 +326,7 @@ export function AdminDashboard() {
             clientId: conversation.clientId,
             verdict,
             correctedEnglish: drafts[conversation.conversationId],
-            note: notes[conversation.conversationId],
+            note: conversation.reviewNote,
           }),
         },
       );
@@ -335,10 +355,15 @@ export function AdminDashboard() {
                 "Đã duyệt và lưu cách nói cho thiết bị này.",
                 "已确认并为该设备保存此表达。",
               )
-            : pick(
+            : verdict === "rejected"
+              ? pick(
                 "Đã đánh dấu sai và gỡ dữ liệu học liên quan.",
                 "已标记为错误并移除相关学习数据。",
-              )),
+                )
+              : pick(
+                  "Đã lưu trạng thái chưa duyệt.",
+                  "已保存为未审核状态。",
+                )),
       );
       await loadOverview();
     } catch (reviewError) {
@@ -346,154 +371,6 @@ export function AdminDashboard() {
         reviewError instanceof Error
           ? reviewError.message
           : pick("Không lưu được đánh giá.", "无法保存审核结果。"),
-      );
-    } finally {
-      setPendingAction("");
-    }
-  }
-
-  async function requestAiReview(conversation: ConversationHistoryEntry) {
-    const actionKey = `${conversation.conversationId}:ai`;
-    setPendingAction(actionKey);
-    setError(null);
-    setNotice(null);
-
-    try {
-      const response = await fetch(
-        `/api/admin/conversations/${encodeURIComponent(conversation.conversationId)}/ai-review`,
-        {
-          method: "POST",
-          headers: adminHeaders(true),
-          body: JSON.stringify({ clientId: conversation.clientId }),
-        },
-      );
-      const data = (await response.json().catch(() => null)) as {
-        aiReview?: { suggestedEnglish?: string };
-        cached?: boolean;
-      } | null;
-
-      if (!response.ok || !data?.aiReview) {
-        throw new Error(
-          getResponseError(data, pick("AI chưa đánh giá được câu.", "AI 暂时无法审核该句。")),
-        );
-      }
-
-      if (data.aiReview.suggestedEnglish) {
-        setDrafts((current) => ({
-          ...current,
-          [conversation.conversationId]:
-            data.aiReview?.suggestedEnglish ?? conversation.englishText,
-        }));
-      }
-      setNotice(
-        data.cached
-          ? pick(
-              "Đã dùng lại kết quả AI trước đó, không phát sinh lượt đánh giá mới.",
-              "已复用之前的 AI 结果，没有产生新的审核调用。",
-            )
-          : pick(
-              "AI đã đưa ra gợi ý. Admin vẫn là người quyết định cuối cùng.",
-              "AI 已给出建议，最终决定仍由管理员做出。",
-            ),
-      );
-      await loadOverview();
-    } catch (aiError) {
-      setError(
-        aiError instanceof Error
-          ? aiError.message
-          : pick("AI chưa đánh giá được câu.", "AI 暂时无法审核该句。"),
-      );
-    } finally {
-      setPendingAction("");
-    }
-  }
-
-  async function saveDeviceProfile() {
-    if (!selectedClientId) {
-      return;
-    }
-
-    setPendingAction("device-profile");
-    setError(null);
-    setNotice(null);
-
-    try {
-      const response = await fetch(
-        `/api/admin/devices/${encodeURIComponent(selectedClientId)}`,
-        {
-          method: "PATCH",
-          headers: adminHeaders(true),
-          body: JSON.stringify({ deviceName, childName }),
-        },
-      );
-      const data = await response.json().catch(() => null);
-
-      if (!response.ok) {
-        throw new Error(
-          getResponseError(
-            data,
-            pick("Không lưu được thông tin thiết bị.", "无法保存设备信息。"),
-          ),
-        );
-      }
-
-      setNotice(pick("Đã lưu tên thiết bị và hồ sơ trẻ.", "已保存设备名称和儿童档案。"));
-      await loadOverview();
-    } catch (profileError) {
-      setError(
-        profileError instanceof Error
-          ? profileError.message
-          : pick("Không lưu được thông tin thiết bị.", "无法保存设备信息。"),
-      );
-    } finally {
-      setPendingAction("");
-    }
-  }
-
-  async function exportDeviceData() {
-    if (!selectedClientId) {
-      return;
-    }
-
-    setPendingAction("data-export");
-    setError(null);
-    setNotice(null);
-
-    try {
-      const response = await fetch(
-        `/api/admin/data-export?clientId=${encodeURIComponent(selectedClientId)}`,
-        { cache: "no-store", headers: adminHeaders() },
-      );
-      if (!response.ok) {
-        const data = await response.json().catch(() => null);
-        throw new Error(
-          getResponseError(
-            data,
-            pick("Không xuất được dữ liệu của trẻ.", "无法导出儿童数据。"),
-          ),
-        );
-      }
-
-      const blob = await response.blob();
-      const downloadUrl = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.download = `ai-speaking-${selectedClientId}.json`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(downloadUrl);
-      setNotice(
-        pick(
-          "Đã xuất lịch sử, hồ sơ và rule cá nhân của thiết bị.",
-          "已导出该设备的历史记录、档案和个性化规则。",
-        ),
-      );
-    } catch (exportError) {
-      setError(
-        exportError instanceof Error
-          ? exportError.message
-          : pick("Không xuất được dữ liệu của trẻ.", "无法导出儿童数据。"),
       );
     } finally {
       setPendingAction("");
@@ -537,14 +414,11 @@ export function AdminDashboard() {
         </div>
       </header>
 
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {[
-          [pick("Tổng lượt", "总次数"), overview?.stats.total ?? 0, "text-white"],
           [pick("Chưa duyệt", "未审核"), overview?.stats.unreviewed ?? 0, "text-amber-300"],
-          [pick("Cần xem", "需检查"), overview?.stats.needsReview ?? 0, "text-violet-300"],
           [pick("Đúng ý", "符合意图"), overview?.stats.approved ?? 0, "text-emerald-300"],
           [pick("Sai ý", "不符意图"), overview?.stats.rejected ?? 0, "text-rose-300"],
-          [pick("Đã học", "已学习"), overview?.stats.learned ?? 0, "text-cyan-300"],
         ].map(([label, value, color]) => (
           <div
             key={String(label)}
@@ -597,7 +471,7 @@ export function AdminDashboard() {
         </section>
       ) : null}
 
-      <section className="grid gap-4 lg:grid-cols-[1.35fr_1fr]">
+      <section>
         <div className="rounded-2xl border border-white/10 bg-slate-900 p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
             <label className="flex-1 text-sm text-slate-300">
@@ -652,87 +526,6 @@ export function AdminDashboard() {
             />
           </label>
         </div>
-
-        <div className="rounded-2xl border border-white/10 bg-slate-900 p-5">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-sm font-semibold text-white">
-                {pick("Hồ sơ thiết bị", "设备档案")}
-              </p>
-              <p className="mt-1 font-mono text-xs text-slate-500">
-                {selectedClientId
-                  ? shortClientId(selectedClientId)
-                  : pick("Chọn một thiết bị để đặt tên", "选择设备后设置名称")}
-              </p>
-            </div>
-            {overview?.securityMode ? (
-              <span className="rounded-full border border-slate-700 px-2.5 py-1 text-xs text-slate-400">
-                {overview.securityMode === "local-development"
-                  ? pick("Local dev", "本地开发")
-                  : overview.securityMode === "admin-token"
-                    ? pick("Có bảo vệ", "已保护")
-                    : pick("Thiếu token", "缺少令牌")}
-              </span>
-            ) : null}
-          </div>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            <input
-              value={childName}
-              onChange={(event) => setChildName(event.target.value)}
-              disabled={!selectedClientId}
-              placeholder={pick("Tên trẻ, ví dụ: Bé An", "孩子姓名，例如：小安")}
-              className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 disabled:opacity-50"
-            />
-            <input
-              value={deviceName}
-              onChange={(event) => setDeviceName(event.target.value)}
-              disabled={!selectedClientId}
-              placeholder={pick("Tên thiết bị", "设备名称")}
-              className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 disabled:opacity-50"
-            />
-          </div>
-          <button
-            type="button"
-            onClick={() => void saveDeviceProfile()}
-            disabled={!selectedClientId || pendingAction === "device-profile"}
-            className="mt-3 rounded-xl bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            {pendingAction === "device-profile"
-              ? pick("Đang lưu…", "正在保存…")
-              : pick("Lưu hồ sơ", "保存档案")}
-          </button>
-        </div>
-      </section>
-
-      <section className="rounded-2xl border border-white/10 bg-slate-900 p-5">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="max-w-3xl">
-            <p className="text-sm font-semibold text-white">
-              {pick("Dữ liệu và quyền riêng tư của trẻ", "儿童数据与隐私")}
-            </p>
-            <p className="mt-2 text-sm leading-6 text-slate-400">
-              {locale === "zh"
-                ? overview?.dataPolicy.historyRetentionDays
-                  ? `对话历史保留 ${overview.dataPolicy.historyRetentionDays} 天。可以删除单条或全部历史记录；选择设备后可导出 JSON 副本。`
-                  : "目前不会自动删除历史记录。可以删除单条或全部历史记录；选择设备后可导出 JSON 副本。"
-                : overview?.dataPolicy.notes ??
-                pick(
-                  "Có thể xóa từng lượt hoặc toàn bộ lịch sử; chọn thiết bị để xuất bản sao JSON.",
-                  "可以删除单条或全部历史记录；选择设备后可导出 JSON 副本。",
-                )}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => void exportDeviceData()}
-            disabled={!selectedClientId || pendingAction === "data-export"}
-            className="shrink-0 rounded-xl border border-cyan-400/40 bg-cyan-400/10 px-4 py-2.5 text-sm font-semibold text-cyan-200 transition hover:bg-cyan-400/20 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            {pendingAction === "data-export"
-              ? pick("Đang xuất…", "正在导出…")
-              : pick("Xuất dữ liệu thiết bị", "导出设备数据")}
-          </button>
-        </div>
       </section>
 
       <details className="rounded-2xl border border-white/10 bg-slate-900 p-5">
@@ -782,8 +575,8 @@ export function AdminDashboard() {
             </h2>
             <p className="mt-1 text-sm text-slate-400">
               {pick(
-                `${visibleConversations.length} lượt đang hiển thị. AI chỉ chạy khi bạn bấm yêu cầu đánh giá.`,
-                `当前显示 ${visibleConversations.length} 条记录。只有在您请求审核时才会调用 AI。`,
+                `${visibleConversations.length} lượt đang hiển thị.`,
+                `当前显示 ${visibleConversations.length} 条记录。`,
               )}
             </p>
           </div>
@@ -815,12 +608,12 @@ export function AdminDashboard() {
           visibleConversations.map((conversation) => {
             const currentStatus = reviewStatus(conversation);
             const device = devicesById.get(conversation.clientId ?? "legacy");
-            const approvedPending =
-              pendingAction === `${conversation.conversationId}:approved`;
-            const rejectedPending =
-              pendingAction === `${conversation.conversationId}:rejected`;
-            const aiPending = pendingAction === `${conversation.conversationId}:ai`;
-            const anyPending = approvedPending || rejectedPending || aiPending;
+            const selectedReviewStatus =
+              reviewDrafts[conversation.conversationId] ??
+              editableReviewStatus(conversation);
+            const savePending =
+              pendingAction === `${conversation.conversationId}:save`;
+            const anyPending = savePending;
 
             return (
               <article
@@ -872,8 +665,8 @@ export function AdminDashboard() {
                   <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
                     <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                       {pick(
-                        "Câu tiếng Anh có thể sửa trước khi duyệt",
-                        "审核前可修改英语句子",
+                        "Câu hệ thống dịch (có thể chỉnh sửa)",
+                        "系统翻译（可编辑）",
                       )}
                     </label>
                     <textarea
@@ -931,73 +724,56 @@ export function AdminDashboard() {
                   </div>
                 ) : null}
 
-                <div className="mt-4 grid gap-3 lg:grid-cols-[1fr_auto] lg:items-end">
-                  <label className="text-sm text-slate-400">
-                    <span className="mb-2 block">
-                      {pick("Ghi chú đánh giá", "审核备注")}
-                    </span>
-                    <input
-                      value={notes[conversation.conversationId] ?? ""}
-                      onChange={(event) =>
-                        setNotes((current) => ({
-                          ...current,
-                          [conversation.conversationId]: event.target.value,
-                        }))
-                      }
-                      placeholder={
-                        conversation.reviewNote ||
-                        pick(
-                          "Ví dụ: đúng ý nhưng cần câu ngắn hơn",
-                          "例如：意思正确，但句子需要更简短",
-                        )
-                      }
-                      className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white placeholder:text-slate-600"
-                    />
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() => void requestAiReview(conversation)}
-                      disabled={anyPending}
-                      className="rounded-xl border border-violet-400/40 px-3.5 py-2.5 text-sm font-semibold text-violet-200 hover:bg-violet-400/10 disabled:opacity-40"
-                    >
-                      {aiPending
-                        ? pick("AI đang xem…", "AI 正在审核…")
-                        : conversation.aiReview
-                          ? pick("Xem lại AI", "重新请求 AI")
-                          : pick("Nhờ AI đánh giá", "请求 AI 审核")}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => void reviewConversation(conversation, "rejected")}
-                      disabled={anyPending}
-                      className="rounded-xl border border-rose-400/40 px-3.5 py-2.5 text-sm font-semibold text-rose-200 hover:bg-rose-400/10 disabled:opacity-40"
-                    >
-                      {rejectedPending
-                        ? pick("Đang lưu…", "正在保存…")
-                        : pick("Sai ý", "不符意图")}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => void reviewConversation(conversation, "approved")}
-                      disabled={anyPending}
-                      className="rounded-xl bg-emerald-400 px-3.5 py-2.5 text-sm font-semibold text-emerald-950 hover:bg-emerald-300 disabled:opacity-40"
-                    >
-                      {approvedPending
-                        ? pick("Đang lưu & tạo audio…", "正在保存并生成音频…")
-                        : pick("Duyệt đúng", "确认正确")}
-                    </button>
+                <div className="mt-4 flex justify-end">
+                  <div className="flex flex-col gap-3">
+                    <fieldset>
+                      <legend className="mb-2 text-sm text-slate-400">
+                        {pick("Cập nhật trạng thái", "更新状态")}
+                      </legend>
+                      <div className="flex flex-wrap gap-2">
+                        {editableStatusOptions.map((option) => (
+                          <label
+                            key={option.value}
+                            className="flex cursor-pointer items-center gap-2 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm font-medium text-slate-200 transition hover:border-slate-500 has-checked:border-cyan-400/70 has-checked:bg-cyan-400/10 has-checked:text-cyan-100"
+                          >
+                            <input
+                              type="radio"
+                              name={`review-status-${conversation.conversationId}`}
+                              value={option.value}
+                              checked={selectedReviewStatus === option.value}
+                              onChange={() =>
+                                setReviewDrafts((current) => ({
+                                  ...current,
+                                  [conversation.conversationId]: option.value,
+                                }))
+                              }
+                              disabled={anyPending}
+                              className="size-4 accent-cyan-400"
+                            />
+                            {option.label}
+                          </label>
+                        ))}
+                      </div>
+                    </fieldset>
+                    <div className="flex flex-wrap justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          void reviewConversation(
+                            conversation,
+                            selectedReviewStatus,
+                          )
+                        }
+                        disabled={anyPending}
+                        className="rounded-xl bg-cyan-400 px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-40"
+                      >
+                        {savePending
+                          ? pick("Đang lưu…", "正在保存…")
+                          : pick("Lưu", "保存")}
+                      </button>
+                    </div>
                   </div>
                 </div>
-
-                {conversation.audioUrl ? (
-                  <audio
-                    className="mt-4 h-9 w-full max-w-md"
-                    controls
-                    preload="none"
-                    src={conversation.audioUrl}
-                  />
-                ) : null}
               </article>
             );
           })

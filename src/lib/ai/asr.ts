@@ -1,7 +1,7 @@
 import type { ConversationRequest } from "@/types/conversation";
 import { AppError } from "@/lib/errors";
 import { delay } from "@/lib/latency";
-import { getOpenAIClient } from "./openai";
+import { transcribeVietnameseAudio } from "./aiProvider";
 import { sampleVietnameseByContext } from "./prompts";
 import { containsUnexpectedEastAsianScript } from "./languageValidation";
 import { repairVietnameseChildTranscript } from "./transcriptRepair";
@@ -27,19 +27,8 @@ export async function transcribeVietnamese(input: ConversationRequest) {
   }
 
   if (input.audioFile) {
-    const client = getOpenAIClient();
-    const model = process.env.OPENAI_ASR_MODEL ?? "gpt-4o-mini-transcribe";
-    const transcription = await client.audio.transcriptions.create({
-      file: input.audioFile,
-      model,
-      language: "vi",
-      prompt:
-        "Vietnamese child speaking short everyday phrases for English practice.",
-    }, {
-      timeout: 15_000,
-    });
-
-    const vietnameseText = transcription.text.trim();
+    const transcription = await transcribeVietnameseAudio(input.audioFile);
+    const vietnameseText = transcription.text;
 
     if (!vietnameseText) {
       throw new AppError(

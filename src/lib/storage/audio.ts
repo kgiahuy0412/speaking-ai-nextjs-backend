@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { access, mkdir, rename, rm, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import {
   BlobNotFoundError,
@@ -14,6 +14,7 @@ import {
 
 const AUDIO_PUBLIC_DIR = "generated-audio";
 const immutableCacheSeconds = 31_536_000;
+const safeGeneratedAudioFileName = /^[a-z0-9][a-z0-9._-]{0,254}$/i;
 
 export type ReusableAudioDescriptor = {
   text: string;
@@ -137,6 +138,32 @@ export async function saveGeneratedAudio(
   await writeFile(outputPath, Buffer.from(audio));
 
   return relativeUrl;
+}
+
+export async function readGeneratedAudioFile(fileName: string) {
+  if (
+    !safeGeneratedAudioFileName.test(fileName) ||
+    path.basename(fileName) !== fileName
+  ) {
+    return null;
+  }
+
+  const outputPath = path.join(
+    process.cwd(),
+    "public",
+    AUDIO_PUBLIC_DIR,
+    fileName,
+  );
+
+  try {
+    return await readFile(outputPath);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return null;
+    }
+
+    throw error;
+  }
 }
 
 export async function getReusableAudioUrl(

@@ -8,7 +8,7 @@ import {
   writeFile,
 } from "node:fs/promises";
 import path from "node:path";
-import type { DeviceProfile } from "@/types/admin";
+import type { AndroidDeviceHardware, DeviceProfile } from "@/types/admin";
 import { isPostgresStorageEnabled } from "@/lib/db";
 import { getRecord, listRecords, putRecord } from "@/lib/db/records";
 
@@ -153,6 +153,58 @@ export async function upsertDeviceProfile(
       childName: childName || undefined,
       updatedAt: now,
     };
+
+    profiles[clientId] = profile;
+    await writeProfileFile(profiles);
+    return profile;
+  });
+}
+
+function registeredDeviceProfile(
+  clientId: string,
+  existing: DeviceProfile | undefined,
+  hardware: Omit<AndroidDeviceHardware, "reportedAt">,
+) {
+  const now = new Date().toISOString();
+  const profile = existing ?? createDefaultDeviceProfile(clientId);
+  const reportedDeviceName = `${hardware.manufacturer} ${hardware.model}`.trim();
+
+  return {
+    ...profile,
+    deviceName: existing?.deviceName || reportedDeviceName,
+    hardware: {
+      ...hardware,
+      reportedAt: now,
+    },
+    updatedAt: now,
+  } satisfies DeviceProfile;
+}
+
+export async function registerDeviceHardware(
+  clientId: string,
+  hardware: Omit<AndroidDeviceHardware, "reportedAt">,
+) {
+  if (isPostgresStorageEnabled()) {
+    const stored = await getRecord<DeviceProfile>(profileNamespace, clientId);
+    const profile = registeredDeviceProfile(clientId, stored?.value, hardware);
+
+    await putRecord({
+      namespace: profileNamespace,
+      key: clientId,
+      clientId,
+      createdAt: profile.createdAt,
+      value: profile,
+    });
+    return profile;
+  }
+
+  return enqueueMutation(async () => {
+    const profiles = { ...(await readProfileFile()) };
+    const profile = registeredDeviceProfile(
+      clientId,
+      profiles[clientId],
+      hardware,
+    );
 
     profiles[clientId] = profile;
     await writeProfileFile(profiles);

@@ -1,4 +1,6 @@
 import { saveReusableAudio } from "@/lib/storage/audio";
+import { AppError, toErrorResponse } from "@/lib/errors";
+import { requestEnglishSpeech } from "@/lib/ai/aiProvider";
 import {
   getEnglishAudioCacheUrl,
   getTtsProfile,
@@ -42,84 +44,27 @@ export async function GET(request: Request) {
     }), requestId);
   }
 
-  const apiKey = process.env.OPENAI_API_KEY;
-
-  if (!apiKey) {
-    return Response.json(
-      {
-        error: {
-          code: "TTS_FAILED",
-          message: "Backend chưa được cấu hình dịch vụ phát âm.",
-          requestId,
-        },
-      },
-      { status: 503 },
-    );
-  }
-
-  const configuredTimeoutMs = Number(process.env.OPENAI_TTS_TIMEOUT_MS ?? 12000);
-  const timeoutMs =
-    Number.isFinite(configuredTimeoutMs) && configuredTimeoutMs > 0
-      ? configuredTimeoutMs
-      : 12000;
-  let upstream: Response;
   const profile = getTtsProfile();
+  let upstream: Response;
+  let audioSource: "openai_tts" | "cloudflare_tts";
 
   try {
-    upstream = await fetch("https://api.openai.com/v1/audio/speech", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: profile.model,
-        voice: profile.voice,
-        input: text,
-        response_format: "mp3",
-        speed: profile.speed,
-      }),
-      signal: AbortSignal.timeout(timeoutMs),
-    });
+    const speech = await requestEnglishSpeech(text, profile);
+    upstream = speech.response;
+    audioSource = speech.source;
   } catch (error) {
     logEvent("error", "tts_stream_request_failed", {
       requestId,
-      timeoutMs,
       error,
     });
-    return withRequestId(Response.json(
-      {
-        error: {
-          code: "TTS_FAILED",
-          message: "Dịch vụ phát âm phản hồi quá chậm.",
-          requestId,
-        },
-      },
-      { status: 504 },
-    ), requestId);
+    const responseError =
+      error instanceof AppError
+        ? error
+        : new AppError("TTS_FAILED", "Không thể truyền luồng âm thanh.", 502);
+    return withRequestId(toErrorResponse(responseError, requestId), requestId);
   }
 
-  if (!upstream.ok || !upstream.body) {
-    const detail = await upstream.text().catch(() => "");
-    logEvent("error", "tts_stream_failed", {
-      requestId,
-      status: upstream.status,
-      detail: detail.slice(0, 300),
-    });
-
-    return withRequestId(Response.json(
-      {
-        error: {
-          code: "TTS_FAILED",
-          message: "Không thể truyền luồng âm thanh.",
-          requestId,
-        },
-      },
-      { status: 502 },
-    ), requestId);
-  }
-
-  const reader = upstream.body.getReader();
+  const reader = upstream.body!.getReader();
   const audioChunks: Uint8Array[] = [];
   const stream = new ReadableStream<Uint8Array>({
     async pull(controller) {
@@ -159,7 +104,7 @@ export async function GET(request: Request) {
     headers: {
       "Content-Type": "audio/mpeg",
       "Cache-Control": "no-store",
-      "X-Audio-Source": "openai_tts",
+      "X-Audio-Source": audioSource,
     },
   }), requestId);
 }

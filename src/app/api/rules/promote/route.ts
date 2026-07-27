@@ -41,7 +41,11 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!["openai", "text_cache"].includes(conversation.textSource)) {
+  if (
+    !["openai", "cloudflare", "text_cache"].includes(
+      conversation.textSource,
+    )
+  ) {
     return Response.json(
       {
         error: {

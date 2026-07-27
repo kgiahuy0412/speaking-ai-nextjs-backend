@@ -87,6 +87,26 @@ function validateFormData(formData: FormData): ConversationRequest {
   };
 }
 
+async function parseFormData(request: Request) {
+  try {
+    return await request.formData();
+  } catch {
+    throw new AppError(
+      "BAD_REQUEST",
+      "Dữ liệu multipart/form-data không hợp lệ.",
+      400,
+    );
+  }
+}
+
+async function parseJson(request: Request) {
+  try {
+    return await request.json();
+  } catch {
+    throw new AppError("BAD_REQUEST", "Nội dung JSON không hợp lệ.", 400);
+  }
+}
+
 export async function POST(request: Request) {
   const requestId = getRequestId(request);
 
@@ -94,8 +114,8 @@ export async function POST(request: Request) {
     const contentType = request.headers.get("content-type") ?? "";
     const isMultipart = contentType.includes("multipart/form-data");
     const input = isMultipart
-      ? validateFormData(await request.formData())
-      : validateRequest(await request.json());
+      ? validateFormData(await parseFormData(request))
+      : validateRequest(await parseJson(request));
     const result = await runConversationPipeline({ ...input, requestId });
     await appendConversationHistory(
       result,

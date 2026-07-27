@@ -1,5 +1,6 @@
 import { neon, type NeonQueryFunction } from "@neondatabase/serverless";
 import { managedStorageSchemaStatements } from "@/lib/db/schema";
+import { getPersistenceBackend } from "@/lib/storage/config";
 
 type DatabaseRow = Record<string, unknown>;
 
@@ -7,7 +8,7 @@ let databaseClient: NeonQueryFunction<false, false> | null = null;
 let schemaPromise: Promise<void> | null = null;
 
 export function isPostgresStorageEnabled() {
-  return process.env.PERSISTENCE_BACKEND?.trim().toLowerCase() === "postgres";
+  return getPersistenceBackend() === "postgres";
 }
 
 function getDatabaseUrl() {

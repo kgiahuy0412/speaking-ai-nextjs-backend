@@ -4,7 +4,7 @@ import type {
   ConversationAiReview,
   ConversationHistoryEntry,
 } from "@/types/conversation";
-import { getOpenAIClient } from "./openai";
+import { generateAiText } from "./aiProvider";
 
 type RawReview = {
   verdict?: unknown;
@@ -14,14 +14,6 @@ type RawReview = {
 };
 
 const validVerdicts = new Set(["approved", "rejected", "needs_review"]);
-
-function reviewModel() {
-  return (
-    process.env.OPENAI_REVIEW_MODEL ??
-    process.env.OPENAI_FAST_TEXT_MODEL ??
-    "gpt-4o-mini"
-  );
-}
 
 function parseJsonOutput(value: string) {
   const cleaned = value
@@ -62,10 +54,7 @@ function normalizeReview(raw: RawReview, model: string): ConversationAiReview {
 export async function evaluateConversationQuality(
   conversation: ConversationHistoryEntry,
 ) {
-  const client = getOpenAIClient();
-  const model = reviewModel();
-  const response = await client.responses.create({
-    model,
+  const response = await generateAiText({
     instructions:
       "Bạn là người kiểm duyệt bản dịch cho trẻ em. Đánh giá câu tiếng Anh có giữ đúng ý câu tiếng Việt trong đúng ngữ cảnh hay không. Không được giả định rằng bản chép lời tiếng Việt khớp hoàn toàn với audio. Trả về JSON thuần, không markdown, gồm verdict là approved, rejected hoặc needs_review; confidence từ 0 đến 1; reason ngắn bằng tiếng Việt; suggestedEnglish là câu tiếng Anh ngắn đã sửa hoặc chuỗi rỗng nếu không cần sửa. Nếu câu tiếng Việt mơ hồ hoặc thiếu ngữ cảnh, chọn needs_review.",
     input: JSON.stringify({
@@ -74,13 +63,17 @@ export async function evaluateConversationQuality(
       englishText: conversation.englishText,
       textSource: conversation.textSource,
     }),
-    max_output_tokens: 180,
+    maxOutputTokens: 256,
+    timeoutMs: 20_000,
   });
-  const review = normalizeReview(parseJsonOutput(response.output_text), model);
+  const review = normalizeReview(
+    parseJsonOutput(response.text),
+    response.model,
+  );
 
   return {
     ...review,
-    inputTokens: response.usage?.input_tokens,
-    outputTokens: response.usage?.output_tokens,
+    inputTokens: response.inputTokens,
+    outputTokens: response.outputTokens,
   } satisfies ConversationAiReview;
 }

@@ -17,7 +17,7 @@ import { removeAiEnglishText } from "./textCache";
 import { synthesizeEnglishAudio } from "./tts";
 
 const repeatPromotionThreshold = 3;
-const promotableTextSources = new Set(["openai", "text_cache"]);
+const promotableTextSources = new Set(["openai", "cloudflare", "text_cache"]);
 const ruleTextSources = new Set([
   "phrase_rule",
   "keyword_rule",
@@ -234,7 +234,9 @@ export async function maybeLearnFromRepeatedUse(
     await updateConversationHistory({
       conversationId: conversation.conversationId,
       learningStatus:
-        conversation.textSource === "openai" ? "cached" : "observing",
+        ["openai", "cloudflare"].includes(conversation.textSource)
+          ? "cached"
+          : "observing",
       learningUseCount: useCount,
     });
 

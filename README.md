@@ -16,6 +16,17 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## AI provider
+
+Copy `.env.example` to `.env.local` and configure either OpenAI or Cloudflare
+Workers AI. When both are configured, OpenAI is used. With Cloudflare, the
+default pipeline is Whisper Large V3 Turbo for Vietnamese speech recognition,
+Qwen3 for Vietnamese-to-English generation, and Aura for English speech.
+
+OpenAI Realtime transcription still requires `OPENAI_API_KEY`. If only
+Cloudflare is configured, the realtime-session endpoint returns a recoverable
+`ASR_FAILED` response so the Flutter client can switch to its batch audio flow.
+
 ## Admin dashboard
 
 Open [http://localhost:3000/admin](http://localhost:3000/admin) to:

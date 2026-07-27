@@ -17,12 +17,14 @@ const textSources: Array<TextSource | "old"> = [
   "semantic_cache",
   "text_cache",
   "openai",
+  "cloudflare",
   "fallback",
   "old",
 ];
 const audioSources: Array<AudioSource | "old"> = [
   "cache",
   "openai_tts",
+  "cloudflare_tts",
   "old",
 ];
 const asrModes: Array<AsrMode | "old"> = [
@@ -346,7 +348,8 @@ export function buildLatencyReport(
     ),
   );
   const aiItems = conversations.filter(
-    (entry) => ["openai", "text_cache"].includes(getTextSource(entry)),
+    (entry) =>
+      ["openai", "cloudflare", "text_cache"].includes(getTextSource(entry)),
   );
   const openAiTextItems = conversations.filter(
     (entry) => getTextSource(entry) === "openai",
