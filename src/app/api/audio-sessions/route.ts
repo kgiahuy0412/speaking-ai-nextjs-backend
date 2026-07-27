@@ -8,6 +8,9 @@ export async function POST(request: Request) {
   return withRequestId(
     Response.json({
       audioSessionId: await createAudioUploadSession(),
+      capabilities: {
+        pcm16WavFinalize: true,
+      },
     }),
     requestId,
   );

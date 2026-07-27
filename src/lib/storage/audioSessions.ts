@@ -55,6 +55,13 @@ export type FinalizeClaim =
   | { state: "in_progress" }
   | { state: "completed"; result: unknown };
 
+export type Pcm16WavMetadata = {
+  sampleRate: number;
+  channelCount: number;
+  bitsPerSample: 16;
+  pcmByteLength: number;
+};
+
 export class AudioUploadError extends Error {
   constructor(
     public readonly code:
@@ -70,6 +77,7 @@ export class AudioUploadError extends Error {
       | "UNSUPPORTED_AUDIO_TYPE"
       | "INVALID_SEQUENCE"
       | "EMPTY_CHUNK"
+      | "INVALID_PCM_METADATA"
       | "IDEMPOTENCY_CONFLICT",
     message: string,
     public readonly status: number,
@@ -131,6 +139,62 @@ function getAudioFilename(mimeType: string) {
   }
 
   return filename;
+}
+
+function validatePcm16WavMetadata(
+  value: Pcm16WavMetadata,
+): Pcm16WavMetadata {
+  const validSampleRate =
+    Number.isInteger(value.sampleRate) &&
+    value.sampleRate >= 8_000 &&
+    value.sampleRate <= 96_000;
+  const validChannelCount =
+    Number.isInteger(value.channelCount) &&
+    value.channelCount >= 1 &&
+    value.channelCount <= 2;
+  const validPcmLength =
+    Number.isInteger(value.pcmByteLength) &&
+    value.pcmByteLength > 0 &&
+    value.pcmByteLength <= getAudioUploadLimits().maxSessionBytes;
+
+  if (
+    !validSampleRate ||
+    !validChannelCount ||
+    value.bitsPerSample !== 16 ||
+    !validPcmLength ||
+    value.pcmByteLength % (value.channelCount * 2) !== 0
+  ) {
+    throw new AudioUploadError(
+      "INVALID_PCM_METADATA",
+      "Thông tin PCM để hoàn tất WAV không hợp lệ.",
+      400,
+    );
+  }
+
+  return value;
+}
+
+function buildPcm16WavHeader(metadata: Pcm16WavMetadata) {
+  const header = Buffer.alloc(44);
+  const bytesPerSample = metadata.bitsPerSample / 8;
+  const byteRate =
+    metadata.sampleRate * metadata.channelCount * bytesPerSample;
+  const blockAlign = metadata.channelCount * bytesPerSample;
+
+  header.write("RIFF", 0, "ascii");
+  header.writeUInt32LE(36 + metadata.pcmByteLength, 4);
+  header.write("WAVE", 8, "ascii");
+  header.write("fmt ", 12, "ascii");
+  header.writeUInt32LE(16, 16);
+  header.writeUInt16LE(1, 20);
+  header.writeUInt16LE(metadata.channelCount, 22);
+  header.writeUInt32LE(metadata.sampleRate, 24);
+  header.writeUInt32LE(byteRate, 28);
+  header.writeUInt16LE(blockAlign, 32);
+  header.writeUInt16LE(metadata.bitsPerSample, 34);
+  header.write("data", 36, "ascii");
+  header.writeUInt32LE(metadata.pcmByteLength, 40);
+  return header;
 }
 
 function hashBuffer(buffer: Buffer) {
@@ -570,9 +634,21 @@ function validateChunkSequence(sequences: number[]) {
 export async function finalizeAudioUploadSession(
   sessionId: string,
   mimeType = "audio/webm",
+  pcm16Wav?: Pcm16WavMetadata,
 ) {
   validateSessionId(sessionId);
   const filename = getAudioFilename(mimeType);
+  const normalizedMimeType = normalizeMimeType(mimeType);
+  const pcmMetadata = pcm16Wav
+    ? validatePcm16WavMetadata(pcm16Wav)
+    : undefined;
+  if (pcmMetadata && normalizedMimeType !== "audio/wav") {
+    throw new AudioUploadError(
+      "INVALID_PCM_METADATA",
+      "Metadata PCM chỉ được dùng với audio/wav.",
+      400,
+    );
+  }
   let buffers: Buffer[];
 
   if (isPostgresStorageEnabled()) {
@@ -620,9 +696,9 @@ export async function finalizeAudioUploadSession(
     );
   }
 
-  const audio = Buffer.concat(buffers);
+  const pcmOrAudio = Buffer.concat(buffers);
 
-  if (audio.byteLength > getAudioUploadLimits().maxSessionBytes) {
+  if (pcmOrAudio.byteLength > getAudioUploadLimits().maxSessionBytes) {
     throw new AudioUploadError(
       "SESSION_TOO_LARGE",
       "Tổng dung lượng audio session vượt quá giới hạn.",
@@ -630,8 +706,27 @@ export async function finalizeAudioUploadSession(
     );
   }
 
+  if (
+    pcmMetadata &&
+    pcmOrAudio.byteLength !== pcmMetadata.pcmByteLength
+  ) {
+    throw new AudioUploadError(
+      "INVALID_PCM_METADATA",
+      "Số byte PCM không khớp dữ liệu đã upload.",
+      409,
+      {
+        expectedBytes: pcmMetadata.pcmByteLength,
+        actualBytes: pcmOrAudio.byteLength,
+      },
+    );
+  }
+
+  const audio = pcmMetadata
+    ? Buffer.concat([buildPcm16WavHeader(pcmMetadata), pcmOrAudio])
+    : pcmOrAudio;
+
   return new File([audio], filename, {
-    type: normalizeMimeType(mimeType),
+    type: normalizedMimeType,
   });
 }
 

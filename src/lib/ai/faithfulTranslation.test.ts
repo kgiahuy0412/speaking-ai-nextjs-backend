@@ -56,6 +56,18 @@ test("reviewed V1 rules match the whole normalized utterance only", () => {
     findReviewedExactRule("Con không muốn mua cái này.")?.english,
     "I don't want to buy this.",
   );
+  assert.equal(
+    findReviewedExactRule("ĐƯỜNG ĐI XA LẮM!!!")?.english,
+    "It's a long way.",
+  );
+  assert.equal(
+    findReviewedExactRule("Con muốn đi sở thú.")?.english,
+    "I want to go to the zoo.",
+  );
+  assert.equal(
+    findReviewedExactRule("Con muốn đi sở thú với mẹ."),
+    null,
+  );
 });
 
 test("exact normalization preserves Vietnamese diacritics and word order", () => {
