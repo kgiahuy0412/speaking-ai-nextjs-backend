@@ -1,9 +1,8 @@
 import { createHash } from "node:crypto";
 import type { PracticeContext } from "@/types/conversation";
 import { nowMs } from "@/lib/latency";
-import { getRuleAudioTexts } from "./phraseRules";
 import { getPromotedRuleAudioTexts } from "./promotedRules";
-import { getSemanticIntentAudioTexts } from "./semanticIntents";
+import { getReviewedExactRuleAudioTexts } from "./exactRules";
 import {
   getEnglishAudioCacheUrl,
   getTtsProfile,
@@ -66,8 +65,7 @@ async function getWarmupTexts(
   const targetContexts = context === "all" ? contexts : [context];
   const textGroups = await Promise.all(
     targetContexts.map(async (targetContext) => [
-      ...getRuleAudioTexts(targetContext),
-      ...getSemanticIntentAudioTexts(targetContext),
+      ...getReviewedExactRuleAudioTexts(),
       ...(await getPromotedRuleAudioTexts(targetContext, clientId)),
     ]),
   );

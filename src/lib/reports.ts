@@ -16,6 +16,7 @@ const textSources: Array<TextSource | "old"> = [
   "promoted_rule",
   "semantic_cache",
   "text_cache",
+  "cloudflare",
   "openai",
   "cloudflare",
   "fallback",
@@ -349,7 +350,9 @@ export function buildLatencyReport(
   );
   const aiItems = conversations.filter(
     (entry) =>
-      ["openai", "cloudflare", "text_cache"].includes(getTextSource(entry)),
+      ["cloudflare", "openai", "text_cache"].includes(
+        getTextSource(entry),
+      ),
   );
   const openAiTextItems = conversations.filter(
     (entry) => getTextSource(entry) === "openai",

@@ -6,8 +6,7 @@ import {
   writeFile,
 } from "node:fs/promises";
 import path from "node:path";
-import type { PracticeContext } from "@/types/conversation";
-import { normalizeVietnamese } from "@/lib/normalize";
+import type { PracticeContext, TextProvider } from "@/types/conversation";
 import { PROMPT_VERSION } from "./prompts";
 import { isPostgresStorageEnabled } from "@/lib/db";
 import {
@@ -16,8 +15,17 @@ import {
   listRecords,
   putRecord,
 } from "@/lib/db/records";
+import { normalizeVietnameseForExactMatch } from "./exactRules";
+import {
+  RULE_VERSION,
+  TEXT_CACHE_VERSION,
+  TRANSLATION_POLICY_VERSION,
+} from "./translationPolicy";
 
 export type AiTextCacheEntry = {
+  cacheVersion: string;
+  translationPolicyVersion: string;
+  ruleVersion: string;
   context: PracticeContext;
   normalizedVietnameseText: string;
   originalVietnameseText: string;
@@ -25,6 +33,10 @@ export type AiTextCacheEntry = {
   clientId?: string;
   childAge: number;
   promptVersion: string;
+  textProvider?: TextProvider;
+  textModel?: string;
+  textFallbackUsed?: boolean;
+  textFallbackReason?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -48,21 +60,11 @@ function getCacheKey(
   clientId?: string,
 ) {
   return [
+    TEXT_CACHE_VERSION,
+    TRANSLATION_POLICY_VERSION,
     PROMPT_VERSION,
+    RULE_VERSION,
     clientId ? `client:${clientId}` : "global",
-    context,
-    `age:${childAge}`,
-    normalizedVietnameseText,
-  ].join("::");
-}
-
-function getLegacyCacheKey(
-  context: PracticeContext,
-  normalizedVietnameseText: string,
-  childAge: number,
-) {
-  return [
-    PROMPT_VERSION,
     context,
     `age:${childAge}`,
     normalizedVietnameseText,
@@ -123,7 +125,8 @@ export async function getCachedAiEnglishText(
   childAge: number,
   clientId?: string,
 ) {
-  const normalizedVietnameseText = normalizeVietnamese(vietnameseText);
+  const normalizedVietnameseText =
+    normalizeVietnameseForExactMatch(vietnameseText);
 
   if (!normalizedVietnameseText) {
     return null;
@@ -140,17 +143,17 @@ export async function getCachedAiEnglishText(
       textCacheNamespace,
       cacheKey,
     );
-    const legacyEntry =
-      !entry && !clientId
-        ? await getRecord<AiTextCacheEntry>(
-            textCacheNamespace,
-            getLegacyCacheKey(context, normalizedVietnameseText, childAge),
-          )
-        : null;
-    const matched = entry?.value ?? legacyEntry?.value;
+    const matched = entry?.value;
 
     return matched
-      ? { englishText: matched.englishText, normalizedVietnameseText }
+      ? {
+          englishText: matched.englishText,
+          normalizedVietnameseText,
+          textProvider: matched.textProvider,
+          textModel: matched.textModel,
+          textFallbackUsed: matched.textFallbackUsed,
+          textFallbackReason: matched.textFallbackReason,
+        }
       : null;
   }
 
@@ -159,18 +162,16 @@ export async function getCachedAiEnglishText(
   const entry =
     cache[
       getCacheKey(context, normalizedVietnameseText, childAge, clientId)
-    ] ??
-    (!clientId
-      ? cache[
-          getLegacyCacheKey(context, normalizedVietnameseText, childAge)
-        ]
-      : null) ??
-    null;
+    ] ?? null;
 
   return entry
     ? {
         englishText: entry.englishText,
         normalizedVietnameseText,
+        textProvider: entry.textProvider,
+        textModel: entry.textModel,
+        textFallbackUsed: entry.textFallbackUsed,
+        textFallbackReason: entry.textFallbackReason,
       }
     : null;
 }
@@ -181,8 +182,15 @@ export async function saveAiEnglishText(
   childAge: number,
   englishText: string,
   clientId?: string,
+  providerMetadata: {
+    textProvider?: TextProvider;
+    textModel?: string;
+    textFallbackUsed?: boolean;
+    textFallbackReason?: string;
+  } = {},
 ) {
-  const normalizedVietnameseText = normalizeVietnamese(vietnameseText);
+  const normalizedVietnameseText =
+    normalizeVietnameseForExactMatch(vietnameseText);
 
   if (!normalizedVietnameseText || !englishText.trim()) {
     return;
@@ -201,6 +209,9 @@ export async function saveAiEnglishText(
     );
     const now = new Date().toISOString();
     const entry: AiTextCacheEntry = {
+      cacheVersion: TEXT_CACHE_VERSION,
+      translationPolicyVersion: TRANSLATION_POLICY_VERSION,
+      ruleVersion: RULE_VERSION,
       context,
       normalizedVietnameseText,
       originalVietnameseText: vietnameseText,
@@ -208,6 +219,7 @@ export async function saveAiEnglishText(
       clientId,
       childAge,
       promptVersion: PROMPT_VERSION,
+      ...providerMetadata,
       createdAt: existing?.value.createdAt ?? now,
       updatedAt: now,
     };
@@ -233,6 +245,9 @@ export async function saveAiEnglishText(
     const now = new Date().toISOString();
 
     cache[key] = {
+      cacheVersion: TEXT_CACHE_VERSION,
+      translationPolicyVersion: TRANSLATION_POLICY_VERSION,
+      ruleVersion: RULE_VERSION,
       context,
       normalizedVietnameseText,
       originalVietnameseText: vietnameseText,
@@ -240,6 +255,7 @@ export async function saveAiEnglishText(
       clientId,
       childAge,
       promptVersion: PROMPT_VERSION,
+      ...providerMetadata,
       createdAt: cache[key]?.createdAt ?? now,
       updatedAt: now,
     };
@@ -253,7 +269,8 @@ export async function removeAiEnglishText(
   context: PracticeContext,
   clientId?: string,
 ) {
-  const normalizedVietnameseText = normalizeVietnamese(vietnameseText);
+  const normalizedVietnameseText =
+    normalizeVietnameseForExactMatch(vietnameseText);
 
   if (!normalizedVietnameseText) {
     return 0;
