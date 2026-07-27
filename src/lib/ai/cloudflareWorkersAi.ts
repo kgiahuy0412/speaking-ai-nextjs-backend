@@ -1,6 +1,7 @@
 import { AppError } from "@/lib/errors";
 import {
   buildCloudflareAudioTranslationBody,
+  buildCloudflareAudioTranscriptionBody,
   type CloudflareWorkersAiEnvelope,
 } from "./cloudflareWorkersAiRequest";
 
@@ -9,6 +10,14 @@ const DEFAULT_TIMEOUT_MS = 30_000;
 
 export type AudioTranslationResult = {
   englishText: string;
+  wordCount?: number;
+  segments?: unknown[];
+  vtt?: string;
+  model: string;
+};
+
+export type AudioTranscriptionResult = {
+  vietnameseText: string;
   wordCount?: number;
   segments?: unknown[];
   vtt?: string;
@@ -112,6 +121,66 @@ export async function translateAudioToEnglish(
 
   return {
     englishText,
+    wordCount:
+      typeof result?.word_count === "number" ? result.word_count : undefined,
+    segments: Array.isArray(result?.segments) ? result.segments : undefined,
+    vtt: typeof result?.vtt === "string" ? result.vtt : undefined,
+    model: config.model,
+  };
+}
+
+export async function transcribeAudioToVietnamese(
+  audio: File,
+): Promise<AudioTranscriptionResult> {
+  const config = getCloudflareAudioTranslationConfig();
+  const body = buildCloudflareAudioTranscriptionBody(
+    await audio.arrayBuffer(),
+    "vi",
+  );
+
+  let response: Response;
+
+  try {
+    response = await fetch(
+      `https://api.cloudflare.com/client/v4/accounts/${encodeURIComponent(config.accountId)}/ai/run/${config.model}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${config.apiToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(config.timeoutMs),
+        cache: "no-store",
+      },
+    );
+  } catch {
+    throw new AppError(
+      "ASR_FAILED",
+      "Không kết nối được Cloudflare Workers AI. Vui lòng thử lại.",
+      502,
+    );
+  }
+
+  const payload = (await response.json().catch(() => null)) as
+    | CloudflareWorkersAiEnvelope
+    | null;
+  const result = payload?.result;
+  const vietnameseText =
+    typeof result?.text === "string" ? result.text.trim() : "";
+
+  if (!response.ok || payload?.success === false || !vietnameseText) {
+    throw new AppError(
+      "ASR_FAILED",
+      response.status === 429
+        ? "Cloudflare Workers AI đang quá tải. Vui lòng thử lại sau."
+        : "Cloudflare Workers AI không nhận diện được đoạn ghi âm này.",
+      response.status === 429 ? 429 : 502,
+    );
+  }
+
+  return {
+    vietnameseText,
     wordCount:
       typeof result?.word_count === "number" ? result.word_count : undefined,
     segments: Array.isArray(result?.segments) ? result.segments : undefined,

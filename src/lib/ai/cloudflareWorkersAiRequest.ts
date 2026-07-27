@@ -23,3 +23,18 @@ export function buildCloudflareAudioTranslationBody(
       "Short everyday speech translated naturally and faithfully into English.",
   } as const;
 }
+
+export function buildCloudflareAudioTranscriptionBody(
+  audio: ArrayBuffer,
+  sourceLanguage: string,
+) {
+  return {
+    audio: Buffer.from(audio).toString("base64"),
+    task: "transcribe",
+    language: sourceLanguage,
+    vad_filter: true,
+    condition_on_previous_text: false,
+    initial_prompt:
+      "Vietnamese child speaking short everyday phrases. Preserve every word, addressee, negation, and question form.",
+  } as const;
+}
