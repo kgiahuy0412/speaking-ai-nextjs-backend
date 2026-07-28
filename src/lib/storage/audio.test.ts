@@ -30,7 +30,12 @@ before(async () => {
 
 after(async () => {
   process.chdir(originalWorkingDirectory);
-  await rm(testRoot, { recursive: true, force: true });
+  await rm(testRoot, {
+    recursive: true,
+    force: true,
+    maxRetries: 5,
+    retryDelay: 100,
+  });
 });
 
 test("reads audio generated after the application build", async () => {

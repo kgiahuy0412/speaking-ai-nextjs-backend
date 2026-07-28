@@ -47,16 +47,23 @@ const validContexts = new Set<PracticeContext>([
 
 export async function POST(request: Request, context: RouteContext) {
   const requestId = getRequestId(request);
+  const startedAt = performance.now();
   const { audioSessionId } = await context.params;
   let requestHash = "";
   let finalizeClaimed = false;
+  let claimMs = 0;
+  let assembleMs = 0;
+  let pipelineMs = 0;
+  let completeMs = 0;
 
   try {
     const rawBody = await request.text();
     requestHash = createHash("sha256").update(rawBody).digest("hex");
     const body = JSON.parse(rawBody) as FinalizeRequest;
 
+    const claimStartedAt = performance.now();
     const claim = await claimAudioSessionFinalize(audioSessionId, requestHash);
+    claimMs = Math.round(performance.now() - claimStartedAt);
 
     if (claim.state === "completed") {
       logEvent("info", "audio_session_finalize_replayed", {
@@ -91,13 +98,16 @@ export async function POST(request: Request, context: RouteContext) {
     let audioFile: File | undefined;
 
     if (!(asrMode === "browser_streaming" && body.sourceText?.trim())) {
+      const assembleStartedAt = performance.now();
       audioFile = await finalizeAudioUploadSession(
         audioSessionId,
         body.mimeType,
         body.pcm16Wav,
       );
+      assembleMs = Math.round(performance.now() - assembleStartedAt);
     }
 
+    const pipelineStartedAt = performance.now();
     const result = await runConversationPipeline(
       {
         requestId,
@@ -113,13 +123,27 @@ export async function POST(request: Request, context: RouteContext) {
       },
       { deferTextCacheWrite: true },
     );
+    pipelineMs = Math.round(performance.now() - pipelineStartedAt);
 
     const responsePayload = { ...result, learning: null };
+    const completeStartedAt = performance.now();
     await completeAudioSessionFinalize(
       audioSessionId,
       requestHash,
       responsePayload,
     );
+    completeMs = Math.round(performance.now() - completeStartedAt);
+    logEvent("info", "audio_session_finalize_completed", {
+      requestId,
+      audioSessionId,
+      timing: {
+        claimMs,
+        assembleMs,
+        pipelineMs,
+        completeMs,
+        totalMs: Math.round(performance.now() - startedAt),
+      },
+    });
     scheduleConversationPostResponseTasks(result, "audio");
     return withRequestId(Response.json(responsePayload), requestId);
   } catch (error) {

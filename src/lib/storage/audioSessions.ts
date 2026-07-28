@@ -432,7 +432,77 @@ export async function saveAudioSessionChunk(
   const limits = getAudioUploadLimits();
 
   if (isPostgresStorageEnabled()) {
-    const session = await getDatabaseSession(sessionId);
+    const rows = await queryDatabase<{
+      status: UploadStatus;
+      expires_at: string | Date;
+      total_bytes: string | number;
+      chunk_count: number;
+      inserted: boolean;
+      existing_sha256: string | null;
+    }>(
+      `WITH target AS (
+         SELECT session_id, status, expires_at, total_bytes, chunk_count
+           FROM audio_upload_sessions
+          WHERE session_id = $1
+          FOR UPDATE
+       ), upserted AS (
+         INSERT INTO audio_upload_chunks
+           (session_id, sequence, sha256, size_bytes, content_base64)
+         SELECT session_id, $2, $3, $4, $7
+           FROM target
+          WHERE status = 'uploading'
+            AND expires_at > NOW()
+            AND (
+              EXISTS (
+                SELECT 1
+                  FROM audio_upload_chunks
+                 WHERE session_id = $1 AND sequence = $2
+              )
+              OR (
+                total_bytes + $4 <= $5
+                AND chunk_count < $6
+              )
+            )
+         ON CONFLICT (session_id, sequence) DO UPDATE
+           SET sha256 = audio_upload_chunks.sha256
+         RETURNING session_id, sha256, (xmax = 0) AS inserted
+       ), updated AS (
+         UPDATE audio_upload_sessions AS sessions
+            SET total_bytes = sessions.total_bytes + $4,
+                chunk_count = sessions.chunk_count + 1,
+                updated_at = NOW()
+           FROM upserted
+          WHERE sessions.session_id = upserted.session_id
+            AND upserted.inserted
+         RETURNING sessions.total_bytes, sessions.chunk_count
+       )
+       SELECT target.status,
+              target.expires_at,
+              COALESCE(
+                (SELECT total_bytes FROM updated),
+                target.total_bytes
+              ) AS total_bytes,
+              COALESCE(
+                (SELECT chunk_count FROM updated),
+                target.chunk_count
+              ) AS chunk_count,
+              COALESCE(
+                (SELECT inserted FROM upserted),
+                FALSE
+              ) AS inserted,
+              (SELECT sha256 FROM upserted) AS existing_sha256
+         FROM target`,
+      [
+        sessionId,
+        sequence,
+        sha256,
+        buffer.byteLength,
+        limits.maxSessionBytes,
+        limits.maxChunks,
+        buffer.toString("base64"),
+      ],
+    );
+    const session = rows[0];
 
     if (!session) {
       throw new AudioUploadError(
@@ -446,58 +516,15 @@ export async function saveAudioSessionChunk(
       expiresAt: new Date(session.expires_at).toISOString(),
     });
 
-    const inserted = await queryDatabase<{ sequence: number }>(
-      `WITH eligible AS (
-         SELECT session_id
-           FROM audio_upload_sessions
-          WHERE session_id = $1
-            AND status = 'uploading'
-            AND expires_at > NOW()
-            AND total_bytes + $4 <= $5
-            AND chunk_count < $6
-       ), inserted AS (
-         INSERT INTO audio_upload_chunks
-           (session_id, sequence, sha256, size_bytes, content_base64)
-         SELECT session_id, $2, $3, $4, $7 FROM eligible
-         ON CONFLICT (session_id, sequence) DO NOTHING
-         RETURNING session_id, sequence
-       ), updated AS (
-         UPDATE audio_upload_sessions AS sessions
-            SET total_bytes = sessions.total_bytes + $4,
-                chunk_count = sessions.chunk_count + 1,
-                updated_at = NOW()
-           FROM inserted
-          WHERE sessions.session_id = inserted.session_id
-         RETURNING sessions.session_id
-       )
-       SELECT sequence FROM inserted`,
-      [
-        sessionId,
-        sequence,
-        sha256,
-        buffer.byteLength,
-        limits.maxSessionBytes,
-        limits.maxChunks,
-        buffer.toString("base64"),
-      ],
-    );
-
-    if (inserted.length > 0) {
-      const updated = await getDatabaseSession(sessionId);
+    if (session.inserted) {
       return {
         duplicate: false,
-        totalBytes: Number(updated?.total_bytes ?? buffer.byteLength),
-        chunkCount: updated?.chunk_count ?? 1,
+        totalBytes: Number(session.total_bytes),
+        chunkCount: session.chunk_count,
       };
     }
 
-    const existing = await queryDatabase<{ sha256: string }>(
-      `SELECT sha256 FROM audio_upload_chunks
-        WHERE session_id = $1 AND sequence = $2`,
-      [sessionId, sequence],
-    );
-
-    if (existing[0]?.sha256 === sha256) {
+    if (session.existing_sha256 === sha256) {
       return {
         duplicate: true,
         totalBytes: Number(session.total_bytes),
@@ -505,7 +532,7 @@ export async function saveAudioSessionChunk(
       };
     }
 
-    if (existing.length > 0) {
+    if (session.existing_sha256) {
       throw new AudioUploadError(
         "CHUNK_CONFLICT",
         "Chunk đã tồn tại nhưng nội dung không giống lần upload trước.",

@@ -32,6 +32,7 @@ export type TtsProfile = {
 export type EnglishSpeechResult = {
   response: Response;
   source: Extract<AudioSource, "openai_tts" | "cloudflare_tts">;
+  profile: TtsProfile;
 };
 
 type CloudflareEnvelope<T> = {
@@ -320,7 +321,7 @@ export async function transcribeVietnameseAudio(audio: File) {
       }),
     },
     "ASR_FAILED",
-    positiveInteger("CLOUDFLARE_ASR_TIMEOUT_MS", 30_000),
+    positiveInteger("CLOUDFLARE_ASR_TIMEOUT_MS", 6_000),
   );
   const payload = (await response.json().catch(() => null)) as
     | CloudflareEnvelope<CloudflareAsrResult>
@@ -342,6 +343,23 @@ export async function transcribeVietnameseAudio(audio: File) {
 }
 
 export function getConfiguredTtsProfile(): TtsProfile {
+  if (
+    process.env.AI_TTS_PRIMARY_PROVIDER?.trim() === "cloudflare" &&
+    isCloudflareWorkersAiConfigured()
+  ) {
+    return {
+      provider: "cloudflare",
+      model: requireModel(
+        process.env.CLOUDFLARE_TTS_MODEL,
+        defaultCloudflareTtsModel,
+        "TTS_FAILED",
+      ),
+      voice: process.env.CLOUDFLARE_TTS_SPEAKER?.trim() || "luna",
+      speed: 1,
+      extension: "mp3",
+    };
+  }
+
   if (isOpenAIConfigured()) {
     const configuredSpeed = Number(process.env.OPENAI_TTS_SPEED ?? 0.9);
     return {
@@ -379,7 +397,27 @@ export function getConfiguredTtsProfile(): TtsProfile {
   );
 }
 
-export async function requestEnglishSpeech(
+export function getTtsFallbackProfile(profile: TtsProfile) {
+  if (profile.provider !== "cloudflare" || !isOpenAIConfigured()) {
+    return null;
+  }
+
+  const configuredSpeed = Number(process.env.OPENAI_TTS_SPEED ?? 0.9);
+  return {
+    provider: "openai" as const,
+    model: process.env.OPENAI_TTS_MODEL?.trim() || "tts-1",
+    voice: process.env.OPENAI_TTS_VOICE?.trim() || "alloy",
+    speed:
+      Number.isFinite(configuredSpeed) &&
+      configuredSpeed >= 0.25 &&
+      configuredSpeed <= 4
+        ? configuredSpeed
+        : 0.9,
+    extension: "mp3" as const,
+  };
+}
+
+async function requestEnglishSpeechFromProvider(
   text: string,
   profile: TtsProfile,
 ): Promise<EnglishSpeechResult> {
@@ -443,8 +481,26 @@ export async function requestEnglishSpeech(
 
   return {
     response,
+    profile,
     source: (profile.provider === "openai"
       ? "openai_tts"
       : "cloudflare_tts") satisfies AudioSource,
   };
+}
+
+export async function requestEnglishSpeech(
+  text: string,
+  profile: TtsProfile,
+): Promise<EnglishSpeechResult> {
+  try {
+    return await requestEnglishSpeechFromProvider(text, profile);
+  } catch (error) {
+    const fallbackProfile = getTtsFallbackProfile(profile);
+
+    if (!fallbackProfile) {
+      throw error;
+    }
+
+    return requestEnglishSpeechFromProvider(text, fallbackProfile);
+  }
 }

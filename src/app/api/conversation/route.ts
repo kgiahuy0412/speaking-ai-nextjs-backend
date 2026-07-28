@@ -53,6 +53,23 @@ function getFormValue(formData: FormData, key: string) {
   return typeof value === "string" ? value : undefined;
 }
 
+function getFormBenchmark(formData: FormData) {
+  const value = getFormValue(formData, "benchmark");
+
+  if (!value) {
+    return undefined;
+  }
+
+  try {
+    const parsed = JSON.parse(value) as unknown;
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+      ? (parsed as ConversationRequest["benchmark"])
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 function validateFormData(formData: FormData): ConversationRequest {
   const context = getFormValue(formData, "context");
   const audioFile = formData.get("audio");
@@ -83,6 +100,7 @@ function validateFormData(formData: FormData): ConversationRequest {
     sourceText,
     audioFile: audioFile instanceof File ? audioFile : undefined,
     asrMode: audioFile instanceof File ? "batch_chunks" : "text",
+    benchmark: getFormBenchmark(formData),
   };
 }
 

@@ -6,7 +6,7 @@ import {
 } from "./cloudflareWorkersAiRequest";
 
 const DEFAULT_MODEL = "@cf/openai/whisper-large-v3-turbo";
-const DEFAULT_TIMEOUT_MS = 30_000;
+const DEFAULT_TIMEOUT_MS = 6_000;
 
 export type AudioTranslationResult = {
   englishText: string;

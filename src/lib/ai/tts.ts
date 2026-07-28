@@ -2,6 +2,7 @@ import { getReusableAudioUrl, saveReusableAudio } from "@/lib/storage/audio";
 import type { AudioSource } from "@/types/conversation";
 import {
   getConfiguredTtsProfile,
+  getTtsFallbackProfile,
   requestEnglishSpeech,
   type TtsProfile,
 } from "./aiProvider";
@@ -15,6 +16,16 @@ const inFlightSynthesis = new Map<
   string,
   Promise<AudioSynthesisResult>
 >();
+
+const ttsGlobal = globalThis as typeof globalThis & {
+  __aiSpeakingAudioMissTokens?: Map<
+    string,
+    { normalizedText: string; expiresAt: number }
+  >;
+};
+const audioMissTokens =
+  ttsGlobal.__aiSpeakingAudioMissTokens ??=
+    new Map<string, { normalizedText: string; expiresAt: number }>();
 
 export function getTtsProfile() {
   return getConfiguredTtsProfile();
@@ -45,9 +56,54 @@ export function getEnglishAudioStreamUrl(englishText: string) {
   return `/api/audio/stream?text=${encodeURIComponent(englishText)}`;
 }
 
+function getKnownMissAudioStreamUrl(englishText: string) {
+  const now = Date.now();
+  for (const [token, entry] of audioMissTokens) {
+    if (entry.expiresAt <= now) {
+      audioMissTokens.delete(token);
+    }
+  }
+  const token = crypto.randomUUID();
+  audioMissTokens.set(token, {
+    normalizedText: englishText.trim(),
+    expiresAt: now + 30_000,
+  });
+  return `${getEnglishAudioStreamUrl(englishText)}&missToken=${token}`;
+}
+
+export function consumeKnownAudioCacheMiss(
+  token: string | null,
+  englishText: string,
+) {
+  if (!token) {
+    return false;
+  }
+  const entry = audioMissTokens.get(token);
+  audioMissTokens.delete(token);
+  return Boolean(
+    entry &&
+      entry.expiresAt > Date.now() &&
+      entry.normalizedText === englishText.trim(),
+  );
+}
+
+async function getCachedProfileAudioUrl(
+  englishText: string,
+  profile: TtsProfile,
+) {
+  const fallbackProfile = getTtsFallbackProfile(profile);
+  const [primaryUrl, fallbackUrl] = await Promise.all([
+    getEnglishAudioCacheUrl(englishText, profile),
+    fallbackProfile
+      ? getEnglishAudioCacheUrl(englishText, fallbackProfile)
+      : Promise.resolve(null),
+  ]);
+  return primaryUrl ?? fallbackUrl;
+}
+
 export async function prepareEnglishAudio(englishText: string) {
   const profile = getTtsProfile();
-  const cachedUrl = await getEnglishAudioCacheUrl(englishText, profile);
+  const cachedUrl = await getCachedProfileAudioUrl(englishText, profile);
 
   if (cachedUrl) {
     return {
@@ -57,7 +113,7 @@ export async function prepareEnglishAudio(englishText: string) {
   }
 
   return {
-    audioUrl: getEnglishAudioStreamUrl(englishText),
+    audioUrl: getKnownMissAudioStreamUrl(englishText),
     source:
       profile.provider === "openai" ? "openai_tts" : "cloudflare_tts",
   } satisfies AudioSynthesisResult;
@@ -67,7 +123,7 @@ export async function synthesizeEnglishAudio(
   englishText: string,
 ): Promise<AudioSynthesisResult> {
   const profile = getTtsProfile();
-  const cachedUrl = await getEnglishAudioCacheUrl(englishText, profile);
+  const cachedUrl = await getCachedProfileAudioUrl(englishText, profile);
 
   if (cachedUrl) {
     return {
@@ -89,7 +145,7 @@ export async function synthesizeEnglishAudio(
 
     return {
       audioUrl: await saveReusableAudio(
-        getAudioDescriptor(englishText, profile),
+        getAudioDescriptor(englishText, speech.profile),
         audio,
       ),
       source: speech.source,

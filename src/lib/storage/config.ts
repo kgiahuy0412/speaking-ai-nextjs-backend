@@ -1,5 +1,5 @@
 export type PersistenceBackend = "local" | "postgres";
-export type AudioStorageBackend = "local" | "postgres" | "vercel-blob";
+export type AudioStorageBackend = "local" | "postgres" | "vercel-blob" | "r2";
 
 function positiveInteger(name: string, fallback: number) {
   const parsed = Number(process.env[name]);
@@ -28,7 +28,8 @@ export function getAudioStorageBackend(): AudioStorageBackend {
   if (
     configuredBackend === "local" ||
     configuredBackend === "postgres" ||
-    configuredBackend === "vercel-blob"
+    configuredBackend === "vercel-blob" ||
+    configuredBackend === "r2"
   ) {
     return configuredBackend;
   }
@@ -70,6 +71,35 @@ export function getGeneratedAudioBlobToken() {
   return token;
 }
 
+export function getR2StorageConfig() {
+  const accountId = process.env.CLOUDFLARE_R2_ACCOUNT_ID?.trim();
+  const accessKeyId = process.env.CLOUDFLARE_R2_ACCESS_KEY_ID?.trim();
+  const secretAccessKey = process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY?.trim();
+  const bucket = process.env.CLOUDFLARE_R2_BUCKET?.trim();
+  const publicBaseUrl = process.env.CLOUDFLARE_R2_PUBLIC_BASE_URL?.trim()
+    .replace(/\/+$/, "");
+
+  if (
+    !accountId ||
+    !accessKeyId ||
+    !secretAccessKey ||
+    !bucket ||
+    !publicBaseUrl
+  ) {
+    throw new Error(
+      "AUDIO_STORAGE_BACKEND=r2 nhưng chưa cấu hình đủ CLOUDFLARE_R2_ACCOUNT_ID, CLOUDFLARE_R2_ACCESS_KEY_ID, CLOUDFLARE_R2_SECRET_ACCESS_KEY, CLOUDFLARE_R2_BUCKET và CLOUDFLARE_R2_PUBLIC_BASE_URL.",
+    );
+  }
+
+  return {
+    accountId,
+    accessKeyId,
+    secretAccessKey,
+    bucket,
+    publicBaseUrl,
+  };
+}
+
 export function getStorageConfiguration() {
   const persistenceBackend = getPersistenceBackend();
   const audioStorageBackend = getAudioStorageBackend();
@@ -84,6 +114,13 @@ export function getStorageConfiguration() {
     blobConfigured: Boolean(
       process.env.GENERATED_AUDIO_BLOB_READ_WRITE_TOKEN?.trim() ||
         process.env.BLOB_READ_WRITE_TOKEN?.trim(),
+    ),
+    r2Configured: Boolean(
+      process.env.CLOUDFLARE_R2_ACCOUNT_ID?.trim() &&
+        process.env.CLOUDFLARE_R2_ACCESS_KEY_ID?.trim() &&
+        process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY?.trim() &&
+        process.env.CLOUDFLARE_R2_BUCKET?.trim() &&
+        process.env.CLOUDFLARE_R2_PUBLIC_BASE_URL?.trim(),
     ),
     uploadLimits: getAudioUploadLimits(),
   };

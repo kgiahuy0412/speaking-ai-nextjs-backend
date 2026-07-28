@@ -60,3 +60,9 @@ test("uses PostgreSQL for generated audio when DATABASE_URL is configured", () =
   process.env.AUDIO_STORAGE_BACKEND = "local";
   assert.equal(getAudioStorageBackend(), "local");
 });
+
+test("accepts Cloudflare R2 as an explicit generated-audio backend", () => {
+  process.env.AUDIO_STORAGE_BACKEND = "r2";
+
+  assert.equal(getAudioStorageBackend(), "r2");
+});

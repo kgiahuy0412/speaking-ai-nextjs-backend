@@ -29,7 +29,12 @@ beforeEach(() => {
 
 after(async () => {
   process.chdir(originalWorkingDirectory);
-  await rm(testRoot, { recursive: true, force: true });
+  await rm(testRoot, {
+    recursive: true,
+    force: true,
+    maxRetries: 5,
+    retryDelay: 100,
+  });
 });
 
 test("chunk retry is idempotent and conflicting content is rejected", async () => {
