@@ -2,7 +2,6 @@ import { getReusableAudioUrl, saveReusableAudio } from "@/lib/storage/audio";
 import type { AudioSource } from "@/types/conversation";
 import {
   getConfiguredTtsProfile,
-  getTtsFallbackProfile,
   requestEnglishSpeech,
   type TtsProfile,
 } from "./aiProvider";
@@ -91,14 +90,7 @@ async function getCachedProfileAudioUrl(
   englishText: string,
   profile: TtsProfile,
 ) {
-  const fallbackProfile = getTtsFallbackProfile(profile);
-  const [primaryUrl, fallbackUrl] = await Promise.all([
-    getEnglishAudioCacheUrl(englishText, profile),
-    fallbackProfile
-      ? getEnglishAudioCacheUrl(englishText, fallbackProfile)
-      : Promise.resolve(null),
-  ]);
-  return primaryUrl ?? fallbackUrl;
+  return getEnglishAudioCacheUrl(englishText, profile);
 }
 
 export async function prepareEnglishAudio(englishText: string) {

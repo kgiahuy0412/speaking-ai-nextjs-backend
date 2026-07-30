@@ -18,6 +18,8 @@ const environmentKeys = [
   "CLOUDFLARE_TEXT_MODEL",
   "CLOUDFLARE_TTS_MODEL",
   "CLOUDFLARE_TTS_SPEAKER",
+  "AI_ASR_PRIMARY_PROVIDER",
+  "AI_TEXT_PRIMARY_PROVIDER",
   "AI_TTS_PRIMARY_PROVIDER",
 ] as const;
 const originalEnvironment = Object.fromEntries(
@@ -62,12 +64,14 @@ test("selects Cloudflare profiles when OpenAI is not configured", () => {
   });
 });
 
-test("can prefer Cloudflare TTS while keeping OpenAI configured", () => {
+test("keeps Cloudflare text and TTS primary while OpenAI is configured", () => {
   process.env.OPENAI_API_KEY = "test-openai-key";
   process.env.CLOUDFLARE_ACCOUNT_ID = "test-account";
   process.env.CLOUDFLARE_WORKERS_AI_API_TOKEN = "test-token";
-  process.env.AI_TTS_PRIMARY_PROVIDER = "cloudflare";
+  delete process.env.AI_TEXT_PRIMARY_PROVIDER;
+  delete process.env.AI_TTS_PRIMARY_PROVIDER;
 
+  assert.equal(getTextAiProfile().provider, "cloudflare");
   assert.equal(getConfiguredTtsProfile().provider, "cloudflare");
 });
 
