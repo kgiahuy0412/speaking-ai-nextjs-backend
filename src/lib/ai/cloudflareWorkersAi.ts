@@ -133,6 +133,10 @@ export async function transcribeAudioToVietnamese(
   audio: File,
 ): Promise<AudioTranscriptionResult> {
   const config = getCloudflareAudioTranslationConfig();
+  const timeoutMs = positiveInteger(
+    "CLOUDFLARE_ASR_TIMEOUT_MS",
+    Math.min(config.timeoutMs, 4_000),
+  );
   const body = buildCloudflareAudioTranscriptionBody(
     await audio.arrayBuffer(),
     "vi",
@@ -150,7 +154,7 @@ export async function transcribeAudioToVietnamese(
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
-        signal: AbortSignal.timeout(config.timeoutMs),
+        signal: AbortSignal.timeout(timeoutMs),
         cache: "no-store",
       },
     );

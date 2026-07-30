@@ -33,5 +33,8 @@ test("builds a Cloudflare request for faithful Vietnamese transcription", () => 
   assert.equal(body.language, "vi");
   assert.equal(body.vad_filter, true);
   assert.equal(body.condition_on_previous_text, false);
-  assert.match(body.initial_prompt, /Preserve every word/);
+  assert.equal(body.no_speech_threshold, 0.55);
+  assert.equal(body.compression_ratio_threshold, 2.2);
+  assert.equal(body.log_prob_threshold, -0.8);
+  assert.equal("initial_prompt" in body, false);
 });
