@@ -121,6 +121,25 @@ The Blob store is public because it only contains generated English TTS. The
 child's uploaded voice chunks are transient and are stored in PostgreSQL with a
 short TTL; they are never published as Blob URLs.
 
+Cloudflare R2 is also supported for the immutable shared TTS cache:
+
+```env
+PERSISTENCE_BACKEND=postgres
+DATABASE_URL=postgresql://...
+AUDIO_STORAGE_BACKEND=r2
+CLOUDFLARE_R2_ACCOUNT_ID=...
+CLOUDFLARE_R2_ACCESS_KEY_ID=...
+CLOUDFLARE_R2_SECRET_ACCESS_KEY=...
+CLOUDFLARE_R2_BUCKET=...
+CLOUDFLARE_R2_PUBLIC_BASE_URL=https://audio.example.com
+AUDIO_WARMUP_RULE_LIMIT=200
+```
+
+Warm-up is capped at 300 rules (200 by default). It generates only missing
+audio; all other rules are synthesized once on first use. Streaming TTS uses a
+separate cache-fill response branch, so stopping playback does not cancel the
+durable R2/PostgreSQL write.
+
 Before enabling managed storage, run:
 
 ```bash

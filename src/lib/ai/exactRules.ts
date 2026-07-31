@@ -1,12 +1,27 @@
 import { faithfulTranslationGoldenSet } from "./faithfulTranslationGoldenSet";
+import { reviewedCorpusRulesV1 } from "./corpusRules";
 import { RULE_VERSION } from "./translationPolicy";
 
 export type ExactTranslationRule = {
   id: string;
   vietnamese: string;
   english: string;
+  aliases: readonly string[];
   normalizedVietnamese: string;
   ruleVersion: string;
+};
+
+export type ExactTranslationRuleMatch = {
+  rule: ExactTranslationRule;
+  matchType: "exact" | "alias";
+  matchedVietnamese: string;
+};
+
+type ReviewedRuleSource = {
+  id: string;
+  vietnamese: string;
+  english: string;
+  aliases?: readonly string[];
 };
 
 const reviewedHistoricalCorrections = [
@@ -34,13 +49,14 @@ const reviewedHistoricalCorrections = [
     id: "V1-HIST-005",
     vietnamese: "Con muốn đi sở thú.",
     english: "I want to go to the zoo.",
+    aliases: ["Con muốn đi vườn thú."],
   },
   {
     id: "V1-HIST-006",
     vietnamese: "Con muốn đi thư viện.",
     english: "I want to go to the library.",
   },
-] as const;
+] as const satisfies readonly ReviewedRuleSource[];
 
 /**
  * Exact matching ignores only presentation differences. Vietnamese diacritics,
@@ -48,15 +64,15 @@ const reviewedHistoricalCorrections = [
  */
 export function normalizeVietnameseForExactMatch(text: string) {
   return text
+    .normalize("NFKC")
+    .replace(/\p{Cf}/gu, "")
     .toLocaleLowerCase("vi")
-    .normalize("NFC")
     .replace(/[^\p{L}\p{N}\s]/gu, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
 
-export const reviewedExactRulesV1: ExactTranslationRule[] =
-  [
+const reviewedRuleSources: ReviewedRuleSource[] = [
     ...faithfulTranslationGoldenSet
       .filter((testCase) => testCase.exactRuleEligible)
       .map((testCase) => ({
@@ -65,35 +81,76 @@ export const reviewedExactRulesV1: ExactTranslationRule[] =
         english: testCase.expectedEnglish,
       })),
     ...reviewedHistoricalCorrections,
-  ].map((testCase) => ({
-      id: testCase.id,
-      vietnamese: testCase.vietnamese,
-      english: testCase.english,
-      normalizedVietnamese: normalizeVietnameseForExactMatch(
-        testCase.vietnamese,
-      ),
-      ruleVersion: RULE_VERSION,
-    }));
+    ...reviewedCorpusRulesV1,
+];
 
-const exactRuleByVietnamese = new Map<string, ExactTranslationRule>();
+export const reviewedExactRulesV1: ExactTranslationRule[] =
+  reviewedRuleSources.map((testCase) => ({
+    id: testCase.id,
+    vietnamese: testCase.vietnamese,
+    english: testCase.english,
+    aliases: [...(testCase.aliases ?? [])],
+    normalizedVietnamese: normalizeVietnameseForExactMatch(
+      testCase.vietnamese,
+    ),
+    ruleVersion: RULE_VERSION,
+  }));
 
-for (const rule of reviewedExactRulesV1) {
-  const existing = exactRuleByVietnamese.get(rule.normalizedVietnamese);
+const exactRuleMatchByVietnamese = new Map<
+  string,
+  ExactTranslationRuleMatch
+>();
 
-  if (existing && existing.english !== rule.english) {
+function registerRuleMatch(
+  rule: ExactTranslationRule,
+  vietnamese: string,
+  matchType: ExactTranslationRuleMatch["matchType"],
+) {
+  const normalizedVietnamese = normalizeVietnameseForExactMatch(vietnamese);
+
+  if (!normalizedVietnamese) {
+    throw new Error(`Empty reviewed rule phrase: ${rule.id}`);
+  }
+
+  const existing = exactRuleMatchByVietnamese.get(normalizedVietnamese);
+
+  if (existing && existing.rule.english !== rule.english) {
     throw new Error(
-      `Conflicting reviewed exact rules: ${existing.id} and ${rule.id}`,
+      `Conflicting reviewed exact rules: ${existing.rule.id} and ${rule.id}`,
     );
   }
 
-  exactRuleByVietnamese.set(rule.normalizedVietnamese, rule);
+  // Canonical sentences always win over an alias that happens to normalize to
+  // the same text. Equal-output alias collisions are harmless and deterministic.
+  if (!existing || (existing.matchType === "alias" && matchType === "exact")) {
+    exactRuleMatchByVietnamese.set(normalizedVietnamese, {
+      rule,
+      matchType,
+      matchedVietnamese: vietnamese,
+    });
+  }
+}
+
+for (const rule of reviewedExactRulesV1) {
+  registerRuleMatch(rule, rule.vietnamese, "exact");
+}
+
+for (const rule of reviewedExactRulesV1) {
+  for (const alias of rule.aliases) {
+    registerRuleMatch(rule, alias, "alias");
+  }
+}
+
+export function findReviewedExactRuleMatch(vietnameseText: string) {
+  const normalizedVietnamese = normalizeVietnameseForExactMatch(vietnameseText);
+  return exactRuleMatchByVietnamese.get(normalizedVietnamese) ?? null;
 }
 
 export function findReviewedExactRule(vietnameseText: string) {
-  const normalizedVietnamese = normalizeVietnameseForExactMatch(vietnameseText);
-  return exactRuleByVietnamese.get(normalizedVietnamese) ?? null;
+  return findReviewedExactRuleMatch(vietnameseText)?.rule ?? null;
 }
 
-export function getReviewedExactRuleAudioTexts() {
-  return [...new Set(reviewedExactRulesV1.map((rule) => rule.english))];
+export function getReviewedExactRuleAudioTexts(limit?: number) {
+  const texts = [...new Set(reviewedExactRulesV1.map((rule) => rule.english))];
+  return limit === undefined ? texts : texts.slice(0, Math.max(0, limit));
 }

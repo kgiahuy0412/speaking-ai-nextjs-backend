@@ -35,7 +35,7 @@ function collectOfflineIntents() {
     intents.set(`exact-${rule.id}`, {
       id: `exact-${rule.id}`,
       contexts: new Set(contexts),
-      samples: new Set([rule.vietnamese]),
+      samples: new Set([rule.vietnamese, ...rule.aliases]),
       englishText: rule.english,
     });
   }
@@ -62,9 +62,10 @@ function collectOfflineIntents() {
     }
   }
 
-  return [...intents.values()].sort((left, right) =>
-    left.id.localeCompare(right.id),
-  );
+  // Map insertion order is the priority order: manually reviewed rules first,
+  // then the official corpus, then broader semantic samples. Alphabetical
+  // sorting would let AIV0 IDs evict the hand-reviewed safety rules at a limit.
+  return [...intents.values()];
 }
 
 export async function getOfflineIntentManifest(limit = 40) {

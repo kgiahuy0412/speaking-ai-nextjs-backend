@@ -11,7 +11,7 @@ import { buildEnglishInstruction } from "./prompts";
 import { getPromotedRule } from "./promotedRules";
 import { getCachedAiEnglishText, saveAiEnglishText } from "./textCache";
 import { containsUnexpectedEastAsianScript } from "./languageValidation";
-import { findReviewedExactRule } from "./exactRules";
+import { findReviewedExactRuleMatch } from "./exactRules";
 import { findMissingTranslationRequirements } from "./translationFidelity";
 import {
   CloudflareTextProviderError,
@@ -36,15 +36,15 @@ type ProviderTranslation = {
 };
 
 function getFixedEnglishSentence(vietnameseText: string) {
-  const exactMatch = findReviewedExactRule(vietnameseText);
+  const match = findReviewedExactRuleMatch(vietnameseText);
 
-  if (!exactMatch) {
+  if (!match) {
     return null;
   }
 
   return {
-    englishText: exactMatch.english,
-    matchedRule: `exact:${exactMatch.ruleVersion}:${exactMatch.id}`,
+    englishText: match.rule.english,
+    matchedRule: `${match.matchType}:${match.rule.ruleVersion}:${match.rule.id}`,
     source: "phrase_rule" as const,
   };
 }

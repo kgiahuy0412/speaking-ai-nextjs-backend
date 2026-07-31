@@ -57,18 +57,32 @@ function getCacheKey(
   context: PracticeContext,
   normalizedVietnameseText: string,
   childAge: number,
-  clientId?: string,
+  scope: "global" | `client:${string}` = "global",
 ) {
   return [
     TEXT_CACHE_VERSION,
     TRANSLATION_POLICY_VERSION,
     PROMPT_VERSION,
     RULE_VERSION,
-    clientId ? `client:${clientId}` : "global",
+    scope,
     context,
     `age:${childAge}`,
     normalizedVietnameseText,
   ].join("::");
+}
+
+function getLegacyClientCacheKey(
+  context: PracticeContext,
+  normalizedVietnameseText: string,
+  childAge: number,
+  clientId: string,
+) {
+  return getCacheKey(
+    context,
+    normalizedVietnameseText,
+    childAge,
+    `client:${clientId}`,
+  );
 }
 
 async function readAiTextCache() {
@@ -133,17 +147,31 @@ export async function getCachedAiEnglishText(
   }
 
   if (isPostgresStorageEnabled()) {
-    const cacheKey = getCacheKey(
+    const sharedCacheKey = getCacheKey(
       context,
       normalizedVietnameseText,
       childAge,
-      clientId,
     );
-    const entry = await getRecord<AiTextCacheEntry>(
+    const sharedEntry = await getRecord<AiTextCacheEntry>(
       textCacheNamespace,
-      cacheKey,
+      sharedCacheKey,
     );
-    const matched = entry?.value;
+    // Keep reading the former client-scoped key during migration. Every new
+    // successful translation is written to the shared key below, so devices
+    // converge on one cache without requiring an offline data migration.
+    const legacyEntry =
+      !sharedEntry && clientId
+        ? await getRecord<AiTextCacheEntry>(
+            textCacheNamespace,
+            getLegacyClientCacheKey(
+              context,
+              normalizedVietnameseText,
+              childAge,
+              clientId,
+            ),
+          )
+        : null;
+    const matched = sharedEntry?.value ?? legacyEntry?.value;
 
     return matched
       ? {
@@ -159,10 +187,20 @@ export async function getCachedAiEnglishText(
 
   await textCacheGlobal.__aiSpeakingTextCacheMutationQueue;
   const cache = await readAiTextCache();
+  const sharedEntry =
+    cache[getCacheKey(context, normalizedVietnameseText, childAge)] ?? null;
   const entry =
-    cache[
-      getCacheKey(context, normalizedVietnameseText, childAge, clientId)
-    ] ?? null;
+    sharedEntry ??
+    (clientId
+      ? cache[
+          getLegacyClientCacheKey(
+            context,
+            normalizedVietnameseText,
+            childAge,
+            clientId,
+          )
+        ] ?? null
+      : null);
 
   return entry
     ? {
@@ -181,7 +219,7 @@ export async function saveAiEnglishText(
   context: PracticeContext,
   childAge: number,
   englishText: string,
-  clientId?: string,
+  _clientId?: string,
   providerMetadata: {
     textProvider?: TextProvider;
     textModel?: string;
@@ -201,7 +239,6 @@ export async function saveAiEnglishText(
       context,
       normalizedVietnameseText,
       childAge,
-      clientId,
     );
     const existing = await getRecord<AiTextCacheEntry>(
       textCacheNamespace,
@@ -216,7 +253,6 @@ export async function saveAiEnglishText(
       normalizedVietnameseText,
       originalVietnameseText: vietnameseText,
       englishText: englishText.trim(),
-      clientId,
       childAge,
       promptVersion: PROMPT_VERSION,
       ...providerMetadata,
@@ -227,7 +263,6 @@ export async function saveAiEnglishText(
     await putRecord({
       namespace: textCacheNamespace,
       key,
-      clientId,
       createdAt: entry.createdAt,
       value: entry,
     });
@@ -240,7 +275,6 @@ export async function saveAiEnglishText(
       context,
       normalizedVietnameseText,
       childAge,
-      clientId,
     );
     const now = new Date().toISOString();
 
@@ -252,7 +286,6 @@ export async function saveAiEnglishText(
       normalizedVietnameseText,
       originalVietnameseText: vietnameseText,
       englishText: englishText.trim(),
-      clientId,
       childAge,
       promptVersion: PROMPT_VERSION,
       ...providerMetadata,
@@ -278,14 +311,13 @@ export async function removeAiEnglishText(
 
   if (isPostgresStorageEnabled()) {
     const entries = await listRecords<AiTextCacheEntry>(textCacheNamespace, {
-      ...(clientId === undefined ? {} : { clientId }),
       limit: 100_000,
     });
     const matchingEntries = entries.filter(
       (entry) =>
         entry.context === context &&
         entry.normalizedVietnameseText === normalizedVietnameseText &&
-        entry.clientId === clientId,
+        (entry.clientId === undefined || entry.clientId === clientId),
     );
 
     for (const entry of matchingEntries) {
@@ -295,7 +327,7 @@ export async function removeAiEnglishText(
           entry.context,
           entry.normalizedVietnameseText,
           entry.childAge,
-          entry.clientId,
+          entry.clientId ? `client:${entry.clientId}` : "global",
         ),
         entry.clientId,
       );
@@ -311,7 +343,7 @@ export async function removeAiEnglishText(
         return (
           entry.context === context &&
           entry.normalizedVietnameseText === normalizedVietnameseText &&
-          entry.clientId === clientId
+          (entry.clientId === undefined || entry.clientId === clientId)
         );
       })
       .map(([key]) => key);

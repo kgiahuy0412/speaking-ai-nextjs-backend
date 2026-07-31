@@ -83,6 +83,27 @@ test("returns local cached audio through the CORS-enabled API route", async () =
   );
 });
 
+test("reusable audio keys are shared across devices and whitespace variants", async () => {
+  const { getReusableAudioFileName } = await import("./audio");
+  const baseDescriptor = {
+    model: "test-model",
+    voice: "test-voice",
+    speed: 1,
+    extension: "mp3",
+  };
+
+  assert.equal(
+    getReusableAudioFileName({
+      ...baseDescriptor,
+      text: "I want to   go to the zoo.",
+    }),
+    getReusableAudioFileName({
+      ...baseDescriptor,
+      text: "  I want to go to the zoo.  ",
+    }),
+  );
+});
+
 test("serves cached audio byte ranges required by Safari", async () => {
   const context = {
     params: Promise.resolve({ fileName: "runtime-cache.mp3" }),

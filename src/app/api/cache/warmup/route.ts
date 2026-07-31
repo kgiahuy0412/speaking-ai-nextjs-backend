@@ -23,16 +23,28 @@ export async function POST(request: Request) {
       clientId?: unknown;
       context?: unknown;
       background?: unknown;
+      limit?: unknown;
     };
     const context = body.context;
     const clientId =
       typeof body.clientId === "string" && body.clientId.trim()
         ? body.clientId.trim()
         : undefined;
+    const limit =
+      body.limit === undefined
+        ? undefined
+        : typeof body.limit === "number" && Number.isFinite(body.limit)
+          ? body.limit
+          : NaN;
+
+    if (limit !== undefined && (!Number.isFinite(limit) || limit < 1)) {
+      throw new AppError("BAD_REQUEST", "Giới hạn làm nóng audio không hợp lệ.");
+    }
+
     const warmup = () =>
       context === "all"
-        ? warmAllRuleAudioCaches(clientId)
-        : warmRuleAudioCache(context as PracticeContext, clientId);
+        ? warmAllRuleAudioCaches(clientId, { limit })
+        : warmRuleAudioCache(context as PracticeContext, clientId, { limit });
 
     if (context !== "all" && !isPracticeContext(context)) {
       throw new AppError("BAD_REQUEST", "Vui lòng chọn ngữ cảnh hợp lệ.");
@@ -57,6 +69,8 @@ export async function POST(request: Request) {
             generated: result.generated,
             failed: result.failed,
             reused: result.reused,
+            cacheHitRate: result.cacheHitRate,
+            cacheHitTarget: 0.85,
             fingerprint: result.fingerprint,
             latencyMs: result.latencyMs,
           });

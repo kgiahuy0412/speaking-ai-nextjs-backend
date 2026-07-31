@@ -1,7 +1,8 @@
-import { saveReusableAudio } from "@/lib/storage/audio";
+import { after } from "next/server";
 import { AppError, toErrorResponse } from "@/lib/errors";
 import { requestEnglishSpeech } from "@/lib/ai/aiProvider";
 import {
+  claimEnglishAudioCacheFill,
   consumeKnownAudioCacheMiss,
   getEnglishAudioCacheUrl,
   getTtsProfile,
@@ -13,6 +14,7 @@ import {
 } from "@/lib/observability";
 
 export const runtime = "nodejs";
+export const maxDuration = 60;
 
 export async function GET(request: Request) {
   const requestId = getRequestId(request);
@@ -55,6 +57,34 @@ export async function GET(request: Request) {
   }
 
   const profile = getTtsProfile();
+  const cacheFillClaim = claimEnglishAudioCacheFill(text);
+
+  if (!cacheFillClaim.owner) {
+    try {
+      const result = await cacheFillClaim.completion;
+      logEvent("info", "tts_cache_fill_joined", {
+        requestId,
+        audioUrl: result.audioUrl,
+        latencyMs: Math.round(performance.now() - startedAt),
+      });
+      return withRequestId(new Response(null, {
+        status: 307,
+        headers: {
+          Location: result.audioUrl,
+          "Cache-Control": "no-store",
+          "X-Audio-Source": "cache",
+        },
+      }), requestId);
+    } catch (error) {
+      logEvent("error", "tts_cache_fill_join_failed", { requestId, error });
+      const responseError =
+        error instanceof AppError
+          ? error
+          : new AppError("TTS_FAILED", "Không thể tạo âm thanh.", 502);
+      return withRequestId(toErrorResponse(responseError, requestId), requestId);
+    }
+  }
+
   let upstream: Response;
   let audioSource: "openai_tts" | "cloudflare_tts";
   let speechProfile = profile;
@@ -66,6 +96,7 @@ export async function GET(request: Request) {
     audioSource = speech.source;
     speechProfile = speech.profile;
   } catch (error) {
+    cacheFillClaim.fail(error);
     logEvent("error", "tts_stream_request_failed", {
       requestId,
       error,
@@ -77,8 +108,45 @@ export async function GET(request: Request) {
     return withRequestId(toErrorResponse(responseError, requestId), requestId);
   }
 
+  const cacheFillStartedAt = performance.now();
+  const cacheFill = cacheFillClaim.cacheResponse(
+    {
+      response: upstream,
+      source: audioSource,
+      profile: speechProfile,
+    },
+    true,
+  );
+  logEvent("info", "tts_cache_fill_started", {
+    requestId,
+    provider: speechProfile.provider,
+    model: speechProfile.model,
+    independentFromClient: true,
+  });
+  after(async () => {
+    try {
+      const result = await cacheFill;
+      logEvent("info", "tts_cache_fill_completed", {
+        requestId,
+        provider: speechProfile.provider,
+        model: speechProfile.model,
+        audioUrl: result.audioUrl,
+        byteLength: result.byteLength,
+        independentFromClient: true,
+        latencyMs: Math.round(performance.now() - cacheFillStartedAt),
+      });
+    } catch (error) {
+      logEvent("error", "tts_cache_fill_failed", {
+        requestId,
+        provider: speechProfile.provider,
+        model: speechProfile.model,
+        independentFromClient: true,
+        error,
+      });
+    }
+  });
+
   const reader = upstream.body!.getReader();
-  const audioChunks: Uint8Array[] = [];
   const upstreamHeadersMs = Math.round(performance.now() - upstreamStartedAt);
   let firstChunkLogged = false;
   const stream = new ReadableStream<Uint8Array>({
@@ -88,19 +156,6 @@ export async function GET(request: Request) {
 
         if (done) {
           controller.close();
-          const audio = Buffer.concat(audioChunks);
-          void saveReusableAudio(
-            { text, ...speechProfile },
-            audio.buffer.slice(
-              audio.byteOffset,
-              audio.byteOffset + audio.byteLength,
-            ),
-          ).catch((error) => {
-            logEvent("error", "tts_cache_write_failed", {
-              requestId,
-              error,
-            });
-          });
           return;
         }
 
@@ -115,7 +170,6 @@ export async function GET(request: Request) {
             firstChunkMs: Math.round(performance.now() - startedAt),
           });
         }
-        audioChunks.push(value);
         controller.enqueue(value);
       } catch (error) {
         controller.error(error);
@@ -128,7 +182,7 @@ export async function GET(request: Request) {
 
   return withRequestId(new Response(stream, {
     headers: {
-      "Content-Type": "audio/mpeg",
+      "Content-Type": upstream.headers.get("content-type") ?? "audio/mpeg",
       "Cache-Control": "no-store",
       "X-Audio-Source": audioSource,
       "Server-Timing": `cache;dur=${cacheLookupMs}, tts-headers;dur=${upstreamHeadersMs}`,

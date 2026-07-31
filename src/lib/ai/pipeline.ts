@@ -74,7 +74,10 @@ export async function runConversationPipeline(
     textModel: result.textModel,
     textFallbackUsed: result.textFallbackUsed,
     textFallbackReason: result.textFallbackReason,
+    matchedRule: result.matchedRule,
     audioSource: result.audioSource,
+    audioCacheHit: result.audioSource === "cache",
+    audioCacheHitTarget: 0.85,
     latency: result.latency,
   });
 
