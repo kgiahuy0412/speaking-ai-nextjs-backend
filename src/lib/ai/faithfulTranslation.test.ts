@@ -6,6 +6,7 @@ import {
 } from "./faithfulTranslationGoldenSet";
 import {
   findReviewedExactRule,
+  findReviewedExactRuleMatch,
   normalizeVietnameseForExactMatch,
   reviewedExactRulesV1,
 } from "./exactRules";
@@ -17,6 +18,7 @@ import {
   TRANSLATION_POLICY_VERSION,
 } from "./translationPolicy";
 import { findMissingTranslationRequirements } from "./translationFidelity";
+import { getOfflineIntentManifest } from "./offlineIntentManifest";
 
 test("golden set contains 50 unique faithful-translation cases", () => {
   assert.equal(faithfulTranslationGoldenSet.length, 50);
@@ -56,6 +58,18 @@ test("reviewed V1 rules match the whole normalized utterance only", () => {
     findReviewedExactRule("Con không muốn mua cái này.")?.english,
     "I don't want to buy this.",
   );
+  assert.equal(
+    findReviewedExactRule("ĐƯỜNG ĐI XA LẮM!!!")?.english,
+    "It's a long way.",
+  );
+  assert.equal(
+    findReviewedExactRule("Con muốn đi sở thú.")?.english,
+    "I want to go to the zoo.",
+  );
+  assert.equal(
+    findReviewedExactRule("Con muốn đi sở thú với mẹ."),
+    null,
+  );
 });
 
 test("exact normalization preserves Vietnamese diacritics and word order", () => {
@@ -68,6 +82,25 @@ test("exact normalization preserves Vietnamese diacritics and word order", () =>
     normalizeVietnameseForExactMatch("Con muốn mua cái này."),
   );
   assert.ok(reviewedExactRulesV1.length >= 30);
+});
+
+test("reviewed aliases resolve to the canonical exact rule", () => {
+  const match = findReviewedExactRuleMatch("Con muốn đi vườn thú!");
+
+  assert.equal(match?.matchType, "alias");
+  assert.equal(match?.rule.id, "V1-HIST-005");
+  assert.equal(match?.rule.english, "I want to go to the zoo.");
+  assert.equal(
+    findReviewedExactRule("Con muốn đi sở thú.")?.id,
+    "V1-HIST-005",
+  );
+});
+
+test("exact normalization ignores compatibility and invisible formatting only", () => {
+  assert.equal(
+    normalizeVietnameseForExactMatch("Ｃｏｎ\u200B muốn   đi sở thú!!!"),
+    normalizeVietnameseForExactMatch("Con muốn đi sở thú."),
+  );
 });
 
 test("V1 prompt encodes the release-blocking faithful translation rules", () => {
@@ -154,4 +187,22 @@ test("prompt, rule and text cache use explicit V1 versions", () => {
     ]).size,
     4,
   );
+});
+
+test("device manifest publishes reviewed rules as exact full-sentence samples", async () => {
+  const manifest = await getOfflineIntentManifest(500);
+  const exactRule = manifest.items.find((item) => item.id === "exact-V1-001");
+  const aliasRule = manifest.items.find(
+    (item) => item.id === "exact-V1-HIST-005",
+  );
+
+  assert.ok(exactRule);
+  assert.deepEqual(exactRule.samples, ["Mẹ ơi, con muốn mua cái này."]);
+  assert.equal(exactRule.englishText, "Mom, I want to buy this.");
+  assert.match(exactRule.audioUrl, /^\/api\/audio\/stream\?text=/);
+  assert.ok(aliasRule);
+  assert.deepEqual(aliasRule.samples, [
+    "Con muốn đi sở thú.",
+    "Con muốn đi vườn thú.",
+  ]);
 });

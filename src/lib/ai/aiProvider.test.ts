@@ -18,6 +18,9 @@ const environmentKeys = [
   "CLOUDFLARE_TEXT_MODEL",
   "CLOUDFLARE_TTS_MODEL",
   "CLOUDFLARE_TTS_SPEAKER",
+  "AI_ASR_PRIMARY_PROVIDER",
+  "AI_TEXT_PRIMARY_PROVIDER",
+  "AI_TTS_PRIMARY_PROVIDER",
 ] as const;
 const originalEnvironment = Object.fromEntries(
   environmentKeys.map((key) => [key, process.env[key]]),
@@ -59,6 +62,17 @@ test("selects Cloudflare profiles when OpenAI is not configured", () => {
     speed: 1,
     extension: "mp3",
   });
+});
+
+test("keeps Cloudflare text and TTS primary while OpenAI is configured", () => {
+  process.env.OPENAI_API_KEY = "test-openai-key";
+  process.env.CLOUDFLARE_ACCOUNT_ID = "test-account";
+  process.env.CLOUDFLARE_WORKERS_AI_API_TOKEN = "test-token";
+  delete process.env.AI_TEXT_PRIMARY_PROVIDER;
+  delete process.env.AI_TTS_PRIMARY_PROVIDER;
+
+  assert.equal(getTextAiProfile().provider, "cloudflare");
+  assert.equal(getConfiguredTtsProfile().provider, "cloudflare");
 });
 
 test("generates text through the Cloudflare OpenAI-compatible endpoint", async () => {
@@ -160,6 +174,33 @@ test("requests MP3 speech from Cloudflare", async () => {
     new Uint8Array(await speech.response.arrayBuffer()),
     new Uint8Array([1, 2, 3]),
   );
+});
+
+test("falls back from Cloudflare TTS to OpenAI", async () => {
+  process.env.OPENAI_API_KEY = "test-openai-key";
+  process.env.CLOUDFLARE_ACCOUNT_ID = "test-account";
+  process.env.CLOUDFLARE_WORKERS_AI_API_TOKEN = "test-token";
+  process.env.AI_TTS_PRIMARY_PROVIDER = "cloudflare";
+  const requestedUrls: string[] = [];
+  globalThis.fetch = async (input) => {
+    requestedUrls.push(String(input));
+    if (requestedUrls.length === 1) {
+      return Response.json({ errors: [{ message: "temporary" }] }, { status: 502 });
+    }
+    return new Response(new Uint8Array([4, 5, 6]), {
+      headers: { "Content-Type": "audio/mpeg" },
+    });
+  };
+
+  const speech = await requestEnglishSpeech(
+    "I am thirsty.",
+    getConfiguredTtsProfile(),
+  );
+
+  assert.match(requestedUrls[0], /cloudflare\.com/);
+  assert.equal(requestedUrls[1], "https://api.openai.com/v1/audio/speech");
+  assert.equal(speech.source, "openai_tts");
+  assert.equal(speech.profile.provider, "openai");
 });
 
 test("returns a clear configuration error when no AI provider exists", async () => {

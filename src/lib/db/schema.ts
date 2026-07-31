@@ -67,4 +67,21 @@ export const managedStorageSchemaStatements = [
     ADD COLUMN IF NOT EXISTS size_bytes INTEGER,
     ADD COLUMN IF NOT EXISTS content_base64 TEXT,
     ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`,
+  `CREATE TABLE IF NOT EXISTS generated_audio (
+    file_name TEXT PRIMARY KEY,
+    content_base64 TEXT NOT NULL,
+    content_type TEXT NOT NULL,
+    size_bytes INTEGER NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`,
+  `ALTER TABLE generated_audio
+    ADD COLUMN IF NOT EXISTS file_name TEXT,
+    ADD COLUMN IF NOT EXISTS content_base64 TEXT,
+    ADD COLUMN IF NOT EXISTS content_type TEXT NOT NULL DEFAULT 'audio/mpeg',
+    ADD COLUMN IF NOT EXISTS size_bytes INTEGER NOT NULL DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`,
+  `CREATE INDEX IF NOT EXISTS generated_audio_created_idx
+    ON generated_audio (created_at DESC)`,
 ] as const;

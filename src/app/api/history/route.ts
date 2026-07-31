@@ -104,7 +104,7 @@ export async function PATCH(request: Request) {
     );
   }
 
-  let conversation = await updateConversationHistory({
+  const historyPatch: ConversationHistoryPatch = {
     conversationId: body.conversationId,
     clientId: body.clientId?.trim() || undefined,
     latency: body.latency,
@@ -125,7 +125,21 @@ export async function PATCH(request: Request) {
         : body.reviewedBy,
     reviewNote: body.reviewNote,
     promotedToRule: body.promotedToRule,
-  });
+  };
+  let conversation = await updateConversationHistory(historyPatch);
+
+  // Conversation history is persisted after the main response. Playback can
+  // begin before that background write finishes, especially for cached audio.
+  // Retry only telemetry patches so the UI remains completely non-blocking.
+  if (!conversation && body.latency) {
+    for (const delayMs of [75, 150, 300]) {
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      conversation = await updateConversationHistory(historyPatch);
+      if (conversation) {
+        break;
+      }
+    }
+  }
 
   if (!conversation) {
     return Response.json(

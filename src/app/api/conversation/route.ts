@@ -2,8 +2,7 @@ import type { ConversationRequest } from "@/types/conversation";
 import type { PracticeContext } from "@/types/conversation";
 import { AppError, toErrorResponse } from "@/lib/errors";
 import { runConversationPipeline } from "@/lib/ai/pipeline";
-import { appendConversationHistory } from "@/lib/history";
-import { maybeLearnFromRepeatedUse } from "@/lib/ai/adaptiveLearning";
+import { scheduleConversationPostResponseTasks } from "@/lib/ai/postResponseTasks";
 import {
   getRequestId,
   logEvent,
@@ -54,6 +53,23 @@ function getFormValue(formData: FormData, key: string) {
   return typeof value === "string" ? value : undefined;
 }
 
+function getFormBenchmark(formData: FormData) {
+  const value = getFormValue(formData, "benchmark");
+
+  if (!value) {
+    return undefined;
+  }
+
+  try {
+    const parsed = JSON.parse(value) as unknown;
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+      ? (parsed as ConversationRequest["benchmark"])
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 function validateFormData(formData: FormData): ConversationRequest {
   const context = getFormValue(formData, "context");
   const audioFile = formData.get("audio");
@@ -84,6 +100,7 @@ function validateFormData(formData: FormData): ConversationRequest {
     sourceText,
     audioFile: audioFile instanceof File ? audioFile : undefined,
     asrMode: audioFile instanceof File ? "batch_chunks" : "text",
+    benchmark: getFormBenchmark(formData),
   };
 }
 
@@ -116,8 +133,11 @@ export async function POST(request: Request) {
     const input = isMultipart
       ? validateFormData(await parseFormData(request))
       : validateRequest(await parseJson(request));
-    const result = await runConversationPipeline({ ...input, requestId });
-    await appendConversationHistory(
+    const result = await runConversationPipeline(
+      { ...input, requestId },
+      { deferTextCacheWrite: true },
+    );
+    scheduleConversationPostResponseTasks(
       result,
       isMultipart ||
         input.asrMode === "openai_realtime" ||
@@ -125,9 +145,8 @@ export async function POST(request: Request) {
         ? "audio"
         : "text",
     );
-    const learning = await maybeLearnFromRepeatedUse(result);
 
-    return withRequestId(Response.json({ ...result, learning }), requestId);
+    return withRequestId(Response.json({ ...result, learning: null }), requestId);
   } catch (error) {
     logEvent("warn", "conversation_request_failed", { requestId, error });
     return withRequestId(toErrorResponse(error, requestId), requestId);

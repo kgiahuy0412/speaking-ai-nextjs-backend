@@ -37,8 +37,25 @@ export type AudioWarmupResult = {
   latencyMs: number;
   reused: boolean;
   fingerprint: string;
+  cacheHitRate: number;
   items: AudioWarmupItem[];
 };
+
+export type AudioWarmupOptions = {
+  limit?: number;
+};
+
+const maximumAutomaticWarmupRules = 300;
+
+export function getAudioWarmupRuleLimit(requestedLimit?: number) {
+  const configured = Number(process.env.AUDIO_WARMUP_RULE_LIMIT ?? 200);
+  const fallback = Number.isFinite(configured) ? configured : 200;
+  const candidate = requestedLimit ?? fallback;
+  return Math.min(
+    maximumAutomaticWarmupRules,
+    Math.max(1, Math.round(candidate)),
+  );
+}
 
 function getWarmupConcurrency() {
   const configured = Number(process.env.AUDIO_WARMUP_CONCURRENCY ?? 2);
@@ -61,18 +78,25 @@ function getWarmupSnapshotTtlMs() {
 async function getWarmupTexts(
   context: PracticeContext | "all",
   clientId?: string,
+  requestedLimit?: number,
 ) {
   const targetContexts = context === "all" ? contexts : [context];
-  const textGroups = await Promise.all(
-    targetContexts.map(async (targetContext) => [
-      ...getReviewedExactRuleAudioTexts(),
-      ...(await getPromotedRuleAudioTexts(targetContext, clientId)),
-    ]),
+  const promotedTextGroups = await Promise.all(
+    targetContexts.map((targetContext) =>
+      getPromotedRuleAudioTexts(targetContext, clientId),
+    ),
   );
+  const limit = getAudioWarmupRuleLimit(requestedLimit);
 
-  return [...new Set(textGroups.flat().map((text) => text.trim()))]
-    .filter(Boolean)
-    .sort((left, right) => left.localeCompare(right));
+  // Preserve reviewed order: hand-reviewed rules first, followed by the
+  // official corpus order, then device-specific promoted rules.
+  return [
+    ...new Set(
+      [...getReviewedExactRuleAudioTexts(), ...promotedTextGroups.flat()]
+        .map((text) => text.trim())
+        .filter(Boolean),
+    ),
+  ].slice(0, limit);
 }
 
 function getWarmupFingerprint(texts: string[]) {
@@ -108,6 +132,7 @@ function reuseCompletedWarmup(
     failed: 0,
     latencyMs: 0,
     reused: true,
+    cacheHitRate: 1,
     items: completed.result.items.map((item) => ({
       ...item,
       status: "cached" as const,
@@ -182,6 +207,10 @@ async function warmAudioTexts(
     latencyMs: Math.round(nowMs() - startedAt),
     reused: false,
     fingerprint,
+    cacheHitRate:
+      items.length === 0
+        ? 1
+        : items.filter((item) => item.status === "cached").length / items.length,
     items,
   } satisfies AudioWarmupResult;
 
@@ -199,8 +228,9 @@ async function warmAudioTexts(
 async function warmAudioCache(
   context: PracticeContext | "all",
   clientId?: string,
+  options: AudioWarmupOptions = {},
 ) {
-  const texts = await getWarmupTexts(context, clientId);
+  const texts = await getWarmupTexts(context, clientId, options.limit);
   const fingerprint = getWarmupFingerprint(texts);
   const completed = reuseCompletedWarmup(context, fingerprint);
 
@@ -228,10 +258,14 @@ async function warmAudioCache(
 export function warmRuleAudioCache(
   context: PracticeContext,
   clientId?: string,
+  options?: AudioWarmupOptions,
 ) {
-  return warmAudioCache(context, clientId);
+  return warmAudioCache(context, clientId, options);
 }
 
-export function warmAllRuleAudioCaches(clientId?: string) {
-  return warmAudioCache("all", clientId);
+export function warmAllRuleAudioCaches(
+  clientId?: string,
+  options?: AudioWarmupOptions,
+) {
+  return warmAudioCache("all", clientId, options);
 }

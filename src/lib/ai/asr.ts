@@ -7,16 +7,23 @@ import { transcribeAudioToVietnamese } from "./cloudflareWorkersAi";
 import { sampleVietnameseByContext } from "./prompts";
 import { containsUnexpectedEastAsianScript } from "./languageValidation";
 import { repairVietnameseChildTranscript } from "./transcriptRepair";
+import { getVietnameseTranscriptQualityIssue } from "./transcriptQuality";
 
-function assertVietnameseTranscript(text: string) {
-  if (!containsUnexpectedEastAsianScript(text)) {
-    return;
-  }
+function assertVietnameseTranscript(text: string, segments: unknown[] = []) {
+  const qualityIssue = getVietnameseTranscriptQualityIssue(text, segments);
+  if (!containsUnexpectedEastAsianScript(text) && !qualityIssue) return;
 
   throw new AppError(
     "ASR_LOW_CONFIDENCE",
-    "Nhận diện giọng nói chưa đúng tiếng Việt. Vui lòng nói lại gần micro hơn.",
+    "Nhận diện giọng nói chưa đủ chắc chắn. Vui lòng nói lại gần micro hơn.",
   );
+}
+
+function positiveInteger(name: string, fallback: number) {
+  const parsed = Number(process.env[name]);
+  return Number.isFinite(parsed) && parsed > 0
+    ? Math.floor(parsed)
+    : fallback;
 }
 
 function getPrimaryAsrProvider() {
@@ -38,7 +45,11 @@ async function transcribeWithOpenAI(audioFile: File) {
     },
     { timeout: 15_000 },
   );
-  return { text: transcription.text.trim(), model };
+  return {
+    text: transcription.text.trim(),
+    provider: "openai" as const,
+    model,
+  };
 }
 
 async function transcribeAudio(input: ConversationRequest) {
@@ -47,9 +58,18 @@ async function transcribeAudio(input: ConversationRequest) {
 
   if (primaryProvider === "cloudflare") {
     const startedAt = performance.now();
-    try {
+    const cloudflareTranscription = (async () => {
       const result = await transcribeAudioToVietnamese(audioFile);
-      assertVietnameseTranscript(result.vietnameseText);
+      assertVietnameseTranscript(result.vietnameseText, result.segments);
+      return {
+        text: result.vietnameseText,
+        provider: "cloudflare" as const,
+        model: result.model,
+      };
+    })();
+
+    if (!process.env.OPENAI_API_KEY?.trim()) {
+      const result = await cloudflareTranscription;
       logEvent("info", "asr_provider_latency", {
         requestId: input.requestId,
         provider: "cloudflare",
@@ -57,26 +77,66 @@ async function transcribeAudio(input: ConversationRequest) {
         latencyMs: Math.round(performance.now() - startedAt),
         fallbackUsed: false,
       });
-      return result.vietnameseText;
-    } catch (error) {
-      logEvent("warn", "asr_provider_fallback", {
-        requestId: input.requestId,
-        primaryProvider: "cloudflare",
-        fallbackProvider: "openai",
-        latencyMs: Math.round(performance.now() - startedAt),
-        reason: error instanceof Error ? error.name : "unknown_error",
-      });
+      return result.text;
     }
+
+    let fallbackPromise:
+      | ReturnType<typeof transcribeWithOpenAI>
+      | undefined;
+    let fallbackReason = "slow_primary";
+    const startFallback = () =>
+      (fallbackPromise ??= transcribeWithOpenAI(audioFile));
+    let hedgeTimer: ReturnType<typeof setTimeout> | undefined;
+    const hedgeDelayMs = positiveInteger("ASR_HEDGE_DELAY_MS", 2_500);
+    const delayedFallback = new Promise<
+      Awaited<ReturnType<typeof transcribeWithOpenAI>>
+    >((resolve, reject) => {
+      hedgeTimer = setTimeout(() => {
+        fallbackReason = "slow_primary";
+        void startFallback().then(resolve, reject);
+      }, hedgeDelayMs);
+    });
+    const primaryOrImmediateFallback = cloudflareTranscription.catch(
+      (error) => {
+        fallbackReason =
+          error instanceof AppError && error.code === "ASR_LOW_CONFIDENCE"
+            ? "low_confidence"
+            : error instanceof Error
+              ? error.name
+              : "unknown_error";
+        return startFallback();
+      },
+    );
+
+    const result = await Promise.race([
+      primaryOrImmediateFallback,
+      delayedFallback,
+    ]).finally(() => {
+      if (hedgeTimer) clearTimeout(hedgeTimer);
+    });
+    assertVietnameseTranscript(result.text);
+    const fallbackUsed = result.provider === "openai";
+    logEvent(fallbackUsed ? "warn" : "info", "asr_provider_latency", {
+      requestId: input.requestId,
+      provider: result.provider,
+      model: result.model,
+      latencyMs: Math.round(performance.now() - startedAt),
+      fallbackUsed,
+      fallbackReason: fallbackUsed ? fallbackReason : undefined,
+      hedgeDelayMs,
+    });
+    return result.text;
   }
 
   const startedAt = performance.now();
   const result = await transcribeWithOpenAI(audioFile);
+  assertVietnameseTranscript(result.text);
   logEvent("info", "asr_provider_latency", {
     requestId: input.requestId,
     provider: "openai",
     model: result.model,
     latencyMs: Math.round(performance.now() - startedAt),
-    fallbackUsed: primaryProvider === "cloudflare",
+    fallbackUsed: false,
   });
   return result.text;
 }
@@ -84,6 +144,19 @@ async function transcribeAudio(input: ConversationRequest) {
 export async function transcribeVietnamese(input: ConversationRequest) {
   if (input.sourceText?.trim()) {
     const sourceText = input.sourceText.trim();
+    const confidence = input.benchmark?.asrConfidence;
+    if (
+      input.asrMode === "android_streaming" &&
+      typeof confidence === "number" &&
+      confidence >= 0 &&
+      confidence < 0.2
+    ) {
+      throw new AppError(
+        "ASR_LOW_CONFIDENCE",
+        "Ứng dụng chưa nghe rõ câu nói. Vui lòng nói lại gần micro hơn.",
+      );
+    }
+    assertVietnameseTranscript(sourceText);
     return input.asrMode === "android_streaming" ||
       input.asrMode === "openai_realtime"
       ? repairVietnameseChildTranscript(sourceText)

@@ -1,0 +1,5002 @@
+[
+  {
+    "id": "AIV0-0501",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con muốn ăn một quả chuối.",
+    "english": "I want to eat a banana.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0502",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con muốn rửa tay.",
+    "english": "I want to wash my hands.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0503",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con muốn mặc áo khoác.",
+    "english": "I want to put on my jacket.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0504",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con muốn cất đồ chơi.",
+    "english": "I want to put away my toys.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0505",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con muốn đánh răng.",
+    "english": "I want to brush my teeth.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0506",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con muốn đọc truyện với mẹ.",
+    "english": "I want to read a story with Mom.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0507",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con muốn ngủ trưa.",
+    "english": "I want to take a nap.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0508",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con muốn giúp mẹ lấy khăn.",
+    "english": "I want to help Mom get a towel.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0509",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con muốn gọi cho bố.",
+    "english": "I want to call Dad.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0510",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con muốn ôm mẹ.",
+    "english": "I want to hug Mom.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0511",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con muốn đi tắm.",
+    "english": "I want to take a bath.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0512",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con muốn uống nước ngay.",
+    "english": "I want to drink water now.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0513",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con muốn uống thêm sữa.",
+    "english": "I want some more milk.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0514",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con muốn ăn gì đó.",
+    "english": "I want something to eat.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0515",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con muốn ăn chuối.",
+    "english": "I want to eat a banana.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0516",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con rửa tay trước nhé.",
+    "english": "I'll wash my hands first.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0517",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con muốn mặc áo khoác vì con lạnh.",
+    "english": "I want to put on my jacket because I'm cold.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0518",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con cất đồ chơi rồi.",
+    "english": "I put my toys away.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0519",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con vừa đánh răng xong.",
+    "english": "I've just brushed my teeth.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0520",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mẹ kể chuyện cho con nghe nhé.",
+    "english": "Mom, please tell me a story.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0521",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con muốn đọc quyển sách tranh này.",
+    "english": "I want to read this picture book.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0522",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con muốn ngủ trưa.",
+    "english": "I want to take a nap.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0523",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mẹ ơi, con lấy khăn nhé.",
+    "english": "Mom, I'll get the towel.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0524",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Bố ơi, bố lại đây với con.",
+    "english": "Dad, come here, please.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0525",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con ôm mẹ một cái nhé.",
+    "english": "Let me give you a hug, Mom.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0526",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con tắm xong rồi.",
+    "english": "I've finished my bath.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0527",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con có thể uống nước không?",
+    "english": "Can I drink water?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0528",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Con có thể uống sữa không?",
+    "english": "Can I drink milk?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0529",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Con muốn chơi xích đu.",
+    "english": "I want to play on the swing.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0530",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Con muốn đi cùng mẹ.",
+    "english": "I want to go with Mom.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0531",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Con nhìn thấy con chim kìa.",
+    "english": "I can see a bird.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0532",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mẹ ơi, con mỏi chân.",
+    "english": "Mom, my legs are tired.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0533",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Con muốn đội mũ.",
+    "english": "I want to wear a hat.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0534",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Con muốn uống nước sau khi chơi.",
+    "english": "I want to drink water after playing.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0535",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Con muốn chơi với bạn.",
+    "english": "I want to play with my friend.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0536",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng chơi cầu trượt nhé.",
+    "english": "Let’s play on the slide.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0537",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng chơi xích đu nhé.",
+    "english": "Let’s play on the swing.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0538",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mẹ ơi, mình đi đâu vậy?",
+    "english": "Mom, where are we going?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0539",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng xem con chim nhé.",
+    "english": "Let's look at the bird.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0540",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Con xin phép mượn bút màu.",
+    "english": "May I borrow some crayons?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0541",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Con xin phép đi vệ sinh.",
+    "english": "May I use the toilet?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0542",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Cô ơi, con ngồi ở đây được không ạ?",
+    "english": "Teacher, may I sit here?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0543",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Con xin phép lấy quyển vở.",
+    "english": "May I get my notebook?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0544",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Con xin phép trả lời câu hỏi.",
+    "english": "May I answer the question?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0545",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Con muốn mượn bút màu.",
+    "english": "I want to borrow some crayons.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0546",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Con muốn ngồi gần cô.",
+    "english": "I want to sit near you.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0547",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Con học về màu đỏ.",
+    "english": "Today, I am learning about the color red.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0548",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Con học về màu xanh.",
+    "english": "Today, I am learning about the color blue.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0549",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Con học về hình tròn.",
+    "english": "Today, I am learning about circles.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0550",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Con học về hình vuông.",
+    "english": "Today, I am learning about squares.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0551",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Con học về con mèo.",
+    "english": "Today, I am learning about cats.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0552",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Con học về con chó.",
+    "english": "Today, I am learning about dogs.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0553",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Con học về quả táo.",
+    "english": "Today, I am learning about apples.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0554",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Con học về quả cam.",
+    "english": "Today, I am learning about oranges.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0555",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Con học về số một.",
+    "english": "Today, I am learning about number one.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0556",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Con học về số hai.",
+    "english": "Today, I am learning about number two.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0557",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay trời nắng quá.",
+    "english": "It's very sunny today.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0558",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Con học về ngày sinh nhật.",
+    "english": "Today, I am learning about birthdays.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0559",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Con thích màu đỏ.",
+    "english": "I like red.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0560",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Con thích màu xanh.",
+    "english": "I like blue.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0561",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Quả bóng này tròn.",
+    "english": "This ball is round.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0562",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Đây là hình vuông.",
+    "english": "This is a square.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0563",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Con có thể nói về con mèo.",
+    "english": "I can talk about cats.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0564",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Con có thể nói về con chó.",
+    "english": "I can talk about dogs.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0565",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Con thích ăn táo.",
+    "english": "I like eating apples.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0566",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Con thích ăn cam.",
+    "english": "I like eating oranges.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0567",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Đây là số một.",
+    "english": "This is number one.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0568",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Đây là số hai.",
+    "english": "This is number two.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0569",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Trời nắng, con đội mũ nhé.",
+    "english": "It's sunny, so I'll wear my hat.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0570",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Con có thể nói về ngày sinh nhật.",
+    "english": "I can talk about birthdays.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0571",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn rửa bát.",
+    "english": "I want to wash the dishes.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0572",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn gấp quần áo.",
+    "english": "I want to fold the clothes.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0573",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn chuẩn bị cặp sách.",
+    "english": "I want to pack my school bag.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0574",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình nhắc em mình rửa tay.",
+    "english": "I remind my younger sibling to wash their hands.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0575",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn gọi điện cho ông bà.",
+    "english": "I want to call my grandparents.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0576",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn quét nhà.",
+    "english": "I want to sweep the floor.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0577",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn tưới cây.",
+    "english": "I want to water the plants.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0578",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn cho cá ăn.",
+    "english": "I want to feed the fish.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0579",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn giúp mẹ nấu cơm.",
+    "english": "I want to help Mom cook.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0580",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn dọn bàn.",
+    "english": "I want to clear the table.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0581",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn làm xong bài tập.",
+    "english": "I want to finish my homework.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0582",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn đọc truyện.",
+    "english": "I want to read a story.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0583",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn cất giày.",
+    "english": "I want to put away my shoes.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0584",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn mở cửa sổ.",
+    "english": "I want to open the window.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0585",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn tắt đèn.",
+    "english": "I want to turn off the light.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0586",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ rửa bát.",
+    "english": "At home, I will wash the dishes.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0587",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ gấp quần áo.",
+    "english": "At home, I will fold the clothes.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0588",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ chuẩn bị cặp sách.",
+    "english": "At home, I will pack my school bag.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0589",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em ơi, đi rửa tay nào.",
+    "english": "Come and wash your hands.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0590",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Tối nay em gọi ông bà nhé.",
+    "english": "I'll call my grandparents tonight.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0591",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ quét nhà.",
+    "english": "At home, I will sweep the floor.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0592",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ tưới cây.",
+    "english": "At home, I will water the plants.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0593",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ cho cá ăn.",
+    "english": "At home, I will feed the fish.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0594",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ giúp mẹ nấu cơm.",
+    "english": "At home, I will help Mom cook rice.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0595",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ dọn bàn.",
+    "english": "At home, I will clear the table.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0596",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em làm xong bài tập rồi.",
+    "english": "I've finished my homework.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0597",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ đọc truyện.",
+    "english": "At home, I will read a story.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0598",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ cất giày.",
+    "english": "At home, I will put away my shoes.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0599",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em mở cửa sổ cho thoáng nhé.",
+    "english": "I'll open the window for some fresh air.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0600",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em tắt đèn giúp mẹ nhé.",
+    "english": "I'll turn off the light for Mom.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0601",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Em muốn đi bộ đến công viên.",
+    "english": "I want to walk to the park.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0602",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Em muốn chơi đá bóng.",
+    "english": "I want to play football.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0603",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Em đi xe đạp ở sân thôi.",
+    "english": "I'll ride my bike in the yard.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0604",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Đến lượt mình rồi.",
+    "english": "It's my turn now.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0605",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Em muốn giữ tay mẹ khi qua đường.",
+    "english": "I want to hold Mom’s hand when crossing the road.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0606",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Em bỏ rác vào thùng nhé.",
+    "english": "I'll put the litter in the bin.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0607",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Em muốn mua nước.",
+    "english": "I want to buy water.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0608",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Em muốn chào hàng xóm.",
+    "english": "I want to say hello to the neighbors.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0609",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng đi bộ đến công viên nhé.",
+    "english": "Let’s walk to the park.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0610",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng chơi đá bóng nhé.",
+    "english": "Let’s play football.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0611",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình đi xe đạp quanh sân nhé.",
+    "english": "Let's ride our bikes around the yard.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0612",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Em xin phép mượn bút chì.",
+    "english": "May I borrow a pencil?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0613",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Em xin phép hỏi lại bài học.",
+    "english": "May I ask about the lesson again?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0614",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Em xin phép nộp bài tập.",
+    "english": "May I hand in my homework?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0615",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Em xin phép làm lại bài này.",
+    "english": "May I do this exercise again?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0616",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Em xin phép ngồi cùng bạn.",
+    "english": "May I sit with my friend?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0617",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Em muốn mượn bút chì.",
+    "english": "I want to borrow a pencil.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0618",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Em muốn hỏi lại bài học.",
+    "english": "I want to ask about the lesson again.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0619",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Em muốn nộp bài tập.",
+    "english": "I want to hand in my homework.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0620",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về các thành viên trong gia đình.",
+    "english": "Today, I am learning about family members.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0621",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về đồ dùng học tập.",
+    "english": "Today, I am learning about school supplies.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0622",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về các ngày trong tuần.",
+    "english": "Today, I am learning about the days of the week.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0623",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về các tháng trong năm.",
+    "english": "Today, I am learning about the months of the year.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0624",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về con vật nuôi.",
+    "english": "Today, I am learning about pets.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0625",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về động vật hoang dã.",
+    "english": "Today, I am learning about wild animals.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0626",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về thức ăn lành mạnh.",
+    "english": "Today, I am learning about healthy food.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0627",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về các hoạt động hằng ngày.",
+    "english": "Today, I am learning about daily activities.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0628",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về ngôi nhà của em.",
+    "english": "Today, I am learning about my home.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0629",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về lớp học của em.",
+    "english": "Today, I am learning about my classroom.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0630",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về mùa hè.",
+    "english": "Today, I am learning about summer.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0631",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về ngày Tết.",
+    "english": "Today, I am learning about Tet.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0632",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về các thành viên trong gia đình.",
+    "english": "I can talk about family members.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0633",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về đồ dùng học tập.",
+    "english": "I can talk about school supplies.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0634",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về các ngày trong tuần.",
+    "english": "I can talk about the days of the week.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0635",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về các tháng trong năm.",
+    "english": "I can talk about the months of the year.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0636",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về con vật nuôi.",
+    "english": "I can talk about pets.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0637",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về động vật hoang dã.",
+    "english": "I can talk about wild animals.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0638",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về thức ăn lành mạnh.",
+    "english": "I can talk about healthy food.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0639",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về các hoạt động hằng ngày.",
+    "english": "I can talk about daily activities.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0640",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về ngôi nhà của em.",
+    "english": "I can talk about my home.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0641",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về lớp học của em.",
+    "english": "I can talk about my classroom.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0642",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về mùa hè.",
+    "english": "I can talk about summer.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0643",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về ngày Tết.",
+    "english": "I can talk about Tet.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0644",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em muốn tìm hiểu thêm về các thành viên trong gia đình.",
+    "english": "I want to learn more about family members.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0645",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em muốn tìm hiểu thêm về đồ dùng học tập.",
+    "english": "I want to learn more about school supplies.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0646",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn chuẩn bị quần áo cho ngày mai.",
+    "english": "I want to prepare my clothes for tomorrow.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0647",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn kiểm tra thời khóa biểu.",
+    "english": "I want to check my timetable.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0648",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn giúp em làm bài.",
+    "english": "I want to help my younger sibling with homework.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0649",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn rửa rau.",
+    "english": "I want to wash the vegetables.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0650",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn lấy thư giúp bố mẹ.",
+    "english": "I want to get the mail for my parents.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0651",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn dọn góc học tập.",
+    "english": "I want to tidy my study corner.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0652",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình viết danh sách việc cần làm nhé.",
+    "english": "I'll make a to-do list.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0653",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Cuối tuần mình gọi điện cho ông bà.",
+    "english": "I'll call my grandparents this weekend.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0654",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn làm bữa sáng đơn giản.",
+    "english": "I want to make a simple breakfast.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0655",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn đổ rác.",
+    "english": "I want to take out the trash.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0656",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn sắp xếp sách lên kệ.",
+    "english": "I want to put my books on the shelf.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0657",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn để dành tiền tiêu vặt.",
+    "english": "I want to save my pocket money.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0658",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn chọn một bộ phim cho cả nhà.",
+    "english": "I want to choose a movie for the family.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0659",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Tối nay mình đọc truyện trước khi ngủ.",
+    "english": "I'll read a story before bed tonight.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0660",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn nhắc mọi người đóng cửa.",
+    "english": "I want to remind everyone to close the door.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0661",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mai mình mặc bộ này đi học.",
+    "english": "I'll wear this outfit to school tomorrow.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0662",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mai có môn gì nhỉ?",
+    "english": "What subjects do we have tomorrow?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0663",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ giúp em làm bài.",
+    "english": "At home, I will help my younger sibling with homework.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0664",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ rửa rau.",
+    "english": "At home, I will wash the vegetables.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0665",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ lấy thư giúp bố mẹ.",
+    "english": "At home, I will get the mail for my parents.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0666",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ dọn góc học tập.",
+    "english": "At home, I will tidy my study corner.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0667",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình sẽ ghi lại những việc cần làm.",
+    "english": "I will write down the things I need to do.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0668",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình sẽ hỏi thăm ông bà.",
+    "english": "I will check in on my grandparents.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0669",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ làm bữa sáng đơn giản.",
+    "english": "At home, I will make a simple breakfast.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0670",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ đổ rác.",
+    "english": "At home, I will take out the trash.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0671",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ sắp xếp sách lên kệ.",
+    "english": "At home, I will put my books on the shelf.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0672",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình sẽ để dành tiền tiêu vặt.",
+    "english": "I will save my pocket money.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0673",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Tối nay cả nhà xem phim nhé.",
+    "english": "Let's watch a movie together tonight.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0674",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ đọc sách trước khi ngủ.",
+    "english": "At home, I will read before bed.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0675",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ nhắc mọi người đóng cửa.",
+    "english": "At home, I will remind everyone to close the door.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0676",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình có thể chuẩn bị quần áo cho ngày mai không?",
+    "english": "Can I prepare my clothes for tomorrow?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0677",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình có thể kiểm tra thời khóa biểu không?",
+    "english": "Can I check my timetable?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0678",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn đi xe buýt đến thư viện.",
+    "english": "I want to take the bus to the library.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0679",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn hỏi đường đến công viên.",
+    "english": "I want to ask for directions to the park.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0680",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn mua vé vào bảo tàng.",
+    "english": "I want to buy a ticket to the museum.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0681",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn chụp ảnh cùng gia đình.",
+    "english": "I want to take photos with my family.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0682",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn đi bộ qua vạch dành cho người đi bộ.",
+    "english": "I want to use the crosswalk.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0683",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn tập thể dục ở sân trường.",
+    "english": "I want to exercise in the school yard.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0684",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn tham gia trò chơi ngoài trời.",
+    "english": "I want to join an outdoor game.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0685",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình mang theo chai nước nhé.",
+    "english": "I'll bring my water bottle.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0686",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng đi xe buýt đến thư viện nhé.",
+    "english": "Let’s take the bus to the library.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0687",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng hỏi đường đến công viên nhé.",
+    "english": "Let’s ask for directions to the park.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0688",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng mua vé vào bảo tàng nhé.",
+    "english": "Let’s buy a ticket to the museum.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0689",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng chụp ảnh cùng gia đình nhé.",
+    "english": "Let’s take photos with my family.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0690",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình xin phép mượn tẩy.",
+    "english": "May I borrow an eraser?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0691",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình xin phép hỏi nghĩa của từ mới.",
+    "english": "May I ask what a new word means?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0692",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình xin phép chia sẻ ý kiến.",
+    "english": "May I share my idea?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0693",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình xin phép đổi chỗ ngồi.",
+    "english": "May I change seats?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0694",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình kiểm tra lại bài trước khi nộp nhé.",
+    "english": "I'll check my work before handing it in.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0695",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình muốn mượn tẩy.",
+    "english": "I want to borrow an eraser.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0696",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình muốn hỏi nghĩa của từ mới.",
+    "english": "I want to ask what a new word means.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0697",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình muốn chia sẻ ý kiến.",
+    "english": "I want to share my idea.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0698",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Sau này mình muốn làm bác sĩ.",
+    "english": "I want to be a doctor when I grow up.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0699",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về bản đồ đơn giản.",
+    "english": "Today, I am learning about simple maps.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0700",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về các bộ phận của cơ thể.",
+    "english": "Today, I am learning about parts of the body.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0701",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Đi đường mình phải đội mũ bảo hiểm.",
+    "english": "We should wear helmets on the road.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0702",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay trời âm u quá.",
+    "english": "It's very cloudy today.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0703",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về các loại phương tiện.",
+    "english": "Today, I am learning about types of transport.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0704",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Bữa ăn này có đủ rau, thịt và cơm.",
+    "english": "This meal has vegetables, meat, and rice.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0705",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về các môn học ở trường.",
+    "english": "Today, I am learning about school subjects.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0706",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về cuộc sống ở thành phố.",
+    "english": "Today, I am learning about life in the city.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0707",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về cuộc sống ở nông thôn.",
+    "english": "Today, I am learning about life in the countryside.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0708",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về bảo vệ động vật.",
+    "english": "Today, I am learning about protecting animals.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0709",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Lớp mình sắp đi tham quan rồi.",
+    "english": "Our class is going on a trip soon.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0710",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Bố của bạn Lan làm nghề gì?",
+    "english": "What does Lan's father do?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0711",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về bản đồ đơn giản.",
+    "english": "I can talk about simple maps.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0712",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về các bộ phận của cơ thể.",
+    "english": "I can talk about parts of the body.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0713",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Qua đường phải nhìn xe cẩn thận.",
+    "english": "We should look out for traffic before crossing.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0714",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay mình nói về thời tiết nhé.",
+    "english": "Today, let's talk about the weather.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0715",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về các loại phương tiện.",
+    "english": "I can talk about types of transport.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0716",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Bữa sáng của bạn có gì?",
+    "english": "What do you have for breakfast?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0717",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về các môn học ở trường.",
+    "english": "I can talk about school subjects.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0718",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về cuộc sống ở thành phố.",
+    "english": "I can talk about life in the city.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0719",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về cuộc sống ở nông thôn.",
+    "english": "I can talk about life in the countryside.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0720",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về bảo vệ động vật.",
+    "english": "I can talk about protecting animals.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0721",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Lớp mình đi dã ngoại ở đâu?",
+    "english": "Where is our class going on the trip?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0722",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Lớn lên mình muốn làm đầu bếp.",
+    "english": "I want to be a chef when I grow up.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0723",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về bản đồ đơn giản.",
+    "english": "I want to learn more about simple maps.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0724",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về các bộ phận của cơ thể.",
+    "english": "I want to learn more about parts of the body.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0725",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về an toàn giao thông.",
+    "english": "I want to learn more about road safety.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0726",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình học xong phần này rồi nghỉ nhé.",
+    "english": "I'll take a break after I finish this part.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0727",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn giúp bố mẹ chuẩn bị bữa tối.",
+    "english": "I want to help my parents prepare dinner.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0728",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn giặt khăn của mình.",
+    "english": "I want to wash my own towel.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0729",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn hướng dẫn em dùng máy tính.",
+    "english": "I want to show my younger sibling how to use the computer.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0730",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn so sánh giá trước khi mua.",
+    "english": "I want to compare prices before buying.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0731",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn lên danh sách đồ cần mua.",
+    "english": "I want to make a shopping list.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0732",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn dọn phòng trước cuối tuần.",
+    "english": "I want to clean my room before the weekend.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0733",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn kiểm tra hạn dùng của đồ ăn.",
+    "english": "I want to check the expiry dates on food.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0734",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình gọi điện hỏi thăm dì nhé.",
+    "english": "I'll call Auntie to see how she is.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0735",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn chia việc nhà với mọi người.",
+    "english": "I want to share the chores with everyone.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0736",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn ghi lại chi tiêu nhỏ.",
+    "english": "I want to write down small expenses.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0737",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn giúp em chuẩn bị bài thuyết trình.",
+    "english": "I want to help my younger sibling prepare a presentation.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0738",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn bảo quản sách vở cẩn thận.",
+    "english": "I want to take good care of my books.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0739",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn tắt thiết bị sau khi dùng.",
+    "english": "I want to turn off devices after using them.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0740",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn chuẩn bị đồ cho chuyến đi.",
+    "english": "I want to pack for a trip.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0741",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ lập kế hoạch học bài.",
+    "english": "At home, I will make a study plan.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0742",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ giúp bố mẹ chuẩn bị bữa tối.",
+    "english": "At home, I will help my parents prepare dinner.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0743",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ giặt khăn của mình.",
+    "english": "At home, I will wash my own towel.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0744",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ hướng dẫn em dùng máy tính.",
+    "english": "At home, I will show my younger sibling how to use the computer.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0745",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Cái này đắt quá, mình xem cái khác nhé.",
+    "english": "This is too expensive. Let's look at another one.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0746",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ lên danh sách đồ cần mua.",
+    "english": "At home, I will make a shopping list.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0747",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ dọn phòng trước cuối tuần.",
+    "english": "At home, I will clean my room before the weekend.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0748",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ kiểm tra hạn dùng của đồ ăn.",
+    "english": "At home, I will check the expiry dates on food.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0749",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Tối nay mình gọi cho dì nhé.",
+    "english": "I'll call Auntie tonight.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0750",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ chia việc nhà với mọi người.",
+    "english": "At home, I will share the chores with everyone.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0751",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ ghi lại chi tiêu nhỏ.",
+    "english": "At home, I will write down small expenses.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0752",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ giúp em chuẩn bị bài thuyết trình.",
+    "english": "At home, I will help my younger sibling prepare a presentation.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0753",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ bảo quản sách vở cẩn thận.",
+    "english": "At home, I will take good care of my books.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0754",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ tắt thiết bị sau khi dùng.",
+    "english": "At home, I will turn off devices after using them.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0755",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ chuẩn bị đồ cho chuyến đi.",
+    "english": "At home, I will pack for a trip.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0756",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình lên kế hoạch học bài nhé?",
+    "english": "Shall we make a study plan?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0757",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình có thể giúp bố mẹ chuẩn bị bữa tối không?",
+    "english": "Can I help my parents prepare dinner?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0758",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình có thể giặt khăn của mình không?",
+    "english": "Can I wash my own towel?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0759",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình dạy em mình cách dùng máy tính.",
+    "english": "I teach my younger sibling how to use the computer.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0760",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn đi đến điểm hẹn đúng giờ.",
+    "english": "I want to arrive at the meeting point on time.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0761",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn hỏi giờ xe buýt đến.",
+    "english": "I want to ask when the bus will arrive.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0762",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn tìm khu vực gửi xe.",
+    "english": "I want to find the parking area.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0763",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn mua đồ dùng cần thiết.",
+    "english": "I want to buy the things I need.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0764",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn giữ điện thoại cẩn thận.",
+    "english": "I want to keep my phone safe.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0765",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn đi cùng nhóm bạn.",
+    "english": "I want to go with my group of friends.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0766",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn tham gia hoạt động cộng đồng.",
+    "english": "I want to join a community activity.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0767",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Trời sắp mưa, mình mang ô theo nhé.",
+    "english": "It looks like rain. I'll bring an umbrella.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0768",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng đi đến điểm hẹn đúng giờ nhé.",
+    "english": "Let’s arrive at the meeting point on time.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0769",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng hỏi giờ xe buýt đến nhé.",
+    "english": "Let’s ask when the bus will arrive.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0770",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng tìm khu vực gửi xe nhé.",
+    "english": "Let’s find the parking area.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0771",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình chỉ mua những thứ cần thôi.",
+    "english": "Let's buy only what we need.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0772",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng giữ điện thoại cẩn thận nhé.",
+    "english": "Let's keep the phone safe.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0773",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Cô ơi, em cần thêm chút thời gian.",
+    "english": "Teacher, I need a little more time.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0774",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình xin phép giải thích câu trả lời.",
+    "english": "May I explain my answer?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0775",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình bàn với nhóm trước nhé.",
+    "english": "Let's talk with the group first.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0776",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Nhóm mình nộp bài đúng hạn nhé.",
+    "english": "Our group will hand it in on time.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0777",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình xin phép xem lại ghi chú.",
+    "english": "May I review my notes?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0778",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình muốn xin thêm thời gian làm bài.",
+    "english": "I want to ask for more time to finish my work.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0779",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình muốn giải thích câu trả lời.",
+    "english": "I want to explain my answer.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0780",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình muốn thảo luận với nhóm.",
+    "english": "I want to discuss with my group.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0781",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về hệ Mặt Trời.",
+    "english": "Today, I am learning about the solar system.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0782",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về vòng đời của cây.",
+    "english": "Today, I am learning about the life cycle of a plant.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0783",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về các nguồn năng lượng.",
+    "english": "Today, I am learning about sources of energy.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0784",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về bản sắc văn hóa địa phương.",
+    "english": "Today, I am learning about local cultural identity.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0785",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình nói ngắn gọn thôi nhé.",
+    "english": "I'll keep my presentation short.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0786",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về làm việc nhóm.",
+    "english": "Today, I am learning about teamwork.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0787",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về cách tiết kiệm nước.",
+    "english": "Today, I am learning about ways to save water.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0788",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về môi trường sống.",
+    "english": "Today, I am learning about living environments.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0789",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về một sự kiện ở trường.",
+    "english": "Today, I am learning about a school event.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0790",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về thông tin trên áp phích.",
+    "english": "Today, I am learning about information on a poster.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0791",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về kỹ năng quản lý thời gian.",
+    "english": "Today, I am learning about time-management skills.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0792",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về một câu chuyện lịch sử.",
+    "english": "Today, I am learning about a story from history.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0793",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về hệ Mặt Trời.",
+    "english": "I can talk about the solar system.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0794",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về vòng đời của cây.",
+    "english": "I can talk about the life cycle of a plant.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0795",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về các nguồn năng lượng.",
+    "english": "I can talk about sources of energy.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0796",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về bản sắc văn hóa địa phương.",
+    "english": "I can talk about local cultural identity.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0797",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn luyện nói trước lớp.",
+    "english": "I want to practise speaking in front of the class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0798",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về làm việc nhóm.",
+    "english": "I can talk about teamwork.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0799",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về cách tiết kiệm nước.",
+    "english": "I can talk about ways to save water.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0800",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về môi trường sống.",
+    "english": "I can talk about living environments.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0801",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về một sự kiện ở trường.",
+    "english": "I can talk about a school event.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0802",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về thông tin trên áp phích.",
+    "english": "I can talk about information on a poster.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0803",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về kỹ năng quản lý thời gian.",
+    "english": "I can talk about time-management skills.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0804",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về một câu chuyện lịch sử.",
+    "english": "I can talk about a story from history.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0805",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về hệ Mặt Trời.",
+    "english": "I want to learn more about the solar system.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0806",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về vòng đời của cây.",
+    "english": "I want to learn more about the life cycle of a plant.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0807",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về các nguồn năng lượng.",
+    "english": "I want to learn more about sources of energy.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0808",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về bản sắc văn hóa địa phương.",
+    "english": "I want to learn more about local cultural identity.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0809",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về một bài thuyết trình tốt.",
+    "english": "I want to learn more about a good presentation.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0810",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về làm việc nhóm.",
+    "english": "I want to learn more about teamwork.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0811",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em để điện thoại xuống để học bài.",
+    "english": "I'll put my phone away to study.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0812",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn nấu một món đơn giản.",
+    "english": "I want to cook a simple dish.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0813",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Tối nay nhà mình có ai bận không?",
+    "english": "Is anyone in my family busy tonight?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0814",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn giúp em ôn bài.",
+    "english": "I want to help my younger sibling review lessons.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0815",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn trao đổi với bố mẹ về kế hoạch cuối tuần.",
+    "english": "I want to talk with my parents about the weekend plan.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0816",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn tìm công thức nấu ăn.",
+    "english": "I want to find a recipe.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0817",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Nhà mình cùng chia nhau làm việc nhà nhé.",
+    "english": "Let's share the housework at home.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0818",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn giữ hóa đơn khi mua đồ.",
+    "english": "I want to keep the receipt when shopping.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0819",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn đặt báo thức cho buổi sáng.",
+    "english": "I want to set an alarm for the morning.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0820",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn dọn tủ quần áo.",
+    "english": "I want to organize my wardrobe.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0821",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn nhắc mọi người tiết kiệm điện.",
+    "english": "I want to remind everyone to save electricity.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0822",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn chăm sóc cây trong nhà.",
+    "english": "I want to look after the plants at home.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0823",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn tự chuẩn bị bữa trưa.",
+    "english": "I want to prepare my own lunch.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0824",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn giúp người thân dùng ứng dụng.",
+    "english": "I want to help a relative use an app.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0825",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em muốn lên kế hoạch cho kỳ nghỉ.",
+    "english": "I want to plan for the holiday.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0826",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em học xong rồi mới dùng điện thoại.",
+    "english": "I'll use my phone after I finish studying.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0827",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ nấu một món đơn giản.",
+    "english": "At home, I will cook a simple dish.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0828",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình xem lại lịch trình của gia đình để biết cuối tuần đi đâu chơi.",
+    "english": "I check the family schedule again to see where we are going this weekend.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0829",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ giúp em ôn bài.",
+    "english": "At home, I will help my younger sibling review lessons.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0830",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ trao đổi với bố mẹ về kế hoạch cuối tuần.",
+    "english": "At home, I will talk with my parents about the weekend plan.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0831",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ tìm công thức nấu ăn.",
+    "english": "At home, I will find a recipe.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0832",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình rửa bát, em mình lau bàn.",
+    "english": "I wash the dishes, and my younger sibling wipes the table.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0833",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Khi mua đồ, em sẽ giữ lại hóa đơn.",
+    "english": "When I buy something, I'll keep the receipt.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0834",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ đặt báo thức cho buổi sáng.",
+    "english": "At home, I will set an alarm for the morning.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0835",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ dọn tủ quần áo.",
+    "english": "At home, I will organize my wardrobe.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0836",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ nhắc mọi người tiết kiệm điện.",
+    "english": "At home, I will remind everyone to save electricity.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0837",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ chăm sóc cây trong nhà.",
+    "english": "At home, I will look after the plants at home.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0838",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ tự chuẩn bị bữa trưa.",
+    "english": "At home, I will prepare my own lunch.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0839",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ giúp người thân dùng ứng dụng.",
+    "english": "At home, I will help a relative use an app.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0840",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Em sẽ lên kế hoạch cho kỳ nghỉ.",
+    "english": "At home, I will plan for the holiday.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0841",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em dùng điện thoại sau khi làm bài xong được không?",
+    "english": "Can I use my phone after I finish my homework?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0842",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em có thể nấu một món đơn giản không?",
+    "english": "Can I cook a simple dish?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0843",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Cuối tuần nhà mình có kế hoạch gì không?",
+    "english": "Do we have any plans this weekend?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0844",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em có thể giúp em ôn bài không?",
+    "english": "Can I help my younger sibling review lessons?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0845",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em có thể trao đổi với bố mẹ về kế hoạch cuối tuần không?",
+    "english": "Can I talk with my parents about the weekend plan?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0846",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Em có thể tìm công thức nấu ăn không?",
+    "english": "Can I find a recipe?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0847",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Em muốn hỏi thông tin tại quầy.",
+    "english": "I want to ask for information at the counter.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0848",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Em muốn đi đúng tuyến xe buýt.",
+    "english": "I want to take the right bus route.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0849",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Em muốn hẹn gặp bạn ở thư viện.",
+    "english": "I want to meet my friend at the library.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0850",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Em muốn tham gia câu lạc bộ thể thao.",
+    "english": "I want to join a sports club.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0851",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Em muốn mua đồ theo danh sách.",
+    "english": "I want to buy things from the list.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0852",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Em muốn tìm lối ra gần nhất.",
+    "english": "I want to find the nearest exit.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0853",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Em muốn giữ khoảng cách khi xếp hàng.",
+    "english": "I want to keep my distance in a queue.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0854",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Em có thể giúp bác mang đồ không ạ?",
+    "english": "Can I help you carry that?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0855",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng hỏi thông tin tại quầy nhé.",
+    "english": "Let’s ask for information at the counter.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0856",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình đi xe buýt đến thư viện nhé.",
+    "english": "Let's take the bus to the library.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0857",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình gặp nhau ở thư viện lúc ba giờ nhé.",
+    "english": "Let's meet at the library at three o'clock.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0858",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng tham gia câu lạc bộ thể thao nhé.",
+    "english": "Let’s join a sports club.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0859",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng mua đồ theo danh sách nhé.",
+    "english": "Let’s buy things from the list.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0860",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Em xin phép đặt câu hỏi về bài đọc.",
+    "english": "May I ask a question about the reading?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0861",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Em xin phép đưa ra ví dụ.",
+    "english": "May I give an example?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0862",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Em xin phép xin nhận xét về bài viết.",
+    "english": "May I ask for feedback on my writing?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0863",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Nhóm mình chia việc thế nào?",
+    "english": "How should our group divide the work?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0864",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Em xin phép chọn chủ đề cho dự án.",
+    "english": "May I choose a topic for the project?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0865",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Em muốn đặt câu hỏi về bài đọc.",
+    "english": "I want to ask a question about the reading.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0866",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Em muốn đưa ra ví dụ.",
+    "english": "I want to give an example.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0867",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Em muốn xin nhận xét về bài viết.",
+    "english": "I want to ask for feedback on my writing.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0868",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình làm phần nào trong nhóm?",
+    "english": "Which part should I do in the group?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0869",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Em muốn chọn chủ đề cho dự án.",
+    "english": "I want to choose a topic for the project.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0870",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về biến đổi khí hậu.",
+    "english": "Today, I am learning about climate change.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0871",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về cách kiểm chứng thông tin.",
+    "english": "Today, I am learning about how to check information.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0872",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về một bài tranh biện.",
+    "english": "Today, I am learning about a debate.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0873",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về các quyền và trách nhiệm.",
+    "english": "Today, I am learning about rights and responsibilities.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0874",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về văn hóa giao tiếp.",
+    "english": "Today, I am learning about communication culture.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0875",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về một nghề trong tương lai.",
+    "english": "Today, I am learning about a future career.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0876",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về kỹ năng giải quyết vấn đề.",
+    "english": "Today, I am learning about problem-solving skills.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0877",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về tác động của mạng xã hội.",
+    "english": "Today, I am learning about the impact of social media.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0878",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về một chiến dịch bảo vệ môi trường.",
+    "english": "Today, I am learning about an environmental campaign.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0879",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về cách đọc biểu đồ.",
+    "english": "Today, I am learning about how to read a chart.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0880",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về an toàn trên mạng.",
+    "english": "Today, I am learning about online safety.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0881",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Em học về tình nguyện trong cộng đồng.",
+    "english": "Today, I am learning about community volunteering.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0882",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về biến đổi khí hậu.",
+    "english": "I can talk about climate change.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0883",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về cách kiểm chứng thông tin.",
+    "english": "I can talk about how to check information.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0884",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em không đồng ý vì lý do này.",
+    "english": "I disagree for this reason.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0885",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về các quyền và trách nhiệm.",
+    "english": "I can talk about rights and responsibilities.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0886",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em muốn nói chuyện lịch sự hơn.",
+    "english": "I want to speak more politely.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0887",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về một nghề trong tương lai.",
+    "english": "I can talk about a future career.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0888",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về kỹ năng giải quyết vấn đề.",
+    "english": "I can talk about problem-solving skills.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0889",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về tác động của mạng xã hội.",
+    "english": "I can talk about the impact of social media.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0890",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về một chiến dịch bảo vệ môi trường.",
+    "english": "I can talk about an environmental campaign.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0891",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về cách đọc biểu đồ.",
+    "english": "I can talk about how to read a chart.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0892",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về an toàn trên mạng.",
+    "english": "I can talk about online safety.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0893",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có thể nói về tình nguyện trong cộng đồng.",
+    "english": "I can talk about community volunteering.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0894",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em muốn tìm hiểu thêm về biến đổi khí hậu.",
+    "english": "I want to learn more about climate change.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0895",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em muốn tìm hiểu thêm về cách kiểm chứng thông tin.",
+    "english": "I want to learn more about how to check information.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0896",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em có ý kiến khác về việc này.",
+    "english": "I have a different opinion about this.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0897",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em muốn tìm hiểu thêm về các quyền và trách nhiệm.",
+    "english": "I want to learn more about rights and responsibilities.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0898",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em muốn tìm hiểu thêm về văn hóa giao tiếp.",
+    "english": "I want to learn more about communication culture.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0899",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em muốn tìm hiểu thêm về một nghề trong tương lai.",
+    "english": "I want to learn more about a future career.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0900",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Em muốn tìm hiểu thêm về kỹ năng giải quyết vấn đề.",
+    "english": "I want to learn more about problem-solving skills.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0901",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn trao đổi với bố mẹ về mục tiêu học tập.",
+    "english": "I want to talk with my parents about my study goals.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0902",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn lập ngân sách chi tiêu cá nhân.",
+    "english": "I want to make a personal budget.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0903",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn chuẩn bị hồ sơ cho hoạt động ở trường.",
+    "english": "I want to prepare documents for a school activity.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0904",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn nấu bữa tối cho gia đình.",
+    "english": "I want to cook dinner for my family.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0905",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn phân chia việc nhà hợp lý.",
+    "english": "I want to divide chores fairly.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0906",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình đang tìm hiểu ngành học phù hợp.",
+    "english": "I'm looking into suitable study programs.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0907",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn hỗ trợ em lập kế hoạch học tập.",
+    "english": "I want to help my younger sibling make a study plan.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0908",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn sắp xếp giấy tờ quan trọng.",
+    "english": "I want to organize important papers.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0909",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn đặt mục tiêu cho tháng tới.",
+    "english": "I want to set goals for next month.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0910",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn nói chuyện với gia đình về một quyết định.",
+    "english": "I want to talk with my family about a decision.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0911",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn so sánh các lựa chọn trước khi quyết định.",
+    "english": "I want to compare options before deciding.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0912",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình nghỉ một lát rồi học tiếp.",
+    "english": "I'll take a short break and then continue studying.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0913",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Cuối tuần nhà mình có hẹn gì không?",
+    "english": "Does my family have any plans this weekend?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0914",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn giúp người thân làm xong việc này.",
+    "english": "I want to help a relative finish this task.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0915",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn chuẩn bị cho kỳ thi.",
+    "english": "I want to prepare for an exam.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0916",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ trao đổi với bố mẹ về mục tiêu học tập.",
+    "english": "At home, I will talk with my parents about my study goals.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0917",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ lập ngân sách chi tiêu cá nhân.",
+    "english": "At home, I will make a personal budget.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0918",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ chuẩn bị hồ sơ cho hoạt động ở trường.",
+    "english": "At home, I will prepare documents for a school activity.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0919",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ nấu bữa tối cho gia đình.",
+    "english": "At home, I will cook dinner for my family.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0920",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ phân chia việc nhà hợp lý.",
+    "english": "At home, I will divide chores fairly.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0921",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình muốn xem thêm thông tin về ngành này.",
+    "english": "I want to find out more about this field of study.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0922",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ hỗ trợ em lập kế hoạch học tập.",
+    "english": "At home, I will help my younger sibling make a study plan.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0923",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ sắp xếp giấy tờ quan trọng.",
+    "english": "At home, I will organize important papers.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0924",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ đặt mục tiêu cho tháng tới.",
+    "english": "At home, I will set goals for next month.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0925",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ nói chuyện với gia đình về một quyết định.",
+    "english": "At home, I will talk with my family about a decision.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0926",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ so sánh các lựa chọn trước khi quyết định.",
+    "english": "At home, I will compare options before deciding.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0927",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình nghỉ mười phút rồi học tiếp.",
+    "english": "I'll take a ten-minute break and then keep studying.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0928",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mẹ ơi, cuối tuần nhà mình có hẹn gì không?",
+    "english": "Mom, do we have any plans this weekend?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0929",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, mình sẽ giúp người thân làm xong việc này.",
+    "english": "At home, I will help a relative finish this task.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0930",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Ở nhà, Mình sẽ chuẩn bị cho kỳ thi.",
+    "english": "At home, I will prepare for an exam.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0931",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình có thể trao đổi với bố mẹ về mục tiêu học tập không?",
+    "english": "Can I talk with my parents about my study goals?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0932",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình có thể lập ngân sách chi tiêu cá nhân không?",
+    "english": "Can I make a personal budget?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0933",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình có thể chuẩn bị hồ sơ cho hoạt động ở trường không?",
+    "english": "Can I prepare documents for a school activity?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0934",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình có thể nấu bữa tối cho gia đình không?",
+    "english": "Can I cook dinner for my family?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0935",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình có thể phân chia việc nhà hợp lý không?",
+    "english": "Can I divide chores fairly?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0936",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình có thể xem thông tin về ngành này ở đâu?",
+    "english": "Where can I find information about this field of study?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0937",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình có thể hỗ trợ em lập kế hoạch học tập không?",
+    "english": "Can I help my younger sibling make a study plan?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0938",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình có thể sắp xếp giấy tờ quan trọng không?",
+    "english": "Can I organize important papers?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0939",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình có thể đặt mục tiêu cho tháng tới không?",
+    "english": "Can I set goals for next month?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0940",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nhu cầu, tự phục vụ và việc nhà",
+    "vietnamese": "Mình có thể nói chuyện với gia đình về một quyết định không?",
+    "english": "Can I talk with my family about a decision?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0941",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn hỏi về giờ mở cửa.",
+    "english": "I want to ask about opening hours.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0942",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình mượn sách ở thư viện nhé.",
+    "english": "I'll borrow a book from the library.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0943",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn tham gia buổi định hướng.",
+    "english": "I want to join an orientation session.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0944",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn tìm thông tin về khóa học.",
+    "english": "I want to find information about a course.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0945",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn đề xuất một hoạt động cho nhóm.",
+    "english": "I want to suggest an activity for the group.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0946",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn đến địa điểm đúng giờ.",
+    "english": "I want to arrive at the place on time.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0947",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn mua vé trực tuyến.",
+    "english": "I want to buy a ticket online.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0948",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình muốn tham gia sự kiện cộng đồng.",
+    "english": "I want to take part in a community event.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0949",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng hỏi về giờ mở cửa nhé.",
+    "english": "Let’s ask about opening hours.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0950",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình gặp nhau ở thư viện nhé.",
+    "english": "Let's meet at the library.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0951",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng tham gia buổi định hướng nhé.",
+    "english": "Let’s join an orientation session.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0952",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng tìm thông tin về khóa học nhé.",
+    "english": "Let’s find information about a course.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0953",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng đề xuất một hoạt động cho nhóm nhé.",
+    "english": "Let’s suggest an activity for the group.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0954",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng đến địa điểm đúng giờ nhé.",
+    "english": "Let’s arrive at the place on time.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0955",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Vui chơi, đi lại và cộng đồng",
+    "vietnamese": "Mình cùng mua vé trực tuyến nhé.",
+    "english": "Let’s buy a ticket online.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0956",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình xin phép xác nhận yêu cầu của dự án.",
+    "english": "May I confirm the project requirements?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0957",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Cô ơi, em xin thêm thời gian nộp bài được không ạ?",
+    "english": "Teacher, may I have more time to hand in my work?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0958",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình xin phép đưa ra quan điểm của mình.",
+    "english": "May I give my opinion?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0959",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình xin phép đề nghị chia lại công việc.",
+    "english": "May I suggest dividing the work again?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0960",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình xin phép tóm tắt ý chính.",
+    "english": "May I summarize the main ideas?",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0961",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình muốn xác nhận yêu cầu của dự án.",
+    "english": "I want to confirm the project requirements.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0962",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình muốn xin gia hạn thời gian nộp bài.",
+    "english": "I want to ask for an extension.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0963",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình muốn đưa ra quan điểm của mình.",
+    "english": "I want to give my opinion.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0964",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Lớp học và hỗ trợ học tập",
+    "vietnamese": "Mình muốn đề nghị chia lại công việc.",
+    "english": "I want to suggest dividing the work again.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0965",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về định hướng nghề nghiệp.",
+    "english": "Today, I am learning about career guidance.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0966",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn biết sau khi học cấp hai mình có thể làm gì tiếp theo.",
+    "english": "I want to know what I can do after middle school.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0967",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về một bài phỏng vấn.",
+    "english": "Today, I am learning about an interview.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0968",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về cách viết thư trang trọng.",
+    "english": "Today, I am learning about how to write a formal letter.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0969",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về tư duy phản biện.",
+    "english": "Today, I am learning about critical thinking.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0970",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về một vấn đề của cộng đồng.",
+    "english": "Today, I am learning about a community issue.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0971",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về mục tiêu phát triển bền vững.",
+    "english": "Today, I am learning about sustainable development goals.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0972",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về cách bảo vệ dữ liệu cá nhân.",
+    "english": "Today, I am learning about how to protect personal data.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0973",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về một đề xuất dự án.",
+    "english": "Today, I am learning about a project proposal.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0974",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về cách đánh giá nguồn tin.",
+    "english": "Today, I am learning about how to evaluate a source.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0975",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về quyền công dân.",
+    "english": "Today, I am learning about citizenship rights.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0976",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Hôm nay, Mình học về một kế hoạch học tập dài hạn.",
+    "english": "Today, I am learning about a long-term study plan.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0977",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về định hướng nghề nghiệp.",
+    "english": "I can talk about career guidance.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0978",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Sau cấp hai, mình muốn học tiếp cấp ba.",
+    "english": "After middle school, I want to go to high school.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0979",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về một bài phỏng vấn.",
+    "english": "I can talk about an interview.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0980",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về cách viết thư trang trọng.",
+    "english": "I can talk about how to write a formal letter.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0981",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về tư duy phản biện.",
+    "english": "I can talk about critical thinking.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0982",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về một vấn đề của cộng đồng.",
+    "english": "I can talk about a community issue.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0983",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về mục tiêu phát triển bền vững.",
+    "english": "I can talk about sustainable development goals.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0984",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về cách bảo vệ dữ liệu cá nhân.",
+    "english": "I can talk about how to protect personal data.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0985",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về một đề xuất dự án.",
+    "english": "I can talk about a project proposal.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0986",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về cách đánh giá nguồn tin.",
+    "english": "I can talk about how to evaluate a source.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0987",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về quyền công dân.",
+    "english": "I can talk about citizenship rights.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0988",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình có thể nói về một kế hoạch học tập dài hạn.",
+    "english": "I can talk about a long-term study plan.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0989",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về định hướng nghề nghiệp.",
+    "english": "I want to learn more about career guidance.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0990",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về các lựa chọn sau trung học.",
+    "english": "I want to learn more about options after middle school.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0991",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về một bài phỏng vấn.",
+    "english": "I want to learn more about an interview.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0992",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về cách viết thư trang trọng.",
+    "english": "I want to learn more about how to write a formal letter.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0993",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về tư duy phản biện.",
+    "english": "I want to learn more about critical thinking.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0994",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về một vấn đề của cộng đồng.",
+    "english": "I want to learn more about a community issue.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0995",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về mục tiêu phát triển bền vững.",
+    "english": "I want to learn more about sustainable development goals.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0996",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về cách bảo vệ dữ liệu cá nhân.",
+    "english": "I want to learn more about how to protect personal data.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0997",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về một đề xuất dự án.",
+    "english": "I want to learn more about a project proposal.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0998",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về cách đánh giá nguồn tin.",
+    "english": "I want to learn more about how to evaluate a source.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-0999",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về quyền công dân.",
+    "english": "I want to learn more about citizenship rights.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-1000",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Nội dung tham chiếu chương trình",
+    "vietnamese": "Mình muốn tìm hiểu thêm về một kế hoạch học tập dài hạn.",
+    "english": "I want to learn more about a long-term study plan.",
+    "aliases": []
+  }
+]

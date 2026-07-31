@@ -112,18 +112,18 @@ export async function getPromotedRule(
   }
 
   if (isPostgresStorageEnabled()) {
-    const clientRule = clientId
-      ? await getRecord<PromotedRule>(
-          rulesNamespace,
-          getRuleKey(context, normalizedText, clientId),
-        )
-      : null;
-    const globalRule = clientRule
-      ? null
-      : await getRecord<PromotedRule>(
-          rulesNamespace,
-          getRuleKey(context, normalizedText),
-        );
+    const [clientRule, globalRule] = await Promise.all([
+      clientId
+        ? getRecord<PromotedRule>(
+            rulesNamespace,
+            getRuleKey(context, normalizedText, clientId),
+          )
+        : Promise.resolve(null),
+      getRecord<PromotedRule>(
+        rulesNamespace,
+        getRuleKey(context, normalizedText),
+      ),
+    ]);
     return clientRule?.value ?? globalRule?.value ?? null;
   }
 

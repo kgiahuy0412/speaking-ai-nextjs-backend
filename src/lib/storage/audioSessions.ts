@@ -55,6 +55,13 @@ export type FinalizeClaim =
   | { state: "in_progress" }
   | { state: "completed"; result: unknown };
 
+export type Pcm16WavMetadata = {
+  sampleRate: number;
+  channelCount: number;
+  bitsPerSample: 16;
+  pcmByteLength: number;
+};
+
 export class AudioUploadError extends Error {
   constructor(
     public readonly code:
@@ -70,6 +77,7 @@ export class AudioUploadError extends Error {
       | "UNSUPPORTED_AUDIO_TYPE"
       | "INVALID_SEQUENCE"
       | "EMPTY_CHUNK"
+      | "INVALID_PCM_METADATA"
       | "IDEMPOTENCY_CONFLICT",
     message: string,
     public readonly status: number,
@@ -131,6 +139,62 @@ function getAudioFilename(mimeType: string) {
   }
 
   return filename;
+}
+
+function validatePcm16WavMetadata(
+  value: Pcm16WavMetadata,
+): Pcm16WavMetadata {
+  const validSampleRate =
+    Number.isInteger(value.sampleRate) &&
+    value.sampleRate >= 8_000 &&
+    value.sampleRate <= 96_000;
+  const validChannelCount =
+    Number.isInteger(value.channelCount) &&
+    value.channelCount >= 1 &&
+    value.channelCount <= 2;
+  const validPcmLength =
+    Number.isInteger(value.pcmByteLength) &&
+    value.pcmByteLength > 0 &&
+    value.pcmByteLength <= getAudioUploadLimits().maxSessionBytes;
+
+  if (
+    !validSampleRate ||
+    !validChannelCount ||
+    value.bitsPerSample !== 16 ||
+    !validPcmLength ||
+    value.pcmByteLength % (value.channelCount * 2) !== 0
+  ) {
+    throw new AudioUploadError(
+      "INVALID_PCM_METADATA",
+      "Thông tin PCM để hoàn tất WAV không hợp lệ.",
+      400,
+    );
+  }
+
+  return value;
+}
+
+function buildPcm16WavHeader(metadata: Pcm16WavMetadata) {
+  const header = Buffer.alloc(44);
+  const bytesPerSample = metadata.bitsPerSample / 8;
+  const byteRate =
+    metadata.sampleRate * metadata.channelCount * bytesPerSample;
+  const blockAlign = metadata.channelCount * bytesPerSample;
+
+  header.write("RIFF", 0, "ascii");
+  header.writeUInt32LE(36 + metadata.pcmByteLength, 4);
+  header.write("WAVE", 8, "ascii");
+  header.write("fmt ", 12, "ascii");
+  header.writeUInt32LE(16, 16);
+  header.writeUInt16LE(1, 20);
+  header.writeUInt16LE(metadata.channelCount, 22);
+  header.writeUInt32LE(metadata.sampleRate, 24);
+  header.writeUInt32LE(byteRate, 28);
+  header.writeUInt16LE(blockAlign, 32);
+  header.writeUInt16LE(metadata.bitsPerSample, 34);
+  header.write("data", 36, "ascii");
+  header.writeUInt32LE(metadata.pcmByteLength, 40);
+  return header;
 }
 
 function hashBuffer(buffer: Buffer) {
@@ -368,7 +432,77 @@ export async function saveAudioSessionChunk(
   const limits = getAudioUploadLimits();
 
   if (isPostgresStorageEnabled()) {
-    const session = await getDatabaseSession(sessionId);
+    const rows = await queryDatabase<{
+      status: UploadStatus;
+      expires_at: string | Date;
+      total_bytes: string | number;
+      chunk_count: number;
+      inserted: boolean;
+      existing_sha256: string | null;
+    }>(
+      `WITH target AS (
+         SELECT session_id, status, expires_at, total_bytes, chunk_count
+           FROM audio_upload_sessions
+          WHERE session_id = $1
+          FOR UPDATE
+       ), upserted AS (
+         INSERT INTO audio_upload_chunks
+           (session_id, sequence, sha256, size_bytes, content_base64)
+         SELECT session_id, $2, $3, $4, $7
+           FROM target
+          WHERE status = 'uploading'
+            AND expires_at > NOW()
+            AND (
+              EXISTS (
+                SELECT 1
+                  FROM audio_upload_chunks
+                 WHERE session_id = $1 AND sequence = $2
+              )
+              OR (
+                total_bytes + $4 <= $5
+                AND chunk_count < $6
+              )
+            )
+         ON CONFLICT (session_id, sequence) DO UPDATE
+           SET sha256 = audio_upload_chunks.sha256
+         RETURNING session_id, sha256, (xmax = 0) AS inserted
+       ), updated AS (
+         UPDATE audio_upload_sessions AS sessions
+            SET total_bytes = sessions.total_bytes + $4,
+                chunk_count = sessions.chunk_count + 1,
+                updated_at = NOW()
+           FROM upserted
+          WHERE sessions.session_id = upserted.session_id
+            AND upserted.inserted
+         RETURNING sessions.total_bytes, sessions.chunk_count
+       )
+       SELECT target.status,
+              target.expires_at,
+              COALESCE(
+                (SELECT total_bytes FROM updated),
+                target.total_bytes
+              ) AS total_bytes,
+              COALESCE(
+                (SELECT chunk_count FROM updated),
+                target.chunk_count
+              ) AS chunk_count,
+              COALESCE(
+                (SELECT inserted FROM upserted),
+                FALSE
+              ) AS inserted,
+              (SELECT sha256 FROM upserted) AS existing_sha256
+         FROM target`,
+      [
+        sessionId,
+        sequence,
+        sha256,
+        buffer.byteLength,
+        limits.maxSessionBytes,
+        limits.maxChunks,
+        buffer.toString("base64"),
+      ],
+    );
+    const session = rows[0];
 
     if (!session) {
       throw new AudioUploadError(
@@ -382,58 +516,15 @@ export async function saveAudioSessionChunk(
       expiresAt: new Date(session.expires_at).toISOString(),
     });
 
-    const inserted = await queryDatabase<{ sequence: number }>(
-      `WITH eligible AS (
-         SELECT session_id
-           FROM audio_upload_sessions
-          WHERE session_id = $1
-            AND status = 'uploading'
-            AND expires_at > NOW()
-            AND total_bytes + $4 <= $5
-            AND chunk_count < $6
-       ), inserted AS (
-         INSERT INTO audio_upload_chunks
-           (session_id, sequence, sha256, size_bytes, content_base64)
-         SELECT session_id, $2, $3, $4, $7 FROM eligible
-         ON CONFLICT (session_id, sequence) DO NOTHING
-         RETURNING session_id, sequence
-       ), updated AS (
-         UPDATE audio_upload_sessions AS sessions
-            SET total_bytes = sessions.total_bytes + $4,
-                chunk_count = sessions.chunk_count + 1,
-                updated_at = NOW()
-           FROM inserted
-          WHERE sessions.session_id = inserted.session_id
-         RETURNING sessions.session_id
-       )
-       SELECT sequence FROM inserted`,
-      [
-        sessionId,
-        sequence,
-        sha256,
-        buffer.byteLength,
-        limits.maxSessionBytes,
-        limits.maxChunks,
-        buffer.toString("base64"),
-      ],
-    );
-
-    if (inserted.length > 0) {
-      const updated = await getDatabaseSession(sessionId);
+    if (session.inserted) {
       return {
         duplicate: false,
-        totalBytes: Number(updated?.total_bytes ?? buffer.byteLength),
-        chunkCount: updated?.chunk_count ?? 1,
+        totalBytes: Number(session.total_bytes),
+        chunkCount: session.chunk_count,
       };
     }
 
-    const existing = await queryDatabase<{ sha256: string }>(
-      `SELECT sha256 FROM audio_upload_chunks
-        WHERE session_id = $1 AND sequence = $2`,
-      [sessionId, sequence],
-    );
-
-    if (existing[0]?.sha256 === sha256) {
+    if (session.existing_sha256 === sha256) {
       return {
         duplicate: true,
         totalBytes: Number(session.total_bytes),
@@ -441,7 +532,7 @@ export async function saveAudioSessionChunk(
       };
     }
 
-    if (existing.length > 0) {
+    if (session.existing_sha256) {
       throw new AudioUploadError(
         "CHUNK_CONFLICT",
         "Chunk đã tồn tại nhưng nội dung không giống lần upload trước.",
@@ -570,9 +661,21 @@ function validateChunkSequence(sequences: number[]) {
 export async function finalizeAudioUploadSession(
   sessionId: string,
   mimeType = "audio/webm",
+  pcm16Wav?: Pcm16WavMetadata,
 ) {
   validateSessionId(sessionId);
   const filename = getAudioFilename(mimeType);
+  const normalizedMimeType = normalizeMimeType(mimeType);
+  const pcmMetadata = pcm16Wav
+    ? validatePcm16WavMetadata(pcm16Wav)
+    : undefined;
+  if (pcmMetadata && normalizedMimeType !== "audio/wav") {
+    throw new AudioUploadError(
+      "INVALID_PCM_METADATA",
+      "Metadata PCM chỉ được dùng với audio/wav.",
+      400,
+    );
+  }
   let buffers: Buffer[];
 
   if (isPostgresStorageEnabled()) {
@@ -620,9 +723,9 @@ export async function finalizeAudioUploadSession(
     );
   }
 
-  const audio = Buffer.concat(buffers);
+  const pcmOrAudio = Buffer.concat(buffers);
 
-  if (audio.byteLength > getAudioUploadLimits().maxSessionBytes) {
+  if (pcmOrAudio.byteLength > getAudioUploadLimits().maxSessionBytes) {
     throw new AudioUploadError(
       "SESSION_TOO_LARGE",
       "Tổng dung lượng audio session vượt quá giới hạn.",
@@ -630,8 +733,27 @@ export async function finalizeAudioUploadSession(
     );
   }
 
+  if (
+    pcmMetadata &&
+    pcmOrAudio.byteLength !== pcmMetadata.pcmByteLength
+  ) {
+    throw new AudioUploadError(
+      "INVALID_PCM_METADATA",
+      "Số byte PCM không khớp dữ liệu đã upload.",
+      409,
+      {
+        expectedBytes: pcmMetadata.pcmByteLength,
+        actualBytes: pcmOrAudio.byteLength,
+      },
+    );
+  }
+
+  const audio = pcmMetadata
+    ? Buffer.concat([buildPcm16WavHeader(pcmMetadata), pcmOrAudio])
+    : pcmOrAudio;
+
   return new File([audio], filename, {
-    type: normalizeMimeType(mimeType),
+    type: normalizedMimeType,
   });
 }
 

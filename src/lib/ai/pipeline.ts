@@ -15,6 +15,7 @@ function createId(prefix: string) {
 
 export async function runConversationPipeline(
   input: ConversationRequest,
+  options: { deferTextCacheWrite?: boolean } = {},
 ): Promise<ConversationResponse> {
   const startedAt = nowMs();
   const conversationId = createId("conv");
@@ -27,6 +28,7 @@ export async function runConversationPipeline(
       input.childAge,
       input.clientId,
       input.requestId,
+      options.deferTextCacheWrite,
     ),
   );
   const tts = await measureStep(() =>
@@ -72,7 +74,10 @@ export async function runConversationPipeline(
     textModel: result.textModel,
     textFallbackUsed: result.textFallbackUsed,
     textFallbackReason: result.textFallbackReason,
+    matchedRule: result.matchedRule,
     audioSource: result.audioSource,
+    audioCacheHit: result.audioSource === "cache",
+    audioCacheHitTarget: 0.85,
     latency: result.latency,
   });
 

@@ -13,6 +13,11 @@ type ProviderErrorCode = Extract<
 
 export type AiProvider = "openai" | "cloudflare";
 
+type PrimaryProviderEnvironment =
+  | "AI_ASR_PRIMARY_PROVIDER"
+  | "AI_TEXT_PRIMARY_PROVIDER"
+  | "AI_TTS_PRIMARY_PROVIDER";
+
 export type TextGenerationResult = {
   text: string;
   provider: Extract<TextSource, "openai" | "cloudflare">;
@@ -32,6 +37,7 @@ export type TtsProfile = {
 export type EnglishSpeechResult = {
   response: Response;
   source: Extract<AudioSource, "openai_tts" | "cloudflare_tts">;
+  profile: TtsProfile;
 };
 
 type CloudflareEnvelope<T> = {
@@ -64,6 +70,12 @@ function positiveInteger(name: string, fallback: number) {
 
 function validCloudflareModel(value: string) {
   return /^@cf\/[a-z0-9._-]+\/[a-z0-9._-]+$/i.test(value);
+}
+
+function getPrimaryProvider(environmentName: PrimaryProviderEnvironment) {
+  return process.env[environmentName]?.trim().toLowerCase() === "openai"
+    ? ("openai" as const)
+    : ("cloudflare" as const);
 }
 
 export function isOpenAIConfigured() {
@@ -154,7 +166,23 @@ async function fetchProvider(
 }
 
 export function getTextAiProfile() {
-  if (isOpenAIConfigured()) {
+  const primaryProvider = getPrimaryProvider("AI_TEXT_PRIMARY_PROVIDER");
+
+  if (
+    primaryProvider === "cloudflare" &&
+    isCloudflareWorkersAiConfigured()
+  ) {
+    return {
+      provider: "cloudflare" as const,
+      model: requireModel(
+        process.env.CLOUDFLARE_TEXT_MODEL,
+        defaultCloudflareTextModel,
+        "LLM_FAILED",
+      ),
+    };
+  }
+
+  if (primaryProvider === "openai" && isOpenAIConfigured()) {
     return {
       provider: "openai" as const,
       model: process.env.OPENAI_FAST_TEXT_MODEL?.trim() || "gpt-4o-mini",
@@ -172,6 +200,13 @@ export function getTextAiProfile() {
     };
   }
 
+  if (isOpenAIConfigured()) {
+    return {
+      provider: "openai" as const,
+      model: process.env.OPENAI_FAST_TEXT_MODEL?.trim() || "gpt-4o-mini",
+    };
+  }
+
   throw new AppError(
     "LLM_FAILED",
     "Backend chưa được cấu hình OpenAI hoặc Cloudflare Workers AI.",
@@ -179,14 +214,15 @@ export function getTextAiProfile() {
   );
 }
 
-export async function generateAiText(options: {
-  instructions: string;
-  input: string;
-  maxOutputTokens: number;
-  timeoutMs: number;
-}): Promise<TextGenerationResult> {
-  const profile = getTextAiProfile();
-
+async function generateAiTextWithProfile(
+  options: {
+    instructions: string;
+    input: string;
+    maxOutputTokens: number;
+    timeoutMs: number;
+  },
+  profile: ReturnType<typeof getTextAiProfile>,
+): Promise<TextGenerationResult> {
   if (profile.provider === "openai") {
     const response = await getOpenAIClient().responses.create(
       {
@@ -266,25 +302,25 @@ export async function generateAiText(options: {
   };
 }
 
-export async function transcribeVietnameseAudio(audio: File) {
-  if (isOpenAIConfigured()) {
-    const model = process.env.OPENAI_ASR_MODEL?.trim() || "gpt-4o-mini-transcribe";
-    const transcription = await getOpenAIClient().audio.transcriptions.create(
-      {
-        file: audio,
-        model,
-        language: "vi",
-        prompt:
-          "Vietnamese child speaking short everyday phrases for English practice.",
-      },
-      {
-        timeout: positiveInteger("OPENAI_ASR_TIMEOUT_MS", 15_000),
-      },
-    );
+async function transcribeVietnameseAudioWithOpenAI(audio: File) {
+  const model = process.env.OPENAI_ASR_MODEL?.trim() || "gpt-4o-mini-transcribe";
+  const transcription = await getOpenAIClient().audio.transcriptions.create(
+    {
+      file: audio,
+      model,
+      language: "vi",
+      prompt:
+        "Vietnamese child speaking short everyday phrases for English practice.",
+    },
+    {
+      timeout: positiveInteger("OPENAI_ASR_TIMEOUT_MS", 15_000),
+    },
+  );
 
-    return { text: transcription.text.trim(), provider: "openai" as const, model };
-  }
+  return { text: transcription.text.trim(), provider: "openai" as const, model };
+}
 
+async function transcribeVietnameseAudioWithCloudflare(audio: File) {
   const config = requireCloudflareConfig("ASR_FAILED");
   const model = requireModel(
     process.env.CLOUDFLARE_ASR_MODEL || process.env.CLOUDFLARE_WORKERS_AI_MODEL,
@@ -320,7 +356,7 @@ export async function transcribeVietnameseAudio(audio: File) {
       }),
     },
     "ASR_FAILED",
-    positiveInteger("CLOUDFLARE_ASR_TIMEOUT_MS", 30_000),
+    positiveInteger("CLOUDFLARE_ASR_TIMEOUT_MS", 6_000),
   );
   const payload = (await response.json().catch(() => null)) as
     | CloudflareEnvelope<CloudflareAsrResult>
@@ -341,8 +377,60 @@ export async function transcribeVietnameseAudio(audio: File) {
   return { text: text.trim(), provider: "cloudflare" as const, model };
 }
 
-export function getConfiguredTtsProfile(): TtsProfile {
+export async function transcribeVietnameseAudio(audio: File) {
+  const primaryProvider = getPrimaryProvider("AI_ASR_PRIMARY_PROVIDER");
+
+  if (primaryProvider === "cloudflare" && isCloudflareWorkersAiConfigured()) {
+    try {
+      return await transcribeVietnameseAudioWithCloudflare(audio);
+    } catch (error) {
+      if (!isOpenAIConfigured()) {
+        throw error;
+      }
+      return transcribeVietnameseAudioWithOpenAI(audio);
+    }
+  }
+
+  if (primaryProvider === "openai" && isOpenAIConfigured()) {
+    return transcribeVietnameseAudioWithOpenAI(audio);
+  }
+
+  if (isCloudflareWorkersAiConfigured()) {
+    return transcribeVietnameseAudioWithCloudflare(audio);
+  }
+
   if (isOpenAIConfigured()) {
+    return transcribeVietnameseAudioWithOpenAI(audio);
+  }
+
+  throw new AppError(
+    "ASR_FAILED",
+    "Backend chưa được cấu hình OpenAI hoặc Cloudflare Workers AI.",
+    503,
+  );
+}
+
+export function getConfiguredTtsProfile(): TtsProfile {
+  const primaryProvider = getPrimaryProvider("AI_TTS_PRIMARY_PROVIDER");
+
+  if (
+    primaryProvider === "cloudflare" &&
+    isCloudflareWorkersAiConfigured()
+  ) {
+    return {
+      provider: "cloudflare",
+      model: requireModel(
+        process.env.CLOUDFLARE_TTS_MODEL,
+        defaultCloudflareTtsModel,
+        "TTS_FAILED",
+      ),
+      voice: process.env.CLOUDFLARE_TTS_SPEAKER?.trim() || "luna",
+      speed: 1,
+      extension: "mp3",
+    };
+  }
+
+  if (primaryProvider === "openai" && isOpenAIConfigured()) {
     const configuredSpeed = Number(process.env.OPENAI_TTS_SPEED ?? 0.9);
     return {
       provider: "openai",
@@ -372,6 +460,22 @@ export function getConfiguredTtsProfile(): TtsProfile {
     };
   }
 
+  if (isOpenAIConfigured()) {
+    const configuredSpeed = Number(process.env.OPENAI_TTS_SPEED ?? 0.9);
+    return {
+      provider: "openai",
+      model: process.env.OPENAI_TTS_MODEL?.trim() || "tts-1",
+      voice: process.env.OPENAI_TTS_VOICE?.trim() || "alloy",
+      speed:
+        Number.isFinite(configuredSpeed) &&
+        configuredSpeed >= 0.25 &&
+        configuredSpeed <= 4
+          ? configuredSpeed
+          : 0.9,
+      extension: "mp3",
+    };
+  }
+
   throw new AppError(
     "TTS_FAILED",
     "Backend chưa được cấu hình OpenAI hoặc Cloudflare Workers AI.",
@@ -379,7 +483,49 @@ export function getConfiguredTtsProfile(): TtsProfile {
   );
 }
 
-export async function requestEnglishSpeech(
+export function getTtsFallbackProfile(profile: TtsProfile) {
+  if (profile.provider !== "cloudflare" || !isOpenAIConfigured()) {
+    return null;
+  }
+
+  const configuredSpeed = Number(process.env.OPENAI_TTS_SPEED ?? 0.9);
+  return {
+    provider: "openai" as const,
+    model: process.env.OPENAI_TTS_MODEL?.trim() || "tts-1",
+    voice: process.env.OPENAI_TTS_VOICE?.trim() || "alloy",
+    speed:
+      Number.isFinite(configuredSpeed) &&
+      configuredSpeed >= 0.25 &&
+      configuredSpeed <= 4
+        ? configuredSpeed
+        : 0.9,
+    extension: "mp3" as const,
+  };
+}
+
+export async function generateAiText(options: {
+  instructions: string;
+  input: string;
+  maxOutputTokens: number;
+  timeoutMs: number;
+}): Promise<TextGenerationResult> {
+  const profile = getTextAiProfile();
+
+  try {
+    return await generateAiTextWithProfile(options, profile);
+  } catch (error) {
+    if (profile.provider !== "cloudflare" || !isOpenAIConfigured()) {
+      throw error;
+    }
+
+    return generateAiTextWithProfile(options, {
+      provider: "openai",
+      model: process.env.OPENAI_FAST_TEXT_MODEL?.trim() || "gpt-4o-mini",
+    });
+  }
+}
+
+async function requestEnglishSpeechFromProvider(
   text: string,
   profile: TtsProfile,
 ): Promise<EnglishSpeechResult> {
@@ -443,8 +589,26 @@ export async function requestEnglishSpeech(
 
   return {
     response,
+    profile,
     source: (profile.provider === "openai"
       ? "openai_tts"
       : "cloudflare_tts") satisfies AudioSource,
   };
+}
+
+export async function requestEnglishSpeech(
+  text: string,
+  profile: TtsProfile,
+): Promise<EnglishSpeechResult> {
+  try {
+    return await requestEnglishSpeechFromProvider(text, profile);
+  } catch (error) {
+    const fallbackProfile = getTtsFallbackProfile(profile);
+
+    if (!fallbackProfile) {
+      throw error;
+    }
+
+    return requestEnglishSpeechFromProvider(text, fallbackProfile);
+  }
 }

@@ -27,8 +27,13 @@ CLOUDFLARE_WORKERS_AI_API_TOKEN=your-workers-ai-token
 AI_TEXT_PRIMARY_PROVIDER=cloudflare
 CLOUDFLARE_TEXT_MODEL=@cf/meta/llama-4-scout-17b-16e-instruct
 CLOUDFLARE_TEXT_TIMEOUT_MS=2500
+AI_TTS_PRIMARY_PROVIDER=cloudflare
+CLOUDFLARE_TTS_MODEL=@cf/deepgram/aura-1
+CLOUDFLARE_TTS_SPEAKER=luna
+CLOUDFLARE_TTS_TIMEOUT_MS=20000
 
-# Required for the OpenAI fallback and the existing Realtime/TTS paths.
+# Optional fallback when a Cloudflare request fails, and required only for
+# the explicitly selected OpenAI Realtime ASR mode.
 OPENAI_API_KEY=your-openai-api-key
 OPENAI_FAST_TEXT_MODEL=gpt-4o-mini
 ```
@@ -40,7 +45,8 @@ order:
 2. Cloudflare multilingual text model with the faithful V1 prompt;
 3. OpenAI Responses fallback when Cloudflare fails, times out, is rate-limited,
    or returns an invalid result;
-4. the existing audio cache/TTS path.
+4. the audio cache, then Cloudflare Aura TTS;
+5. OpenAI TTS only when the Cloudflare TTS request fails.
 
 `POST /api/audio/translate` remains an independent compatibility endpoint for
 direct audio translation. It is not used by the Flutter conversation pipeline
@@ -89,8 +95,19 @@ PERSISTENCE_BACKEND=local
 AUDIO_STORAGE_BACKEND=local
 ```
 
-For multiple backend instances, use Neon PostgreSQL for records and Vercel Blob
-for generated English audio:
+For the current MVP, PostgreSQL can persist both records and generated English
+audio across deploys and backend replicas. When `DATABASE_URL` is present and
+`AUDIO_STORAGE_BACKEND` is omitted, this mode is selected automatically:
+
+```env
+PERSISTENCE_BACKEND=postgres
+DATABASE_URL=postgresql://...
+AUDIO_STORAGE_BACKEND=postgres
+CRON_SECRET=use-a-long-random-secret
+```
+
+At larger audio volume, keep PostgreSQL for records and use Vercel Blob for
+generated English audio:
 
 ```env
 PERSISTENCE_BACKEND=postgres
@@ -103,6 +120,25 @@ CRON_SECRET=use-a-long-random-secret
 The Blob store is public because it only contains generated English TTS. The
 child's uploaded voice chunks are transient and are stored in PostgreSQL with a
 short TTL; they are never published as Blob URLs.
+
+Cloudflare R2 is also supported for the immutable shared TTS cache:
+
+```env
+PERSISTENCE_BACKEND=postgres
+DATABASE_URL=postgresql://...
+AUDIO_STORAGE_BACKEND=r2
+CLOUDFLARE_R2_ACCOUNT_ID=...
+CLOUDFLARE_R2_ACCESS_KEY_ID=...
+CLOUDFLARE_R2_SECRET_ACCESS_KEY=...
+CLOUDFLARE_R2_BUCKET=...
+CLOUDFLARE_R2_PUBLIC_BASE_URL=https://audio.example.com
+AUDIO_WARMUP_RULE_LIMIT=200
+```
+
+Warm-up is capped at 300 rules (200 by default). It generates only missing
+audio; all other rules are synthesized once on first use. Streaming TTS uses a
+separate cache-fill response branch, so stopping playback does not cancel the
+durable R2/PostgreSQL write.
 
 Before enabling managed storage, run:
 
