@@ -1,0 +1,941 @@
+{
+  "source": "C:\\Users\\DELL\\Downloads\\Phuong_an_luu_tru_dong_bo_Web_APK_V1.docx",
+  "paragraph_count": 104,
+  "table_count": 14,
+  "blocks": [
+    {
+      "type": "paragraph",
+      "index": 1,
+      "style": "Normal",
+      "text": "PHƯƠNG ÁN LƯU TRỮ, ĐỒNG BỘ\nVÀ KHÔI PHỤC DỮ LIỆU"
+    },
+    {
+      "type": "paragraph",
+      "index": 2,
+      "style": "Normal",
+      "text": "Web/PWA và ứng dụng Flutter APK — Đề xuất kiến trúc V1"
+    },
+    {
+      "type": "paragraph",
+      "index": 3,
+      "style": "Normal",
+      "text": "Phạm vi: Tiến độ học, bản ghi âm luyện nghe, khôi phục Web và cập nhật APK"
+    },
+    {
+      "type": "paragraph",
+      "index": 4,
+      "style": "Normal",
+      "text": "Nguyên tắc: Không bắt buộc tài khoản; local-first; backend là nguồn sao lưu và đồng bộ"
+    },
+    {
+      "type": "paragraph",
+      "index": 5,
+      "style": "Normal",
+      "text": "Trạng thái: Đề xuất để thống nhất trước khi triển khai backend và Flutter"
+    },
+    {
+      "type": "paragraph",
+      "index": 6,
+      "style": "Normal",
+      "text": "Ngày: 29/07/2026"
+    },
+    {
+      "type": "table",
+      "index": 1,
+      "rows": [
+        [
+          "Kết luận đề xuất: V1 nên để Web và APK lưu riêng theo định danh ẩn danh của từng thiết bị. Web chuyển từ blob/localStorage sang IndexedDB và đồng bộ tiến độ lên backend; audio lưu trên R2. QR chỉ là cơ chế khôi phục Web khi toàn bộ dữ liệu trình duyệt bị xóa. Cập nhật APK cài đè bình thường không cần QR."
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "index": 9,
+      "style": "Heading 1",
+      "text": "1. Mục tiêu và quyết định kiến trúc"
+    },
+    {
+      "type": "paragraph",
+      "index": 10,
+      "style": "Normal",
+      "text": "Tài liệu này thống nhất cách lưu dữ liệu học tập trên Web/PWA và APK trong điều kiện sản phẩm chưa triển khai tài khoản cá nhân. Mục tiêu là tránh mất tiến độ, không làm phụ huynh phải thực hiện nhiều bước, đồng thời giữ khả năng mở rộng sang đồng bộ đa thiết bị trong tương lai."
+    },
+    {
+      "type": "paragraph",
+      "index": 11,
+      "style": "Normal",
+      "text": "Web/PWA hoạt động ngay mà không yêu cầu đăng ký hoặc ghép nối APK."
+    },
+    {
+      "type": "paragraph",
+      "index": 12,
+      "style": "Normal",
+      "text": "APK tiếp tục hoạt động độc lập; cập nhật chính thức giữ nguyên dữ liệu nếu cài đè đúng chữ ký."
+    },
+    {
+      "type": "paragraph",
+      "index": 13,
+      "style": "Normal",
+      "text": "Tiến độ được lưu local trước để giao diện nhanh, sau đó đồng bộ nền lên backend."
+    },
+    {
+      "type": "paragraph",
+      "index": 14,
+      "style": "Normal",
+      "text": "File ghi âm không lưu trực tiếp trong PostgreSQL; local dùng IndexedDB/file, cloud dùng R2."
+    },
+    {
+      "type": "paragraph",
+      "index": 15,
+      "style": "Normal",
+      "text": "Đồng bộ Web–APK là tính năng riêng của giai đoạn sau, không phải điều kiện của V1."
+    },
+    {
+      "type": "paragraph",
+      "index": 16,
+      "style": "Heading 1",
+      "text": "2. Hiện trạng được xác nhận"
+    },
+    {
+      "type": "table",
+      "index": 2,
+      "rows": [
+        [
+          "Khu vực",
+          "Cách lưu hiện tại",
+          "Rủi ro",
+          "Định hướng V1"
+        ],
+        [
+          "Bản ghi Web/PWA",
+          "Blob URL và danh sách tạm trong bộ nhớ",
+          "Reload/đóng trình duyệt có thể làm mất file",
+          "Lưu Blob WebM/Opus vào IndexedDB"
+        ],
+        [
+          "Lịch sử bản ghi Web",
+          "Metadata trong localStorage",
+          "Metadata còn nhưng file blob có thể không còn",
+          "Metadata và file cùng quản lý trong IndexedDB"
+        ],
+        [
+          "Tiến độ Web",
+          "localStorage: innotrik.listening-progress.v1",
+          "Không đồng bộ backend; xóa site data sẽ mất",
+          "IndexedDB local-first + API đồng bộ tiến độ"
+        ],
+        [
+          "Tiến độ APK",
+          "File JSON trong Application Support Directory",
+          "Không chia sẻ với Web; mất khi gỡ/xóa dữ liệu",
+          "Giữ local + đồng bộ backend theo Android clientId"
+        ],
+        [
+          "Audio APK",
+          "File riêng trong vùng ứng dụng",
+          "Không khôi phục khi đổi máy nếu chưa upload",
+          "Giữ local; upload R2 nền nếu được bật"
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "index": 18,
+      "style": "Normal",
+      "text": "Nhận định: vấn đề chính không phải dung lượng metadata mà là vòng đời file audio và danh tính ẩn danh. IndexedDB giải quyết độ bền local của Web; backend giải quyết sao lưu; R2 giải quyết lưu file lớn. Ba lớp này bổ sung cho nhau, không thay thế hoàn toàn cho nhau."
+    },
+    {
+      "type": "paragraph",
+      "index": 19,
+      "style": "Heading 1",
+      "text": "3. Kiến trúc mục tiêu V1"
+    },
+    {
+      "type": "table",
+      "index": 3,
+      "rows": [
+        [
+          "WEB/PWA                         BACKEND                         APK\nIndexedDB  ── sync queue ──>   PostgreSQL   <── sync queue ──  Local JSON/File\nBlob WebM  ── signed upload ─> Cloudflare R2 <─ signed upload ─ Audio local\nweb clientId                   API + auth                      android clientId"
+        ]
+      ]
+    },
+    {
+      "type": "table",
+      "index": 4,
+      "rows": [
+        [
+          "Tầng",
+          "Trách nhiệm",
+          "Không nên làm"
+        ],
+        [
+          "Local Web/APK",
+          "Phản hồi nhanh, hoạt động khi mất mạng, giữ hàng đợi chưa đồng bộ",
+          "Dùng local làm nguồn dữ liệu duy nhất"
+        ],
+        [
+          "PostgreSQL",
+          "Profile ẩn danh, tiến độ, metadata, trạng thái upload, phiên bản dữ liệu",
+          "Lưu Blob audio trực tiếp"
+        ],
+        [
+          "Cloudflare R2",
+          "File ghi âm nén, giới hạn 3 bản/câu, vòng đời lưu trữ",
+          "Public URL không giới hạn cho giọng trẻ em"
+        ],
+        [
+          "Next.js API",
+          "Xác thực, cấp signed URL, hợp nhất tiến độ, idempotency",
+          "Nhận toàn bộ file qua RAM nếu có thể upload thẳng R2"
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "index": 22,
+      "style": "Heading 1",
+      "text": "4. Web/PWA: lưu local và đồng bộ tự động"
+    },
+    {
+      "type": "paragraph",
+      "index": 23,
+      "style": "Heading 2",
+      "text": "4.1. Danh tính ẩn danh"
+    },
+    {
+      "type": "paragraph",
+      "index": 24,
+      "style": "Normal",
+      "text": "Lần đầu mở Web, backend tạo một anonymousProfileId và webDeviceId. Web không yêu cầu email, số điện thoại hoặc mật khẩu. profileId chỉ là mã nhận diện; quyền truy cập phải dựa trên session/token đã ký."
+    },
+    {
+      "type": "table",
+      "index": 5,
+      "rows": [
+        [
+          "anonymousProfileId: profile_8f72ab...\nwebDeviceId:        web_device_a91c...\nlocalStorage key:   innotrik.profile-id.v1\nIndexedDB:          innotrik-pwa-v1 / identity\nCookie:             innotrik_session (HttpOnly, Secure)"
+        ]
+      ]
+    },
+    {
+      "type": "table",
+      "index": 6,
+      "rows": [
+        [
+          "Bảo mật: Không dùng profileId làm mật khẩu. Cookie session nên là HttpOnly/Secure; LocalStorage và IndexedDB chỉ giữ định danh và dữ liệu local. Nếu frontend và Railway khác domain, cần custom domain hoặc cấu hình cookie/CORS/CSRF đúng chuẩn."
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "index": 27,
+      "style": "Heading 2",
+      "text": "4.2. IndexedDB"
+    },
+    {
+      "type": "table",
+      "index": 7,
+      "rows": [
+        [
+          "Object store",
+          "Dữ liệu",
+          "Mục đích"
+        ],
+        [
+          "identity",
+          "profileId, deviceId, lastSyncedAt",
+          "Khôi phục phiên local và đối chiếu backend"
+        ],
+        [
+          "learning_progress",
+          "lessonId, câu hiện tại, số câu hoàn thành, skipped",
+          "Chạy nhanh và offline"
+        ],
+        [
+          "recordings",
+          "Blob WebM/Opus, duration, uploadStatus",
+          "Không mất bản ghi khi reload"
+        ],
+        [
+          "sync_queue",
+          "mutationId, operation, payload, retryCount",
+          "Gửi lại an toàn khi mạng trở lại"
+        ],
+        [
+          "settings",
+          "ngôn ngữ, nhóm tuổi, giới hạn cache",
+          "Giữ trải nghiệm cá nhân trên Web"
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "index": 29,
+      "style": "Normal",
+      "text": "Ứng dụng nên gọi navigator.storage.persist() sau một thao tác có chủ đích như hoàn thành bài đầu hoặc cài PWA. Đồng thời theo dõi navigator.storage.estimate(), giới hạn local khoảng 50–100 MB, không xóa bản chưa upload và luôn giữ tối đa 3 bản ghi thành công gần nhất cho mỗi câu."
+    },
+    {
+      "type": "paragraph",
+      "index": 30,
+      "style": "Heading 2",
+      "text": "4.3. Đồng bộ tiến độ"
+    },
+    {
+      "type": "paragraph",
+      "index": 31,
+      "style": "Normal",
+      "text": "Ghi thay đổi vào IndexedDB ngay lập tức."
+    },
+    {
+      "type": "paragraph",
+      "index": 32,
+      "style": "Normal",
+      "text": "Cập nhật giao diện, không chờ mạng."
+    },
+    {
+      "type": "paragraph",
+      "index": 33,
+      "style": "Normal",
+      "text": "Tạo mutationId và đưa tác vụ vào sync_queue."
+    },
+    {
+      "type": "paragraph",
+      "index": 34,
+      "style": "Normal",
+      "text": "Gửi backend khi mở app, đổi foreground, mạng trở lại hoặc sau thay đổi quan trọng."
+    },
+    {
+      "type": "paragraph",
+      "index": 35,
+      "style": "Normal",
+      "text": "Nhận revision mới từ backend rồi đánh dấu tác vụ đã hoàn thành."
+    },
+    {
+      "type": "paragraph",
+      "index": 36,
+      "style": "Normal",
+      "text": "Quy tắc hợp nhất đề xuất: completedSentences lấy giá trị lớn hơn; bài đã hoàn thành không tự lùi; currentSentenceIndex lấy bản cập nhật mới nhất; trạng thái từng câu dùng updatedAt/revision. mutationId giúp request lặp lại không tạo dữ liệu trùng."
+    },
+    {
+      "type": "paragraph",
+      "index": 37,
+      "style": "Heading 1",
+      "text": "5. Backend và lưu file audio"
+    },
+    {
+      "type": "paragraph",
+      "index": 38,
+      "style": "Heading 2",
+      "text": "5.1. Mô hình dữ liệu"
+    },
+    {
+      "type": "table",
+      "index": 8,
+      "rows": [
+        [
+          "Bảng",
+          "Khóa chính/quan hệ",
+          "Nội dung chính"
+        ],
+        [
+          "anonymous_profiles",
+          "profile_id",
+          "Hồ sơ ẩn danh, trạng thái, thời điểm tạo"
+        ],
+        [
+          "profile_devices",
+          "device_id → profile_id",
+          "Web/APK device, token hash, last_seen"
+        ],
+        [
+          "learning_progress",
+          "profile_id + lesson_id",
+          "Tiến độ, revision, updated_at"
+        ],
+        [
+          "lesson_recordings",
+          "recording_id",
+          "R2 object key, câu, duration, trạng thái"
+        ],
+        [
+          "recovery_tokens",
+          "token_hash → profile_id",
+          "Mã khôi phục một lần, hạn sử dụng"
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "index": 40,
+      "style": "Heading 2",
+      "text": "5.2. API đề xuất"
+    },
+    {
+      "type": "paragraph",
+      "index": 41,
+      "style": "Normal",
+      "text": "POST /api/anonymous-profiles — tạo profile/session lần đầu."
+    },
+    {
+      "type": "paragraph",
+      "index": 42,
+      "style": "Normal",
+      "text": "GET /api/learning-progress — tải snapshot tiến độ."
+    },
+    {
+      "type": "paragraph",
+      "index": 43,
+      "style": "Normal",
+      "text": "PATCH /api/learning-progress/:lessonId — upsert tiến độ idempotent."
+    },
+    {
+      "type": "paragraph",
+      "index": 44,
+      "style": "Normal",
+      "text": "POST /api/lesson-recordings/upload-url — cấp signed URL upload R2."
+    },
+    {
+      "type": "paragraph",
+      "index": 45,
+      "style": "Normal",
+      "text": "POST /api/lesson-recordings/complete — xác nhận file và metadata."
+    },
+    {
+      "type": "paragraph",
+      "index": 46,
+      "style": "Normal",
+      "text": "GET /api/lesson-recordings — tải danh sách bản ghi theo quyền."
+    },
+    {
+      "type": "paragraph",
+      "index": 47,
+      "style": "Normal",
+      "text": "DELETE /api/lesson-recordings/:id — xóa metadata và R2 object."
+    },
+    {
+      "type": "paragraph",
+      "index": 48,
+      "style": "Normal",
+      "text": "POST /api/profile/recovery-code — tạo mã/QR khôi phục."
+    },
+    {
+      "type": "paragraph",
+      "index": 49,
+      "style": "Normal",
+      "text": "POST /api/profile/recover — dùng mã khôi phục và cấp session mới."
+    },
+    {
+      "type": "paragraph",
+      "index": 50,
+      "style": "Normal",
+      "text": "Audio nên dùng WebM/Opus hoặc AAC. Một đoạn Opus 5 giây ở 24 kbps chỉ khoảng 15 KB, trong khi WAV PCM 24 kHz khoảng 240 KB. Upload trực tiếp lên R2 bằng signed URL giúp Next.js không phải giữ file trong RAM và giảm tải rõ rệt."
+    },
+    {
+      "type": "paragraph",
+      "index": 51,
+      "style": "Heading 1",
+      "text": "6. QR khôi phục Web/PWA"
+    },
+    {
+      "type": "paragraph",
+      "index": 52,
+      "style": "Normal",
+      "text": "QR khôi phục không phải bước onboarding và không bắt buộc để sử dụng Web. Nó chỉ là phao cứu dữ liệu khi cookie, LocalStorage và IndexedDB đều bị xóa hoặc người dùng đổi máy/trình duyệt."
+    },
+    {
+      "type": "table",
+      "index": 9,
+      "rows": [
+        [
+          "Tình huống",
+          "Có thể tự phục hồi?",
+          "Xử lý"
+        ],
+        [
+          "Chỉ xóa biểu tượng PWA",
+          "Thường có",
+          "Mở lại cùng domain và trình duyệt; dữ liệu site thường còn"
+        ],
+        [
+          "Cookie mất, IndexedDB còn",
+          "Có",
+          "Khôi phục session thiết bị rồi tải backend"
+        ],
+        [
+          "IndexedDB mất, session còn",
+          "Có",
+          "Tải lại tiến độ/metadata từ backend"
+        ],
+        [
+          "Toàn bộ site data bị xóa",
+          "Không tự động",
+          "Quét QR hoặc nhập mã khôi phục"
+        ],
+        [
+          "Đổi điện thoại/trình duyệt",
+          "Không tự động",
+          "Dùng QR khôi phục"
+        ],
+        [
+          "Không lưu QR và mất toàn bộ site data",
+          "Không",
+          "Tạo hồ sơ mới; không thể xác định hồ sơ cũ"
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "index": 54,
+      "style": "Heading 2",
+      "text": "6.1. Trải nghiệm phụ huynh"
+    },
+    {
+      "type": "paragraph",
+      "index": 55,
+      "style": "Normal",
+      "text": "Sau khi hoàn thành bài đầu, hiển thị gợi ý nhẹ: ‘Lưu mã khôi phục để không mất tiến độ khi đổi máy’. Có nút Để sau."
+    },
+    {
+      "type": "paragraph",
+      "index": 56,
+      "style": "Normal",
+      "text": "Khi chọn lưu, backend tạo token ngẫu nhiên; QR chứa URL có token ở phần fragment (#code=...)."
+    },
+    {
+      "type": "paragraph",
+      "index": 57,
+      "style": "Normal",
+      "text": "Phụ huynh lưu ảnh, gửi vào Zalo/WeChat của chính mình hoặc lưu mã chữ dự phòng."
+    },
+    {
+      "type": "paragraph",
+      "index": 58,
+      "style": "Normal",
+      "text": "Khi khôi phục, token được dùng một lần, backend cấp session mới và yêu cầu tạo QR mới."
+    },
+    {
+      "type": "table",
+      "index": 10,
+      "rows": [
+        [
+          "Giới hạn bắt buộc: Nếu không có tài khoản, QR/mã khôi phục hoặc mã thiết bị riêng thì backend không thể nhận biết người cũ sau khi toàn bộ dữ liệu trình duyệt bị xóa. IndexedDB và persistent storage chỉ giảm rủi ro, không loại bỏ hoàn toàn."
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "index": 60,
+      "style": "Heading 1",
+      "text": "7. APK: lưu dữ liệu và cập nhật bắt buộc"
+    },
+    {
+      "type": "paragraph",
+      "index": 61,
+      "style": "Normal",
+      "text": "APK dùng Android clientId, lưu tiến độ và audio trong vùng riêng của ứng dụng. V1 có thể đồng bộ backend riêng cho APK mà không liên kết với Web. QR không cần thiết cho cập nhật APK thông thường."
+    },
+    {
+      "type": "table",
+      "index": 11,
+      "rows": [
+        [
+          "Trường hợp APK",
+          "Dữ liệu local",
+          "Có cần QR?"
+        ],
+        [
+          "Cài đè bản release mới",
+          "Được giữ",
+          "Không"
+        ],
+        [
+          "Cập nhật bắt buộc qua APK",
+          "Được giữ",
+          "Không"
+        ],
+        [
+          "Gỡ ứng dụng rồi cài lại",
+          "Có thể mất",
+          "Có ích nếu cần phục hồi"
+        ],
+        [
+          "Xóa dữ liệu ứng dụng",
+          "Mất",
+          "Có ích"
+        ],
+        [
+          "Đổi điện thoại",
+          "Không tự chuyển",
+          "Có ích hoặc dùng cơ chế chuyển thiết bị"
+        ],
+        [
+          "Debug → release chính thức",
+          "Phải gỡ bản Debug",
+          "Chỉ cần nếu muốn giữ dữ liệu test"
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "index": 63,
+      "style": "Heading 2",
+      "text": "7.1. Điều kiện cài đè"
+    },
+    {
+      "type": "paragraph",
+      "index": 64,
+      "style": "Normal",
+      "text": "Giữ application ID com.innotrik.aispeaking."
+    },
+    {
+      "type": "paragraph",
+      "index": 65,
+      "style": "Normal",
+      "text": "Tất cả bản chính thức dùng cùng một release keystore."
+    },
+    {
+      "type": "paragraph",
+      "index": 66,
+      "style": "Normal",
+      "text": "Build number sau dấu + luôn tăng: 1.0.0+1 → 1.0.1+2 → 1.0.2+3."
+    },
+    {
+      "type": "paragraph",
+      "index": 67,
+      "style": "Normal",
+      "text": "Không hướng dẫn người dùng gỡ ứng dụng trong màn hình cập nhật."
+    },
+    {
+      "type": "paragraph",
+      "index": 68,
+      "style": "Normal",
+      "text": "Sao lưu release keystore ở ít nhất hai vị trí bảo mật và lưu mật khẩu trong CI secrets."
+    },
+    {
+      "type": "paragraph",
+      "index": 69,
+      "style": "Heading 2",
+      "text": "7.2. Quy trình phát hành"
+    },
+    {
+      "type": "paragraph",
+      "index": 70,
+      "style": "Normal",
+      "text": "Tăng version/build number."
+    },
+    {
+      "type": "paragraph",
+      "index": 71,
+      "style": "Normal",
+      "text": "Build bằng release keystore chính thức."
+    },
+    {
+      "type": "paragraph",
+      "index": 72,
+      "style": "Normal",
+      "text": "Cài thử đè lên bản release cũ và xác nhận dữ liệu còn nguyên."
+    },
+    {
+      "type": "paragraph",
+      "index": 73,
+      "style": "Normal",
+      "text": "Kiểm tra nói, dịch, phát audio, lịch sử, luyện nghe và BLE nếu có."
+    },
+    {
+      "type": "paragraph",
+      "index": 74,
+      "style": "Normal",
+      "text": "Upload APK có tên phiên bản lên R2."
+    },
+    {
+      "type": "paragraph",
+      "index": 75,
+      "style": "Normal",
+      "text": "Cập nhật latestBuild và trang tải cố định."
+    },
+    {
+      "type": "paragraph",
+      "index": 76,
+      "style": "Normal",
+      "text": "Theo dõi lỗi; cuối cùng mới tăng minimumSupportedBuild để bắt buộc cập nhật."
+    },
+    {
+      "type": "paragraph",
+      "index": 77,
+      "style": "Heading 1",
+      "text": "8. Quan hệ Web và APK trong V1"
+    },
+    {
+      "type": "table",
+      "index": 12,
+      "rows": [
+        [
+          "Quyết định V1: Web và APK lưu/sync riêng. Không yêu cầu phụ huynh quét QR để liên kết hai nền tảng. QR Web chỉ phục vụ khôi phục Web; QR APK chỉ cân nhắc sau nếu có nhu cầu đổi máy hoặc đồng bộ chéo."
+        ]
+      ]
+    },
+    {
+      "type": "table",
+      "index": 13,
+      "rows": [
+        [
+          "Nội dung",
+          "Web/PWA V1",
+          "APK V1"
+        ],
+        [
+          "Định danh",
+          "web clientId + anonymous profile",
+          "android clientId + anonymous profile"
+        ],
+        [
+          "Local progress",
+          "IndexedDB",
+          "JSON/SQLite/file trong app"
+        ],
+        [
+          "Local audio",
+          "IndexedDB Blob WebM/Opus",
+          "File trong vùng ứng dụng"
+        ],
+        [
+          "Cloud progress",
+          "PostgreSQL theo web profile",
+          "PostgreSQL theo APK profile"
+        ],
+        [
+          "Cloud audio",
+          "R2 nếu bật upload",
+          "R2 nếu bật upload"
+        ],
+        [
+          "Khôi phục",
+          "QR/mã khôi phục tùy chọn",
+          "Cài đè không cần QR; gỡ/đổi máy mới cần"
+        ],
+        [
+          "Đồng bộ Web–APK",
+          "Chưa bật",
+          "Chưa bật"
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "index": 80,
+      "style": "Normal",
+      "text": "Giai đoạn sau có thể tạo childProfileId chung và liên kết Web–APK bằng QR một lần. Đây là tính năng đồng bộ đa nền tảng, không nên trộn với nhiệm vụ sao lưu riêng của từng client trong V1."
+    },
+    {
+      "type": "paragraph",
+      "index": 81,
+      "style": "Heading 1",
+      "text": "9. Bảo mật và quyền riêng tư"
+    },
+    {
+      "type": "paragraph",
+      "index": 82,
+      "style": "Normal",
+      "text": "Giọng nói trẻ em là dữ liệu nhạy cảm: cần thông báo rõ mục đích, thời hạn lưu và quyền xóa."
+    },
+    {
+      "type": "paragraph",
+      "index": 83,
+      "style": "Normal",
+      "text": "R2 bucket để private; nghe lại bằng signed URL có thời hạn."
+    },
+    {
+      "type": "paragraph",
+      "index": 84,
+      "style": "Normal",
+      "text": "Không đặt API key Cloudflare/OpenAI trong Web hoặc APK."
+    },
+    {
+      "type": "paragraph",
+      "index": 85,
+      "style": "Normal",
+      "text": "Token khôi phục phải đủ ngẫu nhiên, backend chỉ lưu hash và hỗ trợ thu hồi."
+    },
+    {
+      "type": "paragraph",
+      "index": 86,
+      "style": "Normal",
+      "text": "Có API xóa profile, tiến độ và toàn bộ file audio liên quan."
+    },
+    {
+      "type": "paragraph",
+      "index": 87,
+      "style": "Normal",
+      "text": "Telemetry không ghi nội dung token, URL ký tạm hoặc dữ liệu âm thanh thô."
+    },
+    {
+      "type": "paragraph",
+      "index": 88,
+      "style": "Normal",
+      "text": "Áp dụng rate limit cho tạo profile, upload audio và khôi phục."
+    },
+    {
+      "type": "paragraph",
+      "index": 89,
+      "style": "Heading 1",
+      "text": "10. Lộ trình triển khai đề xuất"
+    },
+    {
+      "type": "table",
+      "index": 14,
+      "rows": [
+        [
+          "Ưu tiên",
+          "Hạng mục",
+          "Kết quả bàn giao",
+          "Điều kiện nghiệm thu"
+        ],
+        [
+          "P0",
+          "IndexedDB Web",
+          "Lưu Blob, metadata, progress, sync_queue",
+          "Reload/đóng mở PWA không mất bản ghi"
+        ],
+        [
+          "P0",
+          "Progress API",
+          "Profile ẩn danh và GET/PATCH tiến độ",
+          "Web tải lại đúng câu sau đăng nhập phiên"
+        ],
+        [
+          "P0",
+          "Release APK",
+          "Keystore, versionCode, cài đè",
+          "Dữ liệu local còn nguyên sau update"
+        ],
+        [
+          "P1",
+          "Audio R2",
+          "Signed upload, metadata, max 3 bản/câu",
+          "Không upload trùng; xóa bản cũ đúng quy tắc"
+        ],
+        [
+          "P1",
+          "Khôi phục Web",
+          "QR/mã một lần và session mới",
+          "Xóa site data vẫn phục hồi được bằng QR"
+        ],
+        [
+          "P1",
+          "Version API",
+          "Latest/minimum/update type/message/URL",
+          "Cập nhật tùy chọn và bắt buộc đúng luồng"
+        ],
+        [
+          "P2",
+          "Đồng bộ Web–APK",
+          "childProfileId và ghép nối",
+          "Hai nền tảng dùng chung tiến độ khi chủ động liên kết"
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "index": 91,
+      "style": "Heading 1",
+      "text": "11. Tiêu chí nghiệm thu V1"
+    },
+    {
+      "type": "paragraph",
+      "index": 92,
+      "style": "Normal",
+      "text": "□ Web ghi âm xong, reload trang vẫn nghe lại được bản mới nhất."
+    },
+    {
+      "type": "paragraph",
+      "index": 93,
+      "style": "Normal",
+      "text": "□ Mỗi câu giữ tối đa 3 bản ghi thành công; lỗi upload không xóa bản local trước."
+    },
+    {
+      "type": "paragraph",
+      "index": 94,
+      "style": "Normal",
+      "text": "□ Mất mạng vẫn học và ghi âm; khi có mạng, hàng đợi đồng bộ tự chạy lại."
+    },
+    {
+      "type": "paragraph",
+      "index": 95,
+      "style": "Normal",
+      "text": "□ Tiến độ backend không bị lùi khi request đến sai thứ tự."
+    },
+    {
+      "type": "paragraph",
+      "index": 96,
+      "style": "Normal",
+      "text": "□ Xóa riêng cookie hoặc riêng IndexedDB vẫn có đường phục hồi tự động phù hợp."
+    },
+    {
+      "type": "paragraph",
+      "index": 97,
+      "style": "Normal",
+      "text": "□ Xóa toàn bộ site data phục hồi được bằng QR hợp lệ; QR đã dùng không dùng lại được."
+    },
+    {
+      "type": "paragraph",
+      "index": 98,
+      "style": "Normal",
+      "text": "□ APK release mới cài đè bản cũ, giữ nguyên tiến độ, audio và thiết lập."
+    },
+    {
+      "type": "paragraph",
+      "index": 99,
+      "style": "Normal",
+      "text": "□ APK bắt buộc cập nhật không yêu cầu gỡ ứng dụng và không dùng Debug key."
+    },
+    {
+      "type": "paragraph",
+      "index": 100,
+      "style": "Normal",
+      "text": "□ Không có API key hoặc secret R2 trong bundle Web/APK."
+    },
+    {
+      "type": "paragraph",
+      "index": 101,
+      "style": "Normal",
+      "text": "□ Có chức năng xóa dữ liệu trẻ em và file R2 tương ứng."
+    },
+    {
+      "type": "paragraph",
+      "index": 102,
+      "style": "Heading 1",
+      "text": "12. Kết luận"
+    },
+    {
+      "type": "paragraph",
+      "index": 103,
+      "style": "Normal",
+      "text": "Kiến trúc phù hợp nhất cho V1 là local-first và lưu riêng theo từng client: Web dùng IndexedDB, APK dùng vùng lưu trữ riêng, cả hai có thể đồng bộ backend độc lập. PostgreSQL chỉ lưu tiến độ và metadata; R2 lưu audio nén. QR là cơ chế khôi phục tùy chọn dành cho Web khi mất toàn bộ site data, không phải bước bắt buộc và không liên quan đến cập nhật APK cài đè."
+    },
+    {
+      "type": "paragraph",
+      "index": 104,
+      "style": "Normal",
+      "text": "Khi sản phẩm cần học tiếp xuyên suốt giữa Web và APK, nhóm dự án mới bổ sung childProfileId chung và ghép nối một lần. Việc tách hai giai đoạn giúp V1 dễ sử dụng, ít rủi ro và triển khai nhanh hơn."
+    }
+  ],
+  "headers": [
+    {
+      "section": 1,
+      "paragraphs": [
+        "AI SPEAKING — KIẾN TRÚC DỮ LIỆU WEB/PWA & APK"
+      ]
+    }
+  ],
+  "footers": [],
+  "footnotes": [],
+  "endnotes": [],
+  "comments": [],
+  "last_rendered_pagination": {
+    "marker_count": 0,
+    "declared_pages": 1,
+    "pages": [
+      "PHƯƠNG ÁN LƯU TRỮ, ĐỒNG BỘ\nVÀ KHÔI PHỤC DỮ LIỆU\nWeb/PWA và ứng dụng Flutter APK — Đề xuất kiến trúc V1\nPhạm vi: Tiến độ học, bản ghi âm luyện nghe, khôi phục Web và cập nhật APK\nNguyên tắc: Không bắt buộc tài khoản; local-first; backend là nguồn sao lưu và đồng bộ\nTrạng thái: Đề xuất để thống nhất trước khi triển khai backend và Flutter\nNgày: 29/07/2026\nKết luận đề xuất: V1 nên để Web và APK lưu riêng theo định danh ẩn danh của từng thiết bị. Web chuyển từ blob/localStorage sang IndexedDB và đồng bộ tiến độ lên backend; audio lưu trên R2. QR chỉ là cơ chế khôi phục Web khi toàn bộ dữ liệu trình duyệt bị xóa. Cập nhật APK cài đè bình thường không cần QR.\n1. Mục tiêu và quyết định kiến trúc\nTài liệu này thống nhất cách lưu dữ liệu học tập trên Web/PWA và APK trong điều kiện sản phẩm chưa triển khai tài khoản cá nhân. Mục tiêu là tránh mất tiến độ, không làm phụ huynh phải thực hiện nhiều bước, đồng thời giữ khả năng mở rộng sang đồng bộ đa thiết bị trong tương lai.\nWeb/PWA hoạt động ngay mà không yêu cầu đăng ký hoặc ghép nối APK.\nAPK tiếp tục hoạt động độc lập; cập nhật chính thức giữ nguyên dữ liệu nếu cài đè đúng chữ ký.\nTiến độ được lưu local trước để giao diện nhanh, sau đó đồng bộ nền lên backend.\nFile ghi âm không lưu trực tiếp trong PostgreSQL; local dùng IndexedDB/file, cloud dùng R2.\nĐồng bộ Web–APK là tính năng riêng của giai đoạn sau, không phải điều kiện của V1.\n2. Hiện trạng được xác nhận\nKhu vực\nCách lưu hiện tại\nRủi ro\nĐịnh hướng V1\nBản ghi Web/PWA\nBlob URL và danh sách tạm trong bộ nhớ\nReload/đóng trình duyệt có thể làm mất file\nLưu Blob WebM/Opus vào IndexedDB\nLịch sử bản ghi Web\nMetadata trong localStorage\nMetadata còn nhưng file blob có thể không còn\nMetadata và file cùng quản lý trong IndexedDB\nTiến độ Web\nlocalStorage: innotrik.listening-progress.v1\nKhông đồng bộ backend; xóa site data sẽ mất\nIndexedDB local-first + API đồng bộ tiến độ\nTiến độ APK\nFile JSON trong Application Support Directory\nKhông chia sẻ với Web; mất khi gỡ/xóa dữ liệu\nGiữ local + đồng bộ backend theo Android clientId\nAudio APK\nFile riêng trong vùng ứng dụng\nKhông khôi phục khi đổi máy nếu chưa upload\nGiữ local; upload R2 nền nếu được bật\nNhận định: vấn đề chính không phải dung lượng metadata mà là vòng đời file audio và danh tính ẩn danh. IndexedDB giải quyết độ bền local của Web; backend giải quyết sao lưu; R2 giải quyết lưu file lớn. Ba lớp này bổ sung cho nhau, không thay thế hoàn toàn cho nhau.\n3. Kiến trúc mục tiêu V1\nWEB/PWA                         BACKEND                         APK\nIndexedDB  ── sync queue ──>   PostgreSQL   <── sync queue ──  Local JSON/File\nBlob WebM  ── signed upload ─> Cloudflare R2 <─ signed upload ─ Audio local\nweb clientId                   API + auth                      android clientId\nTầng\nTrách nhiệm\nKhông nên làm\nLocal Web/APK\nPhản hồi nhanh, hoạt động khi mất mạng, giữ hàng đợi chưa đồng bộ\nDùng local làm nguồn dữ liệu duy nhất\nPostgreSQL\nProfile ẩn danh, tiến độ, metadata, trạng thái upload, phiên bản dữ liệu\nLưu Blob audio trực tiếp\nCloudflare R2\nFile ghi âm nén, giới hạn 3 bản/câu, vòng đời lưu trữ\nPublic URL không giới hạn cho giọng trẻ em\nNext.js API\nXác thực, cấp signed URL, hợp nhất tiến độ, idempotency\nNhận toàn bộ file qua RAM nếu có thể upload thẳng R2\n4. Web/PWA: lưu local và đồng bộ tự động\n4.1. Danh tính ẩn danh\nLần đầu mở Web, backend tạo một anonymousProfileId và webDeviceId. Web không yêu cầu email, số điện thoại hoặc mật khẩu. profileId chỉ là mã nhận diện; quyền truy cập phải dựa trên session/token đã ký.\nanonymousProfileId: profile_8f72ab...\nwebDeviceId:        web_device_a91c...\nlocalStorage key:   innotrik.profile-id.v1\nIndexedDB:          innotrik-pwa-v1 / identity\nCookie:             innotrik_session (HttpOnly, Secure)\nBảo mật: Không dùng profileId làm mật khẩu. Cookie session nên là HttpOnly/Secure; LocalStorage và IndexedDB chỉ giữ định danh và dữ liệu local. Nếu frontend và Railway khác domain, cần custom domain hoặc cấu hình cookie/CORS/CSRF đúng chuẩn.\n4.2. IndexedDB\nObject store\nDữ liệu\nMục đích\nidentity\nprofileId, deviceId, lastSyncedAt\nKhôi phục phiên local và đối chiếu backend\nlearning_progress\nlessonId, câu hiện tại, số câu hoàn thành, skipped\nChạy nhanh và offline\nrecordings\nBlob WebM/Opus, duration, uploadStatus\nKhông mất bản ghi khi reload\nsync_queue\nmutationId, operation, payload, retryCount\nGửi lại an toàn khi mạng trở lại\nsettings\nngôn ngữ, nhóm tuổi, giới hạn cache\nGiữ trải nghiệm cá nhân trên Web\nỨng dụng nên gọi navigator.storage.persist() sau một thao tác có chủ đích như hoàn thành bài đầu hoặc cài PWA. Đồng thời theo dõi navigator.storage.estimate(), giới hạn local khoảng 50–100 MB, không xóa bản chưa upload và luôn giữ tối đa 3 bản ghi thành công gần nhất cho mỗi câu.\n4.3. Đồng bộ tiến độ\nGhi thay đổi vào IndexedDB ngay lập tức.\nCập nhật giao diện, không chờ mạng.\nTạo mutationId và đưa tác vụ vào sync_queue.\nGửi backend khi mở app, đổi foreground, mạng trở lại hoặc sau thay đổi quan trọng.\nNhận revision mới từ backend rồi đánh dấu tác vụ đã hoàn thành.\nQuy tắc hợp nhất đề xuất: completedSentences lấy giá trị lớn hơn; bài đã hoàn thành không tự lùi; currentSentenceIndex lấy bản cập nhật mới nhất; trạng thái từng câu dùng updatedAt/revision. mutationId giúp request lặp lại không tạo dữ liệu trùng.\n5. Backend và lưu file audio\n5.1. Mô hình dữ liệu\nBảng\nKhóa chính/quan hệ\nNội dung chính\nanonymous_profiles\nprofile_id\nHồ sơ ẩn danh, trạng thái, thời điểm tạo\nprofile_devices\ndevice_id → profile_id\nWeb/APK device, token hash, last_seen\nlearning_progress\nprofile_id + lesson_id\nTiến độ, revision, updated_at\nlesson_recordings\nrecording_id\nR2 object key, câu, duration, trạng thái\nrecovery_tokens\ntoken_hash → profile_id\nMã khôi phục một lần, hạn sử dụng\n5.2. API đề xuất\nPOST /api/anonymous-profiles — tạo profile/session lần đầu.\nGET /api/learning-progress — tải snapshot tiến độ.\nPATCH /api/learning-progress/:lessonId — upsert tiến độ idempotent.\nPOST /api/lesson-recordings/upload-url — cấp signed URL upload R2.\nPOST /api/lesson-recordings/complete — xác nhận file và metadata.\nGET /api/lesson-recordings — tải danh sách bản ghi theo quyền.\nDELETE /api/lesson-recordings/:id — xóa metadata và R2 object.\nPOST /api/profile/recovery-code — tạo mã/QR khôi phục.\nPOST /api/profile/recover — dùng mã khôi phục và cấp session mới.\nAudio nên dùng WebM/Opus hoặc AAC. Một đoạn Opus 5 giây ở 24 kbps chỉ khoảng 15 KB, trong khi WAV PCM 24 kHz khoảng 240 KB. Upload trực tiếp lên R2 bằng signed URL giúp Next.js không phải giữ file trong RAM và giảm tải rõ rệt.\n6. QR khôi phục Web/PWA\nQR khôi phục không phải bước onboarding và không bắt buộc để sử dụng Web. Nó chỉ là phao cứu dữ liệu khi cookie, LocalStorage và IndexedDB đều bị xóa hoặc người dùng đổi máy/trình duyệt.\nTình huống\nCó thể tự phục hồi?\nXử lý\nChỉ xóa biểu tượng PWA\nThường có\nMở lại cùng domain và trình duyệt; dữ liệu site thường còn\nCookie mất, IndexedDB còn\nCó\nKhôi phục session thiết bị rồi tải backend\nIndexedDB mất, session còn\nCó\nTải lại tiến độ/metadata từ backend\nToàn bộ site data bị xóa\nKhông tự động\nQuét QR hoặc nhập mã khôi phục\nĐổi điện thoại/trình duyệt\nKhông tự động\nDùng QR khôi phục\nKhông lưu QR và mất toàn bộ site data\nKhông\nTạo hồ sơ mới; không thể xác định hồ sơ cũ\n6.1. Trải nghiệm phụ huynh\nSau khi hoàn thành bài đầu, hiển thị gợi ý nhẹ: ‘Lưu mã khôi phục để không mất tiến độ khi đổi máy’. Có nút Để sau.\nKhi chọn lưu, backend tạo token ngẫu nhiên; QR chứa URL có token ở phần fragment (#code=...).\nPhụ huynh lưu ảnh, gửi vào Zalo/WeChat của chính mình hoặc lưu mã chữ dự phòng.\nKhi khôi phục, token được dùng một lần, backend cấp session mới và yêu cầu tạo QR mới.\nGiới hạn bắt buộc: Nếu không có tài khoản, QR/mã khôi phục hoặc mã thiết bị riêng thì backend không thể nhận biết người cũ sau khi toàn bộ dữ liệu trình duyệt bị xóa. IndexedDB và persistent storage chỉ giảm rủi ro, không loại bỏ hoàn toàn.\n7. APK: lưu dữ liệu và cập nhật bắt buộc\nAPK dùng Android clientId, lưu tiến độ và audio trong vùng riêng của ứng dụng. V1 có thể đồng bộ backend riêng cho APK mà không liên kết với Web. QR không cần thiết cho cập nhật APK thông thường.\nTrường hợp APK\nDữ liệu local\nCó cần QR?\nCài đè bản release mới\nĐược giữ\nKhông\nCập nhật bắt buộc qua APK\nĐược giữ\nKhông\nGỡ ứng dụng rồi cài lại\nCó thể mất\nCó ích nếu cần phục hồi\nXóa dữ liệu ứng dụng\nMất\nCó ích\nĐổi điện thoại\nKhông tự chuyển\nCó ích hoặc dùng cơ chế chuyển thiết bị\nDebug → release chính thức\nPhải gỡ bản Debug\nChỉ cần nếu muốn giữ dữ liệu test\n7.1. Điều kiện cài đè\nGiữ application ID com.innotrik.aispeaking.\nTất cả bản chính thức dùng cùng một release keystore.\nBuild number sau dấu + luôn tăng: 1.0.0+1 → 1.0.1+2 → 1.0.2+3.\nKhông hướng dẫn người dùng gỡ ứng dụng trong màn hình cập nhật.\nSao lưu release keystore ở ít nhất hai vị trí bảo mật và lưu mật khẩu trong CI secrets.\n7.2. Quy trình phát hành\nTăng version/build number.\nBuild bằng release keystore chính thức.\nCài thử đè lên bản release cũ và xác nhận dữ liệu còn nguyên.\nKiểm tra nói, dịch, phát audio, lịch sử, luyện nghe và BLE nếu có.\nUpload APK có tên phiên bản lên R2.\nCập nhật latestBuild và trang tải cố định.\nTheo dõi lỗi; cuối cùng mới tăng minimumSupportedBuild để bắt buộc cập nhật.\n8. Quan hệ Web và APK trong V1\nQuyết định V1: Web và APK lưu/sync riêng. Không yêu cầu phụ huynh quét QR để liên kết hai nền tảng. QR Web chỉ phục vụ khôi phục Web; QR APK chỉ cân nhắc sau nếu có nhu cầu đổi máy hoặc đồng bộ chéo.\nNội dung\nWeb/PWA V1\nAPK V1\nĐịnh danh\nweb clientId + anonymous profile\nandroid clientId + anonymous profile\nLocal progress\nIndexedDB\nJSON/SQLite/file trong app\nLocal audio\nIndexedDB Blob WebM/Opus\nFile trong vùng ứng dụng\nCloud progress\nPostgreSQL theo web profile\nPostgreSQL theo APK profile\nCloud audio\nR2 nếu bật upload\nR2 nếu bật upload\nKhôi phục\nQR/mã khôi phục tùy chọn\nCài đè không cần QR; gỡ/đổi máy mới cần\nĐồng bộ Web–APK\nChưa bật\nChưa bật\nGiai đoạn sau có thể tạo childProfileId chung và liên kết Web–APK bằng QR một lần. Đây là tính năng đồng bộ đa nền tảng, không nên trộn với nhiệm vụ sao lưu riêng của từng client trong V1.\n9. Bảo mật và quyền riêng tư\nGiọng nói trẻ em là dữ liệu nhạy cảm: cần thông báo rõ mục đích, thời hạn lưu và quyền xóa.\nR2 bucket để private; nghe lại bằng signed URL có thời hạn.\nKhông đặt API key Cloudflare/OpenAI trong Web hoặc APK.\nToken khôi phục phải đủ ngẫu nhiên, backend chỉ lưu hash và hỗ trợ thu hồi.\nCó API xóa profile, tiến độ và toàn bộ file audio liên quan.\nTelemetry không ghi nội dung token, URL ký tạm hoặc dữ liệu âm thanh thô.\nÁp dụng rate limit cho tạo profile, upload audio và khôi phục.\n10. Lộ trình triển khai đề xuất\nƯu tiên\nHạng mục\nKết quả bàn giao\nĐiều kiện nghiệm thu\nP0\nIndexedDB Web\nLưu Blob, metadata, progress, sync_queue\nReload/đóng mở PWA không mất bản ghi\nP0\nProgress API\nProfile ẩn danh và GET/PATCH tiến độ\nWeb tải lại đúng câu sau đăng nhập phiên\nP0\nRelease APK\nKeystore, versionCode, cài đè\nDữ liệu local còn nguyên sau update\nP1\nAudio R2\nSigned upload, metadata, max 3 bản/câu\nKhông upload trùng; xóa bản cũ đúng quy tắc\nP1\nKhôi phục Web\nQR/mã một lần và session mới\nXóa site data vẫn phục hồi được bằng QR\nP1\nVersion API\nLatest/minimum/update type/message/URL\nCập nhật tùy chọn và bắt buộc đúng luồng\nP2\nĐồng bộ Web–APK\nchildProfileId và ghép nối\nHai nền tảng dùng chung tiến độ khi chủ động liên kết\n11. Tiêu chí nghiệm thu V1\n□ Web ghi âm xong, reload trang vẫn nghe lại được bản mới nhất.\n□ Mỗi câu giữ tối đa 3 bản ghi thành công; lỗi upload không xóa bản local trước.\n□ Mất mạng vẫn học và ghi âm; khi có mạng, hàng đợi đồng bộ tự chạy lại.\n□ Tiến độ backend không bị lùi khi request đến sai thứ tự.\n□ Xóa riêng cookie hoặc riêng IndexedDB vẫn có đường phục hồi tự động phù hợp.\n□ Xóa toàn bộ site data phục hồi được bằng QR hợp lệ; QR đã dùng không dùng lại được.\n□ APK release mới cài đè bản cũ, giữ nguyên tiến độ, audio và thiết lập.\n□ APK bắt buộc cập nhật không yêu cầu gỡ ứng dụng và không dùng Debug key.\n□ Không có API key hoặc secret R2 trong bundle Web/APK.\n□ Có chức năng xóa dữ liệu trẻ em và file R2 tương ứng.\n12. Kết luận\nKiến trúc phù hợp nhất cho V1 là local-first và lưu riêng theo từng client: Web dùng IndexedDB, APK dùng vùng lưu trữ riêng, cả hai có thể đồng bộ backend độc lập. PostgreSQL chỉ lưu tiến độ và metadata; R2 lưu audio nén. QR là cơ chế khôi phục tùy chọn dành cho Web khi mất toàn bộ site data, không phải bước bắt buộc và không liên quan đến cập nhật APK cài đè.\nKhi sản phẩm cần học tiếp xuyên suốt giữa Web và APK, nhóm dự án mới bổ sung childProfileId chung và ghép nối một lần. Việc tách hai giai đoạn giúp V1 dễ sử dụng, ít rủi ro và triển khai nhanh hơn."
+    ]
+  }
+}
