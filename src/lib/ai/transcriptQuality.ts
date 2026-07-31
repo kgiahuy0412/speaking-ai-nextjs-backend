@@ -4,6 +4,10 @@ export type WhisperSegment = {
   compression_ratio?: unknown;
 };
 
+export type TranscriptQualityContext = {
+  utteranceDurationMs?: number;
+};
+
 const promptEchoFragments = [
   "vietnamese child speaking",
   "short everyday phrases",
@@ -11,6 +15,20 @@ const promptEchoFragments = [
   "preserve the addressee",
   "question form",
   "translated naturally and faithfully",
+];
+
+// Whisper can produce these stock phrases from silence, television audio or
+// steady background noise. They are not useful utterances in the child
+// communication flow, so do not let them reach translation or TTS.
+const commonHallucinationFragments = [
+  "amara org",
+  "cam on cac ban da theo doi",
+  "cam on cac ban da xem",
+  "cam on moi nguoi da theo doi",
+  "dang ky kenh",
+  "hen gap lai cac ban trong video",
+  "phu de duoc thuc hien",
+  "thanks for watching",
 ];
 
 const commonEnglishWords = new Set([
@@ -51,6 +69,13 @@ function compact(value: string) {
     .trim();
 }
 
+function compactWithoutVietnameseDiacritics(value: string) {
+  return compact(value)
+    .normalize("NFD")
+    .replace(/\p{M}+/gu, "")
+    .replace(/đ/g, "d");
+}
+
 function finiteNumber(value: unknown) {
   return typeof value === "number" && Number.isFinite(value)
     ? value
@@ -87,8 +112,11 @@ function looksRepetitive(words: string[]) {
 export function getVietnameseTranscriptQualityIssue(
   transcript: string,
   segments: unknown[] = [],
+  context: TranscriptQualityContext = {},
 ) {
   const normalized = compact(transcript);
+  const normalizedWithoutDiacritics =
+    compactWithoutVietnameseDiacritics(transcript);
   const words = normalized ? normalized.split(" ") : [];
 
   if (!normalized) {
@@ -100,11 +128,30 @@ export function getVietnameseTranscriptQualityIssue(
   if (promptEchoFragments.some((fragment) => normalized.includes(fragment))) {
     return "prompt_echo" as const;
   }
+  if (
+    commonHallucinationFragments.some((fragment) =>
+      normalizedWithoutDiacritics.includes(fragment),
+    )
+  ) {
+    return "common_hallucination" as const;
+  }
   if (looksEnglishOnly(normalized, words)) {
     return "unexpected_english" as const;
   }
   if (looksRepetitive(words)) {
     return "repetitive" as const;
+  }
+
+  const utteranceDurationMs = finiteNumber(context.utteranceDurationMs);
+  if (utteranceDurationMs && utteranceDurationMs > 0) {
+    const durationSeconds = utteranceDurationMs / 1000;
+    const plausibleWordLimit = Math.max(
+      8,
+      Math.ceil(durationSeconds * 4.5) + 3,
+    );
+    if (words.length > plausibleWordLimit) {
+      return "implausible_speaking_rate" as const;
+    }
   }
 
   const qualitySegments = segments.filter(
@@ -121,21 +168,30 @@ export function getVietnameseTranscriptQualityIssue(
     .map((segment) => finiteNumber(segment.compression_ratio))
     .filter((value): value is number => value !== undefined);
 
+  const meanLogProbability =
+    logProbabilities.length > 0
+      ? logProbabilities.reduce((sum, value) => sum + value, 0) /
+        logProbabilities.length
+      : undefined;
+  const meanNoSpeechProbability =
+    noSpeechProbabilities.length > 0
+      ? noSpeechProbabilities.reduce((sum, value) => sum + value, 0) /
+        noSpeechProbabilities.length
+      : undefined;
+
   if (
-    noSpeechProbabilities.length > 0 &&
-    noSpeechProbabilities.every((value) => value >= 0.85)
+    meanNoSpeechProbability !== undefined &&
+    (meanNoSpeechProbability >= 0.72 ||
+      (Math.max(...noSpeechProbabilities) >= 0.9 &&
+        meanLogProbability !== undefined &&
+        meanLogProbability < -0.45))
   ) {
     return "no_speech" as const;
   }
-  if (
-    logProbabilities.length > 0 &&
-    logProbabilities.reduce((sum, value) => sum + value, 0) /
-      logProbabilities.length <
-      -1
-  ) {
+  if (meanLogProbability !== undefined && meanLogProbability < -0.8) {
     return "low_log_probability" as const;
   }
-  if (compressionRatios.some((value) => value > 2.6)) {
+  if (compressionRatios.some((value) => value > 2.4)) {
     return "high_compression" as const;
   }
 

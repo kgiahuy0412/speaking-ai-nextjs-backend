@@ -9,21 +9,34 @@ import { containsUnexpectedEastAsianScript } from "./languageValidation";
 import { repairVietnameseChildTranscript } from "./transcriptRepair";
 import { getVietnameseTranscriptQualityIssue } from "./transcriptQuality";
 
-function assertVietnameseTranscript(text: string, segments: unknown[] = []) {
-  const qualityIssue = getVietnameseTranscriptQualityIssue(text, segments);
-  if (!containsUnexpectedEastAsianScript(text) && !qualityIssue) return;
+function assertVietnameseTranscript(
+  text: string,
+  segments: unknown[] = [],
+  options: {
+    requestId?: string;
+    provider?: "cloudflare" | "openai" | "device";
+    utteranceDurationMs?: number;
+  } = {},
+) {
+  const unexpectedScript = containsUnexpectedEastAsianScript(text);
+  const qualityIssue = getVietnameseTranscriptQualityIssue(text, segments, {
+    utteranceDurationMs: options.utteranceDurationMs,
+  });
+  if (!unexpectedScript && !qualityIssue) return;
+
+  logEvent("warn", "asr_transcript_rejected", {
+    requestId: options.requestId,
+    provider: options.provider,
+    reason: unexpectedScript ? "unexpected_script" : qualityIssue,
+    utteranceDurationMs: options.utteranceDurationMs,
+    transcriptLength: text.trim().length,
+  });
 
   throw new AppError(
     "ASR_LOW_CONFIDENCE",
-    "Nhận diện giọng nói chưa đủ chắc chắn. Vui lòng nói lại gần micro hơn.",
+    "Mình chưa nghe rõ. Con đưa micro lại gần và nói rõ hơn nhé.",
+    422,
   );
-}
-
-function positiveInteger(name: string, fallback: number) {
-  const parsed = Number(process.env[name]);
-  return Number.isFinite(parsed) && parsed > 0
-    ? Math.floor(parsed)
-    : fallback;
 }
 
 function getPrimaryAsrProvider() {
@@ -60,7 +73,11 @@ async function transcribeAudio(input: ConversationRequest) {
     const startedAt = performance.now();
     const cloudflareTranscription = (async () => {
       const result = await transcribeAudioToVietnamese(audioFile);
-      assertVietnameseTranscript(result.vietnameseText, result.segments);
+      assertVietnameseTranscript(result.vietnameseText, result.segments, {
+        requestId: input.requestId,
+        provider: "cloudflare",
+        utteranceDurationMs: input.benchmark?.utteranceDurationMs,
+      });
       return {
         text: result.vietnameseText,
         provider: "cloudflare" as const,
@@ -80,41 +97,22 @@ async function transcribeAudio(input: ConversationRequest) {
       return result.text;
     }
 
-    let fallbackPromise:
-      | ReturnType<typeof transcribeWithOpenAI>
-      | undefined;
-    let fallbackReason = "slow_primary";
-    const startFallback = () =>
-      (fallbackPromise ??= transcribeWithOpenAI(audioFile));
-    let hedgeTimer: ReturnType<typeof setTimeout> | undefined;
-    const hedgeDelayMs = positiveInteger("ASR_HEDGE_DELAY_MS", 2_500);
-    const delayedFallback = new Promise<
-      Awaited<ReturnType<typeof transcribeWithOpenAI>>
-    >((resolve, reject) => {
-      hedgeTimer = setTimeout(() => {
-        fallbackReason = "slow_primary";
-        void startFallback().then(resolve, reject);
-      }, hedgeDelayMs);
+    let fallbackReason = "cloudflare_failed";
+    const result = await cloudflareTranscription.catch(async (error) => {
+      // Low-confidence audio is a user-actionable result, not a provider
+      // outage. Falling back here made a second ASR guess from the same poor
+      // audio and could create an unrelated sentence.
+      if (error instanceof AppError && error.code === "ASR_LOW_CONFIDENCE") {
+        throw error;
+      }
+      fallbackReason = error instanceof Error ? error.name : "unknown_error";
+      return transcribeWithOpenAI(audioFile);
     });
-    const primaryOrImmediateFallback = cloudflareTranscription.catch(
-      (error) => {
-        fallbackReason =
-          error instanceof AppError && error.code === "ASR_LOW_CONFIDENCE"
-            ? "low_confidence"
-            : error instanceof Error
-              ? error.name
-              : "unknown_error";
-        return startFallback();
-      },
-    );
-
-    const result = await Promise.race([
-      primaryOrImmediateFallback,
-      delayedFallback,
-    ]).finally(() => {
-      if (hedgeTimer) clearTimeout(hedgeTimer);
+    assertVietnameseTranscript(result.text, [], {
+      requestId: input.requestId,
+      provider: result.provider,
+      utteranceDurationMs: input.benchmark?.utteranceDurationMs,
     });
-    assertVietnameseTranscript(result.text);
     const fallbackUsed = result.provider === "openai";
     logEvent(fallbackUsed ? "warn" : "info", "asr_provider_latency", {
       requestId: input.requestId,
@@ -123,14 +121,17 @@ async function transcribeAudio(input: ConversationRequest) {
       latencyMs: Math.round(performance.now() - startedAt),
       fallbackUsed,
       fallbackReason: fallbackUsed ? fallbackReason : undefined,
-      hedgeDelayMs,
     });
     return result.text;
   }
 
   const startedAt = performance.now();
   const result = await transcribeWithOpenAI(audioFile);
-  assertVietnameseTranscript(result.text);
+  assertVietnameseTranscript(result.text, [], {
+    requestId: input.requestId,
+    provider: "openai",
+    utteranceDurationMs: input.benchmark?.utteranceDurationMs,
+  });
   logEvent("info", "asr_provider_latency", {
     requestId: input.requestId,
     provider: "openai",
@@ -153,10 +154,15 @@ export async function transcribeVietnamese(input: ConversationRequest) {
     ) {
       throw new AppError(
         "ASR_LOW_CONFIDENCE",
-        "Ứng dụng chưa nghe rõ câu nói. Vui lòng nói lại gần micro hơn.",
+        "Mình chưa nghe rõ. Con đưa micro lại gần và nói rõ hơn nhé.",
+        422,
       );
     }
-    assertVietnameseTranscript(sourceText);
+    assertVietnameseTranscript(sourceText, [], {
+      requestId: input.requestId,
+      provider: "device",
+      utteranceDurationMs: input.benchmark?.utteranceDurationMs,
+    });
     return input.asrMode === "android_streaming" ||
       input.asrMode === "openai_realtime"
       ? repairVietnameseChildTranscript(sourceText)
@@ -169,11 +175,15 @@ export async function transcribeVietnamese(input: ConversationRequest) {
     if (!vietnameseText) {
       throw new AppError(
         "ASR_LOW_CONFIDENCE",
-        "Không nghe thấy giọng nói. Hãy bật micro của máy ảo và nói lại.",
+        "Mình chưa nghe thấy giọng nói. Con đưa micro lại gần và nói rõ hơn nhé.",
+        422,
       );
     }
 
-    assertVietnameseTranscript(vietnameseText);
+    assertVietnameseTranscript(vietnameseText, [], {
+      requestId: input.requestId,
+      utteranceDurationMs: input.benchmark?.utteranceDurationMs,
+    });
 
     return repairVietnameseChildTranscript(vietnameseText);
   }

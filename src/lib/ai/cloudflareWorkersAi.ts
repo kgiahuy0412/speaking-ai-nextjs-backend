@@ -2,6 +2,7 @@ import { AppError } from "@/lib/errors";
 import {
   buildCloudflareAudioTranslationBody,
   buildCloudflareAudioTranscriptionBody,
+  classifyCloudflareTranscriptionResponse,
   type CloudflareWorkersAiEnvelope,
 } from "./cloudflareWorkersAiRequest";
 
@@ -26,9 +27,7 @@ export type AudioTranscriptionResult = {
 
 function positiveInteger(name: string, fallback: number) {
   const parsed = Number(process.env[name]);
-  return Number.isFinite(parsed) && parsed > 0
-    ? Math.floor(parsed)
-    : fallback;
+  return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : fallback;
 }
 
 export function getCloudflareAudioTranslationConfig() {
@@ -102,9 +101,9 @@ export async function translateAudioToEnglish(
     );
   }
 
-  const payload = (await response.json().catch(() => null)) as
-    | CloudflareWorkersAiEnvelope
-    | null;
+  const payload = (await response
+    .json()
+    .catch(() => null)) as CloudflareWorkersAiEnvelope | null;
   const result = payload?.result;
   const englishText =
     typeof result?.text === "string" ? result.text.trim() : "";
@@ -166,20 +165,36 @@ export async function transcribeAudioToVietnamese(
     );
   }
 
-  const payload = (await response.json().catch(() => null)) as
-    | CloudflareWorkersAiEnvelope
-    | null;
+  const payload = (await response
+    .json()
+    .catch(() => null)) as CloudflareWorkersAiEnvelope | null;
   const result = payload?.result;
   const vietnameseText =
     typeof result?.text === "string" ? result.text.trim() : "";
+  const transcriptionFailure = classifyCloudflareTranscriptionResponse({
+    responseOk: response.ok,
+    success: payload?.success,
+    transcript: vietnameseText,
+  });
 
-  if (!response.ok || payload?.success === false || !vietnameseText) {
+  if (transcriptionFailure === "provider_error") {
     throw new AppError(
       "ASR_FAILED",
       response.status === 429
         ? "Cloudflare Workers AI đang quá tải. Vui lòng thử lại sau."
         : "Cloudflare Workers AI không nhận diện được đoạn ghi âm này.",
       response.status === 429 ? 429 : 502,
+    );
+  }
+
+  // A successful provider response with no transcript normally means VAD/ASR
+  // could not confirm speech. Treat it as unclear input so the fallback
+  // provider does not make another guess from the same silent/noisy audio.
+  if (transcriptionFailure === "unclear_speech") {
+    throw new AppError(
+      "ASR_LOW_CONFIDENCE",
+      "Mình chưa nghe rõ. Con đưa micro lại gần và nói rõ hơn nhé.",
+      422,
     );
   }
 

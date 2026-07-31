@@ -9,6 +9,20 @@ export type CloudflareWorkersAiEnvelope = {
   errors?: Array<{ code?: number; message?: string }>;
 };
 
+export function classifyCloudflareTranscriptionResponse(input: {
+  responseOk: boolean;
+  success: boolean | undefined;
+  transcript: string;
+}) {
+  if (!input.responseOk || input.success === false) {
+    return "provider_error" as const;
+  }
+  if (!input.transcript.trim()) {
+    return "unclear_speech" as const;
+  }
+  return null;
+}
+
 export function buildCloudflareAudioTranslationBody(
   audio: ArrayBuffer,
   sourceLanguage: string,
@@ -37,8 +51,8 @@ export function buildCloudflareAudioTranscriptionBody(
     // Client VAD has already confirmed speech. These values stay conservative
     // against noise while avoiding false rejection of short or quiet child
     // speech. They also align with the server-side transcript validator.
-    no_speech_threshold: 0.65,
-    compression_ratio_threshold: 2.4,
-    log_prob_threshold: -1.0,
+    no_speech_threshold: 0.55,
+    compression_ratio_threshold: 2.2,
+    log_prob_threshold: -0.8,
   } as const;
 }

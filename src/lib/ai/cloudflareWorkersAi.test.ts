@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   buildCloudflareAudioTranscriptionBody,
   buildCloudflareAudioTranslationBody,
+  classifyCloudflareTranscriptionResponse,
 } from "./cloudflareWorkersAiRequest";
 
 test("builds a Cloudflare request for English audio translation", () => {
@@ -33,8 +34,27 @@ test("builds a Cloudflare request for faithful Vietnamese transcription", () => 
   assert.equal(body.language, "vi");
   assert.equal(body.vad_filter, true);
   assert.equal(body.condition_on_previous_text, false);
-  assert.equal(body.no_speech_threshold, 0.65);
-  assert.equal(body.compression_ratio_threshold, 2.4);
-  assert.equal(body.log_prob_threshold, -1.0);
+  assert.equal(body.no_speech_threshold, 0.55);
+  assert.equal(body.compression_ratio_threshold, 2.2);
+  assert.equal(body.log_prob_threshold, -0.8);
   assert.equal("initial_prompt" in body, false);
+});
+
+test("classifies a successful empty Cloudflare transcript as unclear speech", () => {
+  assert.equal(
+    classifyCloudflareTranscriptionResponse({
+      responseOk: true,
+      success: true,
+      transcript: "",
+    }),
+    "unclear_speech",
+  );
+  assert.equal(
+    classifyCloudflareTranscriptionResponse({
+      responseOk: true,
+      success: true,
+      transcript: "Con muốn uống nước.",
+    }),
+    null,
+  );
 });
