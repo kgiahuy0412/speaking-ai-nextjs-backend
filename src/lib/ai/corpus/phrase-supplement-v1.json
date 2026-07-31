@@ -1,0 +1,2820 @@
+[
+  {
+    "id": "PHRASE-V1-001",
+    "vietnamese": "Cho con xin nước.",
+    "english": "Can I have some water, please?",
+    "aliases": [
+      "cho con xin nuoc"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "cho con xin nuoc",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-002",
+    "vietnamese": "Con đói bụng.",
+    "english": "I'm hungry.",
+    "aliases": [
+      "con doi bung"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "con doi bung",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-003",
+    "vietnamese": "Con đói.",
+    "english": "I'm hungry.",
+    "aliases": [
+      "con doi"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con doi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-004",
+    "vietnamese": "Con muốn ăn bánh.",
+    "english": "I want to eat a snack.",
+    "aliases": [
+      "con muon an banh"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon an banh",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-005",
+    "vietnamese": "Con muốn ăn tối.",
+    "english": "I want to eat dinner.",
+    "aliases": [
+      "con muon an toi"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon an toi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-006",
+    "vietnamese": "Con muốn ăn sáng.",
+    "english": "I want to eat breakfast.",
+    "aliases": [
+      "con muon an sang"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon an sang",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-007",
+    "vietnamese": "Con muốn ăn trái cây.",
+    "english": "I want some fruit.",
+    "aliases": [
+      "con muon an trai cay"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon an trai cay",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-008",
+    "vietnamese": "Con muốn ăn kem.",
+    "english": "I want some ice cream.",
+    "aliases": [
+      "con muon an kem"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "con muon an kem",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-009",
+    "vietnamese": "Con muốn ăn.",
+    "english": "I want to eat.",
+    "aliases": [
+      "con muon an"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon an",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-010",
+    "vietnamese": "Con muốn kẹo.",
+    "english": "I want some candy.",
+    "aliases": [
+      "con muon keo"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon keo",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-011",
+    "vietnamese": "Con đau đầu.",
+    "english": "My head hurts.",
+    "aliases": [
+      "con dau dau"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con dau dau",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-012",
+    "vietnamese": "Con bị đau.",
+    "english": "I got hurt.",
+    "aliases": [
+      "con bi dau"
+    ],
+    "contexts": [
+      "home",
+      "school"
+    ],
+    "sourcePhrase": "con bi dau",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-013",
+    "vietnamese": "Con bị ốm.",
+    "english": "I'm sick.",
+    "aliases": [
+      "con bi om"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con bi om",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-014",
+    "vietnamese": "Con muốn uống thuốc.",
+    "english": "I need to take medicine.",
+    "aliases": [
+      "con muon uong thuoc"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon uong thuoc",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-015",
+    "vietnamese": "Con buồn ngủ.",
+    "english": "I'm sleepy.",
+    "aliases": [
+      "con buon ngu"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con buon ngu",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-016",
+    "vietnamese": "Con muốn đi tắm.",
+    "english": "I want to take a bath.",
+    "aliases": [
+      "con muon di tam"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon di tam",
+    "masterCorpusIds": [
+      "AIV0-0511"
+    ]
+  },
+  {
+    "id": "PHRASE-V1-017",
+    "vietnamese": "Con muốn rửa tay.",
+    "english": "I want to wash my hands.",
+    "aliases": [
+      "con muon rua tay"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon rua tay",
+    "masterCorpusIds": [
+      "AIV0-0502"
+    ]
+  },
+  {
+    "id": "PHRASE-V1-018",
+    "vietnamese": "Con muốn chơi.",
+    "english": "I want to play.",
+    "aliases": [
+      "con muon choi"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon choi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-019",
+    "vietnamese": "Con muốn đi chơi công viên.",
+    "english": "I want to go to the park.",
+    "aliases": [
+      "con muon di choi cong vien"
+    ],
+    "contexts": [
+      "home",
+      "school",
+      "outside"
+    ],
+    "sourcePhrase": "con muon di choi cong vien",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-020",
+    "vietnamese": "Con muốn đi chơi.",
+    "english": "I want to go out and play.",
+    "aliases": [
+      "con muon di choi"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "con muon di choi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-021",
+    "vietnamese": "Con muốn bố chơi với con.",
+    "english": "Dad, please play with me.",
+    "aliases": [
+      "con muon bo choi voi con"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon bo choi voi con",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-022",
+    "vietnamese": "Con muốn mẹ đọc truyện cho con.",
+    "english": "Mom, please read me a story.",
+    "aliases": [
+      "con muon me doc truyen cho con"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon me doc truyen cho con",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-023",
+    "vietnamese": "Con muốn xem phim hoạt hình.",
+    "english": "I want to watch cartoons.",
+    "aliases": [
+      "con muon xem phim hoat hinh"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon xem phim hoat hinh",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-024",
+    "vietnamese": "Con muốn đứng gần cửa sổ.",
+    "english": "I want to stand near the window.",
+    "aliases": [
+      "con muon dung gan cua so"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "con muon dung gan cua so",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-025",
+    "vietnamese": "Con muốn mở cửa sổ.",
+    "english": "I want to open the window.",
+    "aliases": [
+      "con muon mo cua so"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon mo cua so",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-026",
+    "vietnamese": "Con muốn nhìn bức tượng kia.",
+    "english": "I want to see that statue.",
+    "aliases": [
+      "con muon nhin buc tuong kia"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "con muon nhin buc tuong kia",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-027",
+    "vietnamese": "Con muốn xem con cá màu vàng kia.",
+    "english": "I want to see that yellow fish.",
+    "aliases": [
+      "con muon xem con ca mau vang kia"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "con muon xem con ca mau vang kia",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-028",
+    "vietnamese": "Con muốn nhìn con cá màu vàng kia.",
+    "english": "I want to see that yellow fish.",
+    "aliases": [
+      "con muon nhin con ca mau vang kia"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "con muon nhin con ca mau vang kia",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-029",
+    "vietnamese": "Mẹ chụp cho con với bức tượng kia.",
+    "english": "Mom, please take a picture of me with that statue.",
+    "aliases": [
+      "me chup cho con voi buc tuong kia"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "me chup cho con voi buc tuong kia",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-030",
+    "vietnamese": "Chụp cho con với bức tượng kia.",
+    "english": "Mom, please take a picture of me with that statue.",
+    "aliases": [
+      "chup cho con voi buc tuong kia"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "chup cho con voi buc tuong kia",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-031",
+    "vietnamese": "Con muốn nhìn cái máy bay trên trời.",
+    "english": "I want to see the airplane in the sky.",
+    "aliases": [
+      "con muon nhin cai may bay tren troi"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "con muon nhin cai may bay tren troi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-032",
+    "vietnamese": "Con muốn nhìn máy bay trên trời.",
+    "english": "I want to see the airplane in the sky.",
+    "aliases": [
+      "con muon nhin may bay tren troi"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "con muon nhin may bay tren troi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-033",
+    "vietnamese": "Con thấy máy bay trên trời.",
+    "english": "I see an airplane in the sky.",
+    "aliases": [
+      "con thay may bay tren troi"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "con thay may bay tren troi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-034",
+    "vietnamese": "Mẹ ơi, mình có thể đi thang máy được không?",
+    "english": "Can we take the elevator?",
+    "aliases": [
+      "me oi minh co the di thang may duoc khong"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "me oi minh co the di thang may duoc khong",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-035",
+    "vietnamese": "Mình có thể đi thang máy được không?",
+    "english": "Can we take the elevator?",
+    "aliases": [
+      "minh co the di thang may duoc khong"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "minh co the di thang may duoc khong",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-036",
+    "vietnamese": "Con muốn đi thang máy.",
+    "english": "I want to take the elevator.",
+    "aliases": [
+      "con muon di thang may"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "con muon di thang may",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-037",
+    "vietnamese": "Mẹ ơi, sao trời tối nhanh vậy?",
+    "english": "Mom, why does it get dark so fast?",
+    "aliases": [
+      "me oi sao troi toi nhanh vay"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "me oi sao troi toi nhanh vay",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-038",
+    "vietnamese": "Sao trời tối nhanh vậy?",
+    "english": "Mom, why does it get dark so fast?",
+    "aliases": [
+      "sao troi toi nhanh vay"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "sao troi toi nhanh vay",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-039",
+    "vietnamese": "Con làm rơi rồi.",
+    "english": "I dropped it.",
+    "aliases": [
+      "con lam roi roi"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con lam roi roi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-040",
+    "vietnamese": "Con làm đổ nước.",
+    "english": "I spilled water.",
+    "aliases": [
+      "con lam roi nuoc"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con lam roi nuoc",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-041",
+    "vietnamese": "Con không thích cái này.",
+    "english": "I don't like this.",
+    "aliases": [
+      "con khong thich cai nay"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con khong thich cai nay",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-042",
+    "vietnamese": "Con thích cái này.",
+    "english": "I like this.",
+    "aliases": [
+      "con thich cai nay"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con thich cai nay",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-043",
+    "vietnamese": "Cái kia đó, mẹ.",
+    "english": "That one, Mom.",
+    "aliases": [
+      "cai kia do me"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "cai kia do me",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-044",
+    "vietnamese": "Con muốn cái này, cái kia.",
+    "english": "I want this one and that one.",
+    "aliases": [
+      "con muon cai nay cai kia"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon cai nay cai kia",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-045",
+    "vietnamese": "Con muốn cái này.",
+    "english": "I want this one.",
+    "aliases": [
+      "con muon cai nay"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "con muon cai nay",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-046",
+    "vietnamese": "Con muốn cái kia.",
+    "english": "I want that one.",
+    "aliases": [
+      "con muon cai kia"
+    ],
+    "contexts": [
+      "home",
+      "outside"
+    ],
+    "sourcePhrase": "con muon cai kia",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-047",
+    "vietnamese": "Giúp con với.",
+    "english": "Can you help me, please?",
+    "aliases": [
+      "giup con voi"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "giup con voi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-048",
+    "vietnamese": "Con cần ôm.",
+    "english": "I need a hug.",
+    "aliases": [
+      "con can om"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con can om",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-049",
+    "vietnamese": "Con sợ.",
+    "english": "I'm scared.",
+    "aliases": [
+      "con so"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con so",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-050",
+    "vietnamese": "Con không tự mặc được.",
+    "english": "I need help getting dressed.",
+    "aliases": [
+      "con khong tu mac duoc"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con khong tu mac duoc",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-051",
+    "vietnamese": "Cái áo này chật quá.",
+    "english": "This shirt is too tight.",
+    "aliases": [
+      "cai ao nay chat qua"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "cai ao nay chat qua",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-052",
+    "vietnamese": "Con nóng quá.",
+    "english": "I'm too hot.",
+    "aliases": [
+      "con nong qua"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con nong qua",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-053",
+    "vietnamese": "Con lạnh quá.",
+    "english": "I'm too cold.",
+    "aliases": [
+      "con lanh qua"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con lanh qua",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-054",
+    "vietnamese": "Bật đèn giúp con.",
+    "english": "Please turn on the light.",
+    "aliases": [
+      "bat den giup con"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "bat den giup con",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-055",
+    "vietnamese": "Tắt đèn giúp con.",
+    "english": "Please turn off the light.",
+    "aliases": [
+      "tat den giup con"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "tat den giup con",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-056",
+    "vietnamese": "Con muốn nghe nhạc.",
+    "english": "I want to listen to music.",
+    "aliases": [
+      "con muon nghe nhac"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon nghe nhac",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-057",
+    "vietnamese": "Con muốn vẽ tranh.",
+    "english": "I want to draw a picture.",
+    "aliases": [
+      "con muon ve tranh"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon ve tranh",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-058",
+    "vietnamese": "Con muốn chơi xếp hình.",
+    "english": "I want to play with building blocks.",
+    "aliases": [
+      "con muon choi xep hinh"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon choi xep hinh",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-059",
+    "vietnamese": "Con muốn chơi búp bê.",
+    "english": "I want to play with my doll.",
+    "aliases": [
+      "con muon choi bup be"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon choi bup be",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-060",
+    "vietnamese": "Con muốn chơi ô tô.",
+    "english": "I want to play with my toy car.",
+    "aliases": [
+      "con muon choi o to"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon choi o to",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-061",
+    "vietnamese": "Con muốn xem sách.",
+    "english": "I want to look at a book.",
+    "aliases": [
+      "con muon xem sach"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon xem sach",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-062",
+    "vietnamese": "Con muốn gọi điện cho bố.",
+    "english": "I want to call Dad.",
+    "aliases": [
+      "con muon goi dien cho bo"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon goi dien cho bo",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-063",
+    "vietnamese": "Con nhớ bố.",
+    "english": "I miss Dad.",
+    "aliases": [
+      "con nho bo"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con nho bo",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-064",
+    "vietnamese": "Con buồn.",
+    "english": "I'm sad.",
+    "aliases": [
+      "con buon"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con buon",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-065",
+    "vietnamese": "Con đang giận.",
+    "english": "I'm angry.",
+    "aliases": [
+      "con dang gian"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con dang gian",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-066",
+    "vietnamese": "Con không thoải mái.",
+    "english": "I don't feel comfortable.",
+    "aliases": [
+      "con khong thoai mai"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con khong thoai mai",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-067",
+    "vietnamese": "Con cần nghỉ ngơi.",
+    "english": "I need to rest.",
+    "aliases": [
+      "con can nghi ngoi"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con can nghi ngoi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-068",
+    "vietnamese": "Con cần khăn giấy.",
+    "english": "I need a tissue, please.",
+    "aliases": [
+      "con can khan giay"
+    ],
+    "contexts": [
+      "home",
+      "school"
+    ],
+    "sourcePhrase": "con can khan giay",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-069",
+    "vietnamese": "Con muốn xì mũi.",
+    "english": "I need to blow my nose.",
+    "aliases": [
+      "con muon xi mui"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon xi mui",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-070",
+    "vietnamese": "Con bị ho.",
+    "english": "I have a cough.",
+    "aliases": [
+      "con bi ho"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con bi ho",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-071",
+    "vietnamese": "Con bị sốt.",
+    "english": "I have a fever.",
+    "aliases": [
+      "con bi sot"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con bi sot",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-072",
+    "vietnamese": "Con bị ngứa.",
+    "english": "I feel itchy.",
+    "aliases": [
+      "con bi ngua"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con bi ngua",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-073",
+    "vietnamese": "Con muốn đánh răng.",
+    "english": "I want to brush my teeth.",
+    "aliases": [
+      "con muon danh rang"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon danh rang",
+    "masterCorpusIds": [
+      "AIV0-0505"
+    ]
+  },
+  {
+    "id": "PHRASE-V1-074",
+    "vietnamese": "Con muốn chải tóc.",
+    "english": "I want to brush my hair.",
+    "aliases": [
+      "con muon chai toc"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon chai toc",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-075",
+    "vietnamese": "Con muốn dọn đồ chơi.",
+    "english": "I want to put my toys away.",
+    "aliases": [
+      "con muon don do choi"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon don do choi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-076",
+    "vietnamese": "Con sẽ tự dọn.",
+    "english": "I will clean it up myself.",
+    "aliases": [
+      "con se tu don"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con se tu don",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-077",
+    "vietnamese": "Con làm vỡ cái này.",
+    "english": "I broke this.",
+    "aliases": [
+      "con lam vo cai nay"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con lam vo cai nay",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-078",
+    "vietnamese": "Con xin lỗi.",
+    "english": "I'm sorry.",
+    "aliases": [
+      "con xin loi"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con xin loi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-079",
+    "vietnamese": "Con cảm ơn mẹ.",
+    "english": "Thank you, Mom.",
+    "aliases": [
+      "con cam on me"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con cam on me",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-080",
+    "vietnamese": "Cho con thêm năm phút.",
+    "english": "Can I have five more minutes?",
+    "aliases": [
+      "cho con them nam phut"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "cho con them nam phut",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-081",
+    "vietnamese": "Con cần yên tĩnh một chút.",
+    "english": "I need some quiet time.",
+    "aliases": [
+      "con can yen tinh mot chut"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con can yen tinh mot chut",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-082",
+    "vietnamese": "Con muốn chơi điện thoại.",
+    "english": "I want to play on the phone.",
+    "aliases": [
+      "con muon choi dien thoai"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon choi dien thoai",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-083",
+    "vietnamese": "Con muốn ra ngoài chơi.",
+    "english": "I want to go outside and play.",
+    "aliases": [
+      "con muon ra ngoai choi"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon ra ngoai choi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-084",
+    "vietnamese": "Con muốn đi chơi với mẹ.",
+    "english": "I want to go out with Mom.",
+    "aliases": [
+      "con muon di choi voi me"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon di choi voi me",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-085",
+    "vietnamese": "Con muốn nghỉ ngơi một chút.",
+    "english": "I want to rest for a moment.",
+    "aliases": [
+      "con muon nghi ngoi mot chut"
+    ],
+    "contexts": [
+      "home"
+    ],
+    "sourcePhrase": "con muon nghi ngoi mot chut",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-086",
+    "vietnamese": "Con cần bút chì.",
+    "english": "I need a pencil, please.",
+    "aliases": [
+      "con can but chi"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con can but chi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-087",
+    "vietnamese": "Con cần bút.",
+    "english": "I need a pencil, please.",
+    "aliases": [
+      "con can but"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con can but",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-088",
+    "vietnamese": "Con bị mất bút.",
+    "english": "I lost my pencil.",
+    "aliases": [
+      "con bi mat but"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con bi mat but",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-089",
+    "vietnamese": "Con cần cục tẩy.",
+    "english": "I need an eraser, please.",
+    "aliases": [
+      "con can cuc tay"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con can cuc tay",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-090",
+    "vietnamese": "Con quên sách.",
+    "english": "I forgot my book.",
+    "aliases": [
+      "con quen sach"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con quen sach",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-091",
+    "vietnamese": "Con quên vở.",
+    "english": "I forgot my notebook.",
+    "aliases": [
+      "con quen vo"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con quen vo",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-092",
+    "vietnamese": "Con không tìm thấy sách.",
+    "english": "I can't find my book.",
+    "aliases": [
+      "con khong tim thay sach"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con khong tim thay sach",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-093",
+    "vietnamese": "Con không hiểu bài.",
+    "english": "I don't understand the lesson.",
+    "aliases": [
+      "con khong hieu bai"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con khong hieu bai",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-094",
+    "vietnamese": "Con không hiểu.",
+    "english": "I don't understand.",
+    "aliases": [
+      "con khong hieu"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con khong hieu",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-095",
+    "vietnamese": "Có thể giúp con không?",
+    "english": "Can you help me, please?",
+    "aliases": [
+      "co the giup con khong"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "co the giup con khong",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-096",
+    "vietnamese": "Cô ơi, con cần giúp đỡ.",
+    "english": "Teacher, I need help, please.",
+    "aliases": [
+      "co oi con can giup do"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "co oi con can giup do",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-097",
+    "vietnamese": "Con muốn hỏi cô.",
+    "english": "I want to ask the teacher.",
+    "aliases": [
+      "con muon hoi co"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con muon hoi co",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-098",
+    "vietnamese": "Con cần đi gặp cô.",
+    "english": "I need to see the teacher.",
+    "aliases": [
+      "con can di gap co"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con can di gap co",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-099",
+    "vietnamese": "Con chưa làm xong.",
+    "english": "I'm not finished yet.",
+    "aliases": [
+      "con chua lam xong"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con chua lam xong",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-100",
+    "vietnamese": "Con không làm được.",
+    "english": "I can't do it yet.",
+    "aliases": [
+      "con khong lam duoc"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con khong lam duoc",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-101",
+    "vietnamese": "Con muốn đọc lại.",
+    "english": "Can I read it again?",
+    "aliases": [
+      "con muon doc lai"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con muon doc lai",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-102",
+    "vietnamese": "Con muốn viết lại.",
+    "english": "Can I write it again?",
+    "aliases": [
+      "con muon viet lai"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con muon viet lai",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-103",
+    "vietnamese": "Con cần đi lấy nước.",
+    "english": "I need to get water.",
+    "aliases": [
+      "con can di lay nuoc"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con can di lay nuoc",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-104",
+    "vietnamese": "Con muốn về nhà.",
+    "english": "I want to go home.",
+    "aliases": [
+      "con muon ve nha"
+    ],
+    "contexts": [
+      "school",
+      "outside"
+    ],
+    "sourcePhrase": "con muon ve nha",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-105",
+    "vietnamese": "Con bị đau đầu.",
+    "english": "My head hurts.",
+    "aliases": [
+      "con bi dau dau"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con bi dau dau",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-106",
+    "vietnamese": "Con bị đau bụng.",
+    "english": "My stomach hurts.",
+    "aliases": [
+      "con bi dau bung"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con bi dau bung",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-107",
+    "vietnamese": "Bạn lấy đồ của con.",
+    "english": "My friend took my thing.",
+    "aliases": [
+      "ban lay do cua con"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "ban lay do cua con",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-108",
+    "vietnamese": "Bạn đẩy con.",
+    "english": "My friend pushed me.",
+    "aliases": [
+      "ban day con"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "ban day con",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-109",
+    "vietnamese": "Con bị bạn đẩy.",
+    "english": "My friend pushed me.",
+    "aliases": [
+      "con bi ban day"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con bi ban day",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-110",
+    "vietnamese": "Bạn không cho con chơi.",
+    "english": "My friend won't let me play.",
+    "aliases": [
+      "ban khong cho con choi"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "ban khong cho con choi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-111",
+    "vietnamese": "Con không nghe rõ.",
+    "english": "I can't hear clearly.",
+    "aliases": [
+      "con khong nghe ro"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con khong nghe ro",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-112",
+    "vietnamese": "Con cần thêm thời gian.",
+    "english": "I need more time.",
+    "aliases": [
+      "con can them thoi gian"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con can them thoi gian",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-113",
+    "vietnamese": "Con muốn đổi chỗ ngồi.",
+    "english": "Can I change seats, please?",
+    "aliases": [
+      "con muon doi cho ngoi"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con muon doi cho ngoi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-114",
+    "vietnamese": "Con muốn nghỉ một chút.",
+    "english": "I need a short break.",
+    "aliases": [
+      "con muon nghi mot chut"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con muon nghi mot chut",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-115",
+    "vietnamese": "Con muốn chơi với bạn.",
+    "english": "I want to play with my friend.",
+    "aliases": [
+      "con muon choi voi ban"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con muon choi voi ban",
+    "masterCorpusIds": [
+      "AIV0-0535"
+    ]
+  },
+  {
+    "id": "PHRASE-V1-116",
+    "vietnamese": "Con sợ, cô ơi.",
+    "english": "I'm scared, teacher.",
+    "aliases": [
+      "con so co"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con so co",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-117",
+    "vietnamese": "Cho con mượn bút chì.",
+    "english": "Can I borrow a pencil, please?",
+    "aliases": [
+      "cho con muon but chi"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "cho con muon but chi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-118",
+    "vietnamese": "Con cần gọt bút chì.",
+    "english": "I need to sharpen my pencil.",
+    "aliases": [
+      "con can got but chi"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con can got but chi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-119",
+    "vietnamese": "Con cần một tờ giấy.",
+    "english": "I need a sheet of paper, please.",
+    "aliases": [
+      "con can mot to giay"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con can mot to giay",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-120",
+    "vietnamese": "Con cần thước kẻ.",
+    "english": "I need a ruler, please.",
+    "aliases": [
+      "con can thuoc ke"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con can thuoc ke",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-121",
+    "vietnamese": "Con cần kéo.",
+    "english": "I need scissors, please.",
+    "aliases": [
+      "con can keo"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con can keo",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-122",
+    "vietnamese": "Con cần hồ dán.",
+    "english": "I need some glue, please.",
+    "aliases": [
+      "con can ho dan"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con can ho dan",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-123",
+    "vietnamese": "Con cần bút màu.",
+    "english": "I need colored pencils, please.",
+    "aliases": [
+      "con can but mau"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con can but mau",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-124",
+    "vietnamese": "Con muốn xuống phòng y tế.",
+    "english": "I need to go to the nurse.",
+    "aliases": [
+      "con muon xuong phong y te"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con muon xuong phong y te",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-125",
+    "vietnamese": "Con thấy chóng mặt.",
+    "english": "I feel dizzy.",
+    "aliases": [
+      "con thay chong mat"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con thay chong mat",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-126",
+    "vietnamese": "Con thấy nóng và mệt.",
+    "english": "I feel hot and tired.",
+    "aliases": [
+      "con thay nong va met"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con thay nong va met",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-127",
+    "vietnamese": "Con bị ho ở lớp.",
+    "english": "I have a cough.",
+    "aliases": [
+      "con bi ho o lop"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con bi ho o lop",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-128",
+    "vietnamese": "Con không mở được hộp cơm.",
+    "english": "I can't open my lunch box.",
+    "aliases": [
+      "con khong mo duoc hop com"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con khong mo duoc hop com",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-129",
+    "vietnamese": "Con quên mang đồ ăn trưa.",
+    "english": "I forgot my lunch.",
+    "aliases": [
+      "con quen mang do an trua"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con quen mang do an trua",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-130",
+    "vietnamese": "Con đói bụng rồi.",
+    "english": "I'm hungry.",
+    "aliases": [
+      "con doi bung roi"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con doi bung roi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-131",
+    "vietnamese": "Con có một câu hỏi.",
+    "english": "I have a question.",
+    "aliases": [
+      "con co mot cau hoi"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con co mot cau hoi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-132",
+    "vietnamese": "Cô nói lại được không?",
+    "english": "Can you say that again, please?",
+    "aliases": [
+      "co noi lai duoc khong"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "co noi lai duoc khong",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-133",
+    "vietnamese": "Cô nói chậm lại được không?",
+    "english": "Can you speak more slowly, please?",
+    "aliases": [
+      "co noi cham lai duoc khong"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "co noi cham lai duoc khong",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-134",
+    "vietnamese": "Cô nói to hơn được không?",
+    "english": "Can you speak louder, please?",
+    "aliases": [
+      "co noi to hon duoc khong"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "co noi to hon duoc khong",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-135",
+    "vietnamese": "Con muốn trả lời.",
+    "english": "I want to answer.",
+    "aliases": [
+      "con muon tra loi"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con muon tra loi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-136",
+    "vietnamese": "Đến lượt con chưa?",
+    "english": "Is it my turn yet?",
+    "aliases": [
+      "den luot con chua"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "den luot con chua",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-137",
+    "vietnamese": "Con chưa có bạn cùng nhóm.",
+    "english": "I don't have a partner yet.",
+    "aliases": [
+      "con chua co ban cung nhom"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con chua co ban cung nhom",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-138",
+    "vietnamese": "Con chơi cùng được không?",
+    "english": "Can I play with you?",
+    "aliases": [
+      "con choi cung duoc khong"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con choi cung duoc khong",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-139",
+    "vietnamese": "Bạn đang trêu con.",
+    "english": "My friend is teasing me.",
+    "aliases": [
+      "ban dang treu con"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "ban dang treu con",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-140",
+    "vietnamese": "Bạn đánh con.",
+    "english": "My friend hit me.",
+    "aliases": [
+      "ban danh con"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "ban danh con",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-141",
+    "vietnamese": "Con và bạn đang cãi nhau.",
+    "english": "My friend and I are arguing.",
+    "aliases": [
+      "con va ban dang cai nhau"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con va ban dang cai nhau",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-142",
+    "vietnamese": "Con cần chỗ yên tĩnh.",
+    "english": "I need a quiet place.",
+    "aliases": [
+      "con can cho yen tinh"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con can cho yen tinh",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-143",
+    "vietnamese": "Ở đây ồn quá.",
+    "english": "It's too noisy here.",
+    "aliases": [
+      "o day on qua"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "o day on qua",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-144",
+    "vietnamese": "Con không tìm thấy ba lô.",
+    "english": "I can't find my backpack.",
+    "aliases": [
+      "con khong tim thay ba lo"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con khong tim thay ba lo",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-145",
+    "vietnamese": "Con đi nhầm lớp.",
+    "english": "I went to the wrong classroom.",
+    "aliases": [
+      "con di nham lop"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con di nham lop",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-146",
+    "vietnamese": "Bao giờ mẹ đón con?",
+    "english": "When will Mom pick me up?",
+    "aliases": [
+      "bao gio me don con"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "bao gio me don con",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-147",
+    "vietnamese": "Con cần gọi cho mẹ.",
+    "english": "I need to call Mom.",
+    "aliases": [
+      "con can goi cho me"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con can goi cho me",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-148",
+    "vietnamese": "Con không buộc được dây giày.",
+    "english": "I need help tying my shoelaces.",
+    "aliases": [
+      "con khong buoc duoc day giay"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con khong buoc duoc day giay",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-149",
+    "vietnamese": "Con không kéo được khóa áo.",
+    "english": "I need help with my zipper.",
+    "aliases": [
+      "con khong keo duoc khoa ao"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con khong keo duoc khoa ao",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-150",
+    "vietnamese": "Con làm đổ nước ra bàn.",
+    "english": "I spilled water on the table.",
+    "aliases": [
+      "con lam do nuoc ra ban"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con lam do nuoc ra ban",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-151",
+    "vietnamese": "Con bị mất cục tẩy.",
+    "english": "I lost my eraser.",
+    "aliases": [
+      "con bi mac cuc tay"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con bi mac cuc tay",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-152",
+    "vietnamese": "Con bị mất cục gôm.",
+    "english": "I lost my eraser.",
+    "aliases": [
+      "con bi mac cuc gom"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con bi mac cuc gom",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-153",
+    "vietnamese": "Con muốn đi sở thú.",
+    "english": "I want to go to the zoo.",
+    "aliases": [
+      "co muon di so thu"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "co muon di so thu",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-154",
+    "vietnamese": "Con muốn gặp cô giáo.",
+    "english": "I want to see the teacher.",
+    "aliases": [
+      "co may gap co giao"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "co may gap co giao",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-155",
+    "vietnamese": "Đây là giáo viên của con.",
+    "english": "This is my teacher.",
+    "aliases": [
+      "day la giao vien cua con"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "day la giao vien cua con",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-156",
+    "vietnamese": "Đây là giáo viên của tôi.",
+    "english": "This is my teacher.",
+    "aliases": [
+      "day la giao vien cua toi"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "day la giao vien cua toi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-157",
+    "vietnamese": "Con chưa có nhóm.",
+    "english": "I don't have a group yet.",
+    "aliases": [
+      "con chua co nhom"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con chua co nhom",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-158",
+    "vietnamese": "Bạn trêu con.",
+    "english": "My friend is teasing me.",
+    "aliases": [
+      "ban treu con"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "ban treu con",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-159",
+    "vietnamese": "Bao giờ mẹ của con đến đón?",
+    "english": "When will my mom pick me up?",
+    "aliases": [
+      "bao gio me cua con den don"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "bao gio me cua con den don",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-160",
+    "vietnamese": "Con cần khăn giấy.",
+    "english": "I need a tissue, please.",
+    "aliases": [
+      "con can khanh gai"
+    ],
+    "contexts": [
+      "school"
+    ],
+    "sourcePhrase": "con can khanh gai",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-161",
+    "vietnamese": "Hôm nay đi chơi gì vậy?",
+    "english": "Where are we going today?",
+    "aliases": [
+      "hom nay di choi gi vay"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "hom nay di choi gi vay",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-162",
+    "vietnamese": "Hôm nay mình đi đâu?",
+    "english": "Where are we going today?",
+    "aliases": [
+      "hom nay minh di dau"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "hom nay minh di dau",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-163",
+    "vietnamese": "Hôm nay mình ăn gì?",
+    "english": "What are we eating today?",
+    "aliases": [
+      "hom nay minh an gi"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "hom nay minh an gi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-164",
+    "vietnamese": "Mẹ ơi, cái kia là gì?",
+    "english": "Mom, what is that?",
+    "aliases": [
+      "me oi cai kia la gi"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "me oi cai kia la gi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-165",
+    "vietnamese": "Con bị lạc.",
+    "english": "I'm lost. I need help.",
+    "aliases": [
+      "con bi lac"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con bi lac",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-166",
+    "vietnamese": "Con cần giúp đỡ.",
+    "english": "I need help, please.",
+    "aliases": [
+      "con can giup do"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con can giup do",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-167",
+    "vietnamese": "Con muốn xem cái này.",
+    "english": "I want to see this.",
+    "aliases": [
+      "con muon xem cai nay"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con muon xem cai nay",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-168",
+    "vietnamese": "Con muốn xem con robot.",
+    "english": "I want to see the robot.",
+    "aliases": [
+      "con muon xem con robot"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con muon xem con robot",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-169",
+    "vietnamese": "Xem con robot.",
+    "english": "I want to see the robot.",
+    "aliases": [
+      "xem con robot"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "xem con robot",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-170",
+    "vietnamese": "Con muốn chơi cái này.",
+    "english": "I want to play with this.",
+    "aliases": [
+      "con muon choi cai nay"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con muon choi cai nay",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-171",
+    "vietnamese": "Con muốn chụp ảnh.",
+    "english": "I want to take a picture.",
+    "aliases": [
+      "con muon chup anh"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con muon chup anh",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-172",
+    "vietnamese": "Chụp ảnh, mẹ ơi.",
+    "english": "I want to take a picture.",
+    "aliases": [
+      "chup anh me oi"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "chup anh me oi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-173",
+    "vietnamese": "Con không thấy mẹ.",
+    "english": "I can't see Mom.",
+    "aliases": [
+      "con khong thay me"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con khong thay me",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-174",
+    "vietnamese": "Chờ con với.",
+    "english": "Please wait for me.",
+    "aliases": [
+      "cho con voi"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "cho con voi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-175",
+    "vietnamese": "Con mệt rồi.",
+    "english": "I'm tired.",
+    "aliases": [
+      "con met roi"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con met roi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-176",
+    "vietnamese": "Đông người quá, con sợ.",
+    "english": "There are too many people. I'm scared.",
+    "aliases": [
+      "dong nguoi qua con so"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "dong nguoi qua con so",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-177",
+    "vietnamese": "Con muốn đi công viên nước.",
+    "english": "Can we go to the water park?",
+    "aliases": [
+      "con muon di cong vien nuoc"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con muon di cong vien nuoc",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-178",
+    "vietnamese": "Đi công viên nước.",
+    "english": "Can we go to the water park?",
+    "aliases": [
+      "di cong vien nuoc"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "di cong vien nuoc",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-179",
+    "vietnamese": "Cho con đi công viên.",
+    "english": "Can we go to the park?",
+    "aliases": [
+      "cho con di cong vien"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "cho con di cong vien",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-180",
+    "vietnamese": "Đợi con với.",
+    "english": "Please wait for me.",
+    "aliases": [
+      "doi con voi"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "doi con voi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-181",
+    "vietnamese": "Đi chậm lại nhé.",
+    "english": "Please walk more slowly.",
+    "aliases": [
+      "di cham lai nhe"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "di cham lai nhe",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-182",
+    "vietnamese": "Con muốn qua đường.",
+    "english": "I want to cross the street.",
+    "aliases": [
+      "con muon qua duong"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con muon qua duong",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-183",
+    "vietnamese": "Đèn xanh chưa mẹ?",
+    "english": "Is the light green yet, Mom?",
+    "aliases": [
+      "den xanh chua me"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "den xanh chua me",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-184",
+    "vietnamese": "Có xe đang tới.",
+    "english": "A car is coming.",
+    "aliases": [
+      "co xe dang toi"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "co xe dang toi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-185",
+    "vietnamese": "Con cần đeo khẩu trang.",
+    "english": "I need to wear my mask.",
+    "aliases": [
+      "con can deo khau trang"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con can deo khau trang",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-186",
+    "vietnamese": "Con cần bôi kem chống nắng.",
+    "english": "I need sunscreen.",
+    "aliases": [
+      "con can boi kem chong nang"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con can boi kem chong nang",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-187",
+    "vietnamese": "Con cần đội mũ.",
+    "english": "I need to wear my hat.",
+    "aliases": [
+      "con can doi mu"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con can doi mu",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-188",
+    "vietnamese": "Trời mưa rồi.",
+    "english": "It's raining.",
+    "aliases": [
+      "troi mua roi"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "troi mua roi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-189",
+    "vietnamese": "Con cần cây ô.",
+    "english": "I need an umbrella.",
+    "aliases": [
+      "con can cay o"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con can cay o",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-190",
+    "vietnamese": "Con muốn vào nhà hàng.",
+    "english": "I want to go to a restaurant.",
+    "aliases": [
+      "con muon vao nha hang"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con muon vao nha hang",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-191",
+    "vietnamese": "Cho con xem thực đơn.",
+    "english": "Can I see the menu, please?",
+    "aliases": [
+      "cho con xem thuc don"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "cho con xem thuc don",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-192",
+    "vietnamese": "Con không ăn cay.",
+    "english": "I can't eat spicy food.",
+    "aliases": [
+      "con khong an cay"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con khong an cay",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-193",
+    "vietnamese": "Con bị dị ứng đậu phộng.",
+    "english": "I'm allergic to peanuts.",
+    "aliases": [
+      "con bi di ung dau phong"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con bi di ung dau phong",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-194",
+    "vietnamese": "Nhà vệ sinh ở đâu?",
+    "english": "Where is the bathroom?",
+    "aliases": [
+      "nha ve sinh o dau"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "nha ve sinh o dau",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-195",
+    "vietnamese": "Con muốn ngồi ghế.",
+    "english": "I want to sit on the bench.",
+    "aliases": [
+      "con muon ngoi ghe"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con muon ngoi ghe",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-196",
+    "vietnamese": "Mình nghỉ một chút nhé.",
+    "english": "Can we rest for a moment?",
+    "aliases": [
+      "minh nghi mot chut nhe"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "minh nghi mot chut nhe",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-197",
+    "vietnamese": "Con mệt không đi nổi nữa.",
+    "english": "I'm too tired to keep walking.",
+    "aliases": [
+      "con met khong di noi nua"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con met khong di noi nua",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-198",
+    "vietnamese": "Mình cần mua vé.",
+    "english": "We need to buy tickets.",
+    "aliases": [
+      "minh can mua ve"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "minh can mua ve",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-199",
+    "vietnamese": "Mình xếp hàng ở đâu?",
+    "english": "Where should we line up?",
+    "aliases": [
+      "minh xep hang o dau"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "minh xep hang o dau",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-200",
+    "vietnamese": "Ở đây to quá.",
+    "english": "It's too loud here.",
+    "aliases": [
+      "o day to qua"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "o day to qua",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-201",
+    "vietnamese": "Ở đây sáng quá.",
+    "english": "It's too bright here.",
+    "aliases": [
+      "o day sang qua"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "o day sang qua",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-202",
+    "vietnamese": "Con sợ con chó kia.",
+    "english": "I'm scared of that dog.",
+    "aliases": [
+      "con so con cho kia"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con so con cho kia",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-203",
+    "vietnamese": "Con muốn xem các con vật.",
+    "english": "I want to see the animals.",
+    "aliases": [
+      "con muon xem cac con vat"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con muon xem cac con vat",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-204",
+    "vietnamese": "Con có được cho con vật ăn không?",
+    "english": "Can I feed the animal?",
+    "aliases": [
+      "con co duoc cho con vat an khong"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con co duoc cho con vat an khong",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-205",
+    "vietnamese": "Con không muốn chạm vào nó.",
+    "english": "I don't want to touch it.",
+    "aliases": [
+      "con khong muon cham vao no"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con khong muon cham vao no",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-206",
+    "vietnamese": "Con muốn vào sân chơi.",
+    "english": "I want to go to the playground.",
+    "aliases": [
+      "con muon vao san choi"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con muon vao san choi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-207",
+    "vietnamese": "Con muốn chơi xích đu.",
+    "english": "I want to play on the swing.",
+    "aliases": [
+      "con muon choi xich du"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con muon choi xich du",
+    "masterCorpusIds": [
+      "AIV0-0529",
+      "AIV0-1037"
+    ]
+  },
+  {
+    "id": "PHRASE-V1-208",
+    "vietnamese": "Con muốn chơi bóng.",
+    "english": "I want to play with the ball.",
+    "aliases": [
+      "con muon choi bong"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con muon choi bong",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-209",
+    "vietnamese": "Mình đi xe buýt nhé.",
+    "english": "Can we take the bus?",
+    "aliases": [
+      "minh di xe buyt nhe"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "minh di xe buyt nhe",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-210",
+    "vietnamese": "Mình gọi taxi nhé.",
+    "english": "Can we take a taxi?",
+    "aliases": [
+      "minh goi taxi nhe"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "minh goi taxi nhe",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-211",
+    "vietnamese": "Dừng ở đây nhé.",
+    "english": "Please stop here.",
+    "aliases": [
+      "dung o day nhe"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "dung o day nhe",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-212",
+    "vietnamese": "Con bị lạc, gọi cho mẹ giúp con.",
+    "english": "I'm lost. Please call my mom.",
+    "aliases": [
+      "con bi lac goi cho me giup con"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con bi lac goi cho me giup con",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-213",
+    "vietnamese": "Con nhìn thấy máy bay trên trời.",
+    "english": "I see an airplane in the sky.",
+    "aliases": [
+      "con nhin thay may bay tren troi"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con nhin thay may bay tren troi",
+    "masterCorpusIds": []
+  },
+  {
+    "id": "PHRASE-V1-214",
+    "vietnamese": "Con nhìn thấy máy bay trên trời kia.",
+    "english": "I see an airplane in the sky.",
+    "aliases": [
+      "con nhin thay may bay tren troi kia"
+    ],
+    "contexts": [
+      "outside"
+    ],
+    "sourcePhrase": "con nhin thay may bay tren troi kia",
+    "masterCorpusIds": []
+  }
+]

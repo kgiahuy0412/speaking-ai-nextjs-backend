@@ -1,5 +1,6 @@
 import { faithfulTranslationGoldenSet } from "./faithfulTranslationGoldenSet";
 import { reviewedCorpusRulesV1 } from "./corpusRules";
+import { reviewedPhraseSupplementRulesV1 } from "./phraseSupplementRules";
 import { RULE_VERSION } from "./translationPolicy";
 
 export type ExactTranslationRule = {
@@ -72,16 +73,36 @@ export function normalizeVietnameseForExactMatch(text: string) {
     .trim();
 }
 
+const reviewedPrimaryRuleSources: ReviewedRuleSource[] = [
+  ...faithfulTranslationGoldenSet
+    .filter((testCase) => testCase.exactRuleEligible)
+    .map((testCase) => ({
+      id: testCase.id,
+      vietnamese: testCase.vietnamese,
+      english: testCase.expectedEnglish,
+    })),
+  ...reviewedHistoricalCorrections,
+  ...reviewedCorpusRulesV1,
+];
+
+// The official corpus is the source of truth. A legacy phrase supplement may
+// add aliases for the same output, but it must never replace a corpus
+// translation when the two sources disagree.
+const primaryTranslationByVietnamese = new Map(
+  reviewedPrimaryRuleSources.map((rule) => [
+    normalizeVietnameseForExactMatch(rule.vietnamese),
+    rule.english,
+  ]),
+);
+
 const reviewedRuleSources: ReviewedRuleSource[] = [
-    ...faithfulTranslationGoldenSet
-      .filter((testCase) => testCase.exactRuleEligible)
-      .map((testCase) => ({
-        id: testCase.id,
-        vietnamese: testCase.vietnamese,
-        english: testCase.expectedEnglish,
-      })),
-    ...reviewedHistoricalCorrections,
-    ...reviewedCorpusRulesV1,
+  ...reviewedPrimaryRuleSources,
+  ...reviewedPhraseSupplementRulesV1.filter((rule) => {
+    const primaryEnglish = primaryTranslationByVietnamese.get(
+      normalizeVietnameseForExactMatch(rule.vietnamese),
+    );
+    return primaryEnglish === undefined || primaryEnglish === rule.english;
+  }),
 ];
 
 export const reviewedExactRulesV1: ExactTranslationRule[] =

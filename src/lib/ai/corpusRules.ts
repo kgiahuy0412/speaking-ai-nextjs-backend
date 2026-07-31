@@ -1,4 +1,5 @@
-import corpusV1 from "./corpus/aiv0-v1-0001-0500.json";
+import corpusV1Batch1 from "./corpus/aiv0-v1-0001-0500.json";
+import corpusV1Batch2 from "./corpus/aiv0-v1-0501-1000.json";
 
 export type ReviewedCorpusRule = {
   id: string;
@@ -14,8 +15,10 @@ export type ReviewedCorpusRule = {
 function assertReviewedCorpus(
   records: ReviewedCorpusRule[],
 ): ReviewedCorpusRule[] {
-  if (records.length !== 500) {
-    throw new Error(`AIV0 V1 corpus must contain 500 rules, got ${records.length}`);
+  if (records.length !== 1_000) {
+    throw new Error(
+      `AIV0 V1 corpus must contain 1,000 rules, got ${records.length}`,
+    );
   }
 
   const ids = new Set<string>();
@@ -33,10 +36,13 @@ function assertReviewedCorpus(
 }
 
 /**
- * First reviewed rollout of the official AIV0 corpus. Additional 500-row
- * batches can be imported as separate versioned JSON files after language QA;
- * no runtime spreadsheet parsing is required.
+ * Reviewed rollout of the first 1,000 official AIV0 corpus rows. Each 500-row
+ * batch remains a separate versioned JSON file after language QA; no runtime
+ * spreadsheet parsing is required.
  */
 export const reviewedCorpusRulesV1 = assertReviewedCorpus(
-  corpusV1 as ReviewedCorpusRule[],
+  [
+    ...(corpusV1Batch1 as ReviewedCorpusRule[]),
+    ...(corpusV1Batch2 as ReviewedCorpusRule[]),
+  ],
 );
