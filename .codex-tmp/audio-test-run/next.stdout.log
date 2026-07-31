@@ -175,3 +175,26 @@ audio_cache_warmup_completed {
  GET /api/audio/stream?text=I%20want%20to%20eat%20rice. 307 in 10ms (next.js: 2ms, proxy.ts: 3ms, application-code: 5ms)
 {"timestamp":"2026-07-31T02:41:10.672Z","level":"info","event":"playback_latency_recorded","requestId":"7e485c8b-e44d-4d25-aed0-158b33f97435","conversationId":"conv_3d19aaa5","audioStartedAfterStopMs":15474,"audioLoadMs":2625,"audioFromDeviceCache":false}
  PATCH /api/history 200 in 531ms (next.js: 5ms, proxy.ts: 6ms, application-code: 519ms)
+ HEAD / 200 in 161ms (next.js: 72ms, application-code: 89ms)
+ GET /api/offline-intents?limit=500 200 in 16ms (next.js: 3ms, proxy.ts: 3ms, application-code: 10ms)
+ GET /api/app-version?platform=android&channel=direct 404 in 65ms (next.js: 13ms, proxy.ts: 4ms, application-code: 47ms)
+{"timestamp":"2026-07-31T02:51:00.941Z","level":"info","event":"android_device_registered","requestId":"5da114f7-ae70-496b-b827-8e1b724e6292","clientId":"android_7396019906ad3574","model":"sdk_gphone64_x86_64","sdkInt":36}
+ POST /api/devices/register 200 in 2.3s (next.js: 4ms, proxy.ts: 5ms, application-code: 2.3s)
+ POST /api/cache/warmup 202 in 4.9s (next.js: 2ms, proxy.ts: 3ms, application-code: 4.9s)
+audio_cache_warmup_completed {
+  context: 'all',
+  clientId: 'android_7396019906ad3574',
+  total: 48,
+  cached: 48,
+  generated: 0,
+  failed: 0,
+  reused: false,
+  fingerprint: '402d6d4533f05984',
+  latencyMs: 4
+}
+ GET /api/history?limit=100&clientId=android_7396019906ad3574 200 in 4.5s (next.js: 2ms, proxy.ts: 5ms, application-code: 4.5s)
+{"timestamp":"2026-07-31T02:51:20.313Z","level":"info","event":"conversation_pipeline_completed","requestId":"94b8958e-6803-4291-be5e-33ed6ee8642a","conversationId":"conv_482ac2d8","context":"home","asrMode":"android_streaming","processingMode":"ai","textSource":"text_cache","textProvider":"cloudflare","textModel":"@cf/meta/llama-4-scout-17b-16e-instruct","textFallbackUsed":false,"audioSource":"cache","latency":{"asrMs":0,"llmMs":1518,"ttsMs":0,"timeToFirstAudioMs":1519}}
+ POST /api/conversation/preview 200 in 1345ms (next.js: 39ms, proxy.ts: 4ms, application-code: 1302ms)
+ POST /api/conversation 200 in 3.6s (next.js: 3ms, proxy.ts: 5ms, application-code: 3.6s)
+{"timestamp":"2026-07-31T02:51:24.725Z","level":"info","event":"playback_latency_recorded","requestId":"eaac8956-cde8-48e0-9f3a-f55d0a4abf96","conversationId":"conv_482ac2d8","audioStartedAfterStopMs":5322,"audioLoadMs":1440,"audioFromDeviceCache":false}
+ PATCH /api/history 200 in 844ms (next.js: 3ms, proxy.ts: 4ms, application-code: 838ms)
