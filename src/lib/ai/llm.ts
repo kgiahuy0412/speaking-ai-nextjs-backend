@@ -11,7 +11,7 @@ import { buildEnglishInstruction } from "./prompts";
 import { getPromotedRule } from "./promotedRules";
 import { getCachedAiEnglishText, saveAiEnglishText } from "./textCache";
 import { containsUnexpectedEastAsianScript } from "./languageValidation";
-import { findReviewedExactRuleMatch } from "./exactRules";
+import { findReviewedAsrRuleMatch } from "./exactRules";
 import { findMissingTranslationRequirements } from "./translationFidelity";
 import {
   CloudflareTextProviderError,
@@ -36,7 +36,7 @@ type ProviderTranslation = {
 };
 
 function getFixedEnglishSentence(vietnameseText: string) {
-  const match = findReviewedExactRuleMatch(vietnameseText);
+  const match = findReviewedAsrRuleMatch(vietnameseText);
 
   if (!match) {
     return null;

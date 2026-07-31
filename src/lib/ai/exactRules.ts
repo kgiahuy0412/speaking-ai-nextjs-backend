@@ -14,7 +14,7 @@ export type ExactTranslationRule = {
 
 export type ExactTranslationRuleMatch = {
   rule: ExactTranslationRule;
-  matchType: "exact" | "alias";
+  matchType: "exact" | "alias" | "asr_folded";
   matchedVietnamese: string;
 };
 
@@ -71,6 +71,18 @@ export function normalizeVietnameseForExactMatch(text: string) {
     .replace(/[^\p{L}\p{N}\s]/gu, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+/**
+ * Keeps every word and its order, but removes Vietnamese diacritics that ASR
+ * may omit. This is intentionally not fuzzy matching: meaning-bearing words
+ * such as "không" still have to be present in the whole utterance.
+ */
+export function normalizeVietnameseForAsrRuleMatch(text: string) {
+  return normalizeVietnameseForExactMatch(text)
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .replace(/đ/g, "d");
 }
 
 const reviewedPrimaryRuleSources: ReviewedRuleSource[] = [
@@ -162,6 +174,25 @@ for (const rule of reviewedExactRulesV1) {
   }
 }
 
+const asrRuleMatchByVietnamese = new Map<string, ExactTranslationRuleMatch>();
+
+for (const match of exactRuleMatchByVietnamese.values()) {
+  const normalizedVietnamese = normalizeVietnameseForAsrRuleMatch(
+    match.matchedVietnamese,
+  );
+  const existing = asrRuleMatchByVietnamese.get(normalizedVietnamese);
+
+  if (existing && existing.rule.english !== match.rule.english) {
+    throw new Error(
+      `Conflicting reviewed ASR rules: ${existing.rule.id} and ${match.rule.id}`,
+    );
+  }
+
+  if (!existing || (existing.matchType === "alias" && match.matchType === "exact")) {
+    asrRuleMatchByVietnamese.set(normalizedVietnamese, match);
+  }
+}
+
 export function findReviewedExactRuleMatch(vietnameseText: string) {
   const normalizedVietnamese = normalizeVietnameseForExactMatch(vietnameseText);
   return exactRuleMatchByVietnamese.get(normalizedVietnamese) ?? null;
@@ -169,6 +200,26 @@ export function findReviewedExactRuleMatch(vietnameseText: string) {
 
 export function findReviewedExactRule(vietnameseText: string) {
   return findReviewedExactRuleMatch(vietnameseText)?.rule ?? null;
+}
+
+export function findReviewedAsrRuleMatch(vietnameseText: string) {
+  const exactMatch = findReviewedExactRuleMatch(vietnameseText);
+  if (exactMatch) {
+    return exactMatch;
+  }
+
+  const normalizedVietnamese = normalizeVietnameseForAsrRuleMatch(
+    vietnameseText,
+  );
+  const foldedMatch = asrRuleMatchByVietnamese.get(normalizedVietnamese);
+  if (!foldedMatch) {
+    return null;
+  }
+
+  return {
+    ...foldedMatch,
+    matchType: "asr_folded" as const,
+  };
 }
 
 export function getReviewedExactRuleAudioTexts(limit?: number) {

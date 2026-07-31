@@ -5,6 +5,7 @@ import {
   faithfulTranslationGoldenSet,
 } from "./faithfulTranslationGoldenSet";
 import {
+  findReviewedAsrRuleMatch,
   findReviewedExactRule,
   findReviewedExactRuleMatch,
   normalizeVietnameseForExactMatch,
@@ -96,6 +97,24 @@ test("reviewed aliases resolve to the canonical exact rule", () => {
   );
 });
 
+test("ASR rule matching tolerates omitted diacritics without becoming fuzzy", () => {
+  const positive = findReviewedAsrRuleMatch(
+    "Me oi, con muon mua cai nay",
+  );
+  const negative = findReviewedAsrRuleMatch(
+    "Con khong muon mua cai nay",
+  );
+
+  assert.equal(positive?.matchType, "asr_folded");
+  assert.equal(positive?.rule.english, "Mom, I want to buy this.");
+  assert.equal(negative?.rule.english, "I don't want to buy this.");
+  assert.equal(findReviewedExactRule("Me oi, con muon mua cai nay"), null);
+  assert.equal(
+    findReviewedAsrRuleMatch("Me oi, con muon mua cai nay nhe"),
+    null,
+  );
+});
+
 test("exact normalization ignores compatibility and invisible formatting only", () => {
   assert.equal(
     normalizeVietnameseForExactMatch("Ｃｏｎ\u200B muốn   đi sở thú!!!"),
@@ -160,7 +179,7 @@ test("online LLM fast path cannot use legacy keyword or semantic outputs", async
   assert.doesNotMatch(llmSource, /keywordIntentRules/);
   assert.doesNotMatch(llmSource, /findSemanticIntent/);
   assert.doesNotMatch(llmSource, /semantic_cache/);
-  assert.match(llmSource, /findReviewedExactRule/);
+  assert.match(llmSource, /findReviewedAsrRuleMatch/);
 });
 
 test("Cloudflare is primary and OpenAI remains the text fallback", async () => {
