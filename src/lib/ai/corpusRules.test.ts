@@ -64,8 +64,8 @@ test("second AIV0 batch is active and keeps corpus priority", () => {
   );
 });
 
-test("all 4,000 new corpus translations are active in the 5,265-rule runtime", () => {
-  assert.equal(reviewedExactRulesV1.length, 5_265);
+test("all 4,000 new corpus translations are active in the 5,266-rule runtime", () => {
+  assert.equal(reviewedExactRulesV1.length, 5_266);
 
   for (const rule of reviewedCorpusRulesV1.slice(1_000)) {
     assert.equal(

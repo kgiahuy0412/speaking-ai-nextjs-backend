@@ -8,6 +8,14 @@ function positiveInteger(name: string, fallback: number) {
     : fallback;
 }
 
+function enabled(name: string, fallback = false) {
+  const value = process.env[name]?.trim().toLowerCase();
+  if (!value) {
+    return fallback;
+  }
+  return value === "1" || value === "true" || value === "yes" || value === "on";
+}
+
 export function getPersistenceBackend(): PersistenceBackend {
   const configuredBackend = process.env.PERSISTENCE_BACKEND
     ?.trim()
@@ -54,6 +62,10 @@ export function getAudioUploadLimits() {
       "AUDIO_FINALIZE_LEASE_SECONDS",
       60,
     ),
+    cleanupIntervalSeconds: positiveInteger(
+      "AUDIO_UPLOAD_CLEANUP_INTERVAL_SECONDS",
+      300,
+    ),
   };
 }
 
@@ -97,6 +109,29 @@ export function getR2StorageConfig() {
     secretAccessKey,
     bucket,
     publicBaseUrl,
+  };
+}
+
+export function getAudioUploadSecurityConfig() {
+  const configuredTokenSecret =
+    process.env.AUDIO_UPLOAD_TOKEN_SECRET?.trim() || null;
+  const tokenSecret =
+    configuredTokenSecret && configuredTokenSecret.length >= 32
+      ? configuredTokenSecret
+      : null;
+  return {
+    tokenSecret,
+    invalidTokenSecret: Boolean(configuredTokenSecret && !tokenSecret),
+    scopedTokensEnabled: Boolean(tokenSecret),
+    requireScopedToken: enabled("AUDIO_UPLOAD_REQUIRE_SCOPED_TOKEN"),
+    createRequestsPerMinute: positiveInteger(
+      "AUDIO_UPLOAD_CREATE_REQUESTS_PER_MINUTE",
+      30,
+    ),
+    sessionRequestsPerMinute: positiveInteger(
+      "AUDIO_UPLOAD_SESSION_REQUESTS_PER_MINUTE",
+      180,
+    ),
   };
 }
 

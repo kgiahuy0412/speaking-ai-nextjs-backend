@@ -52,6 +52,8 @@ test("chunk retry is idempotent and conflicting content is rejected", async () =
 
   assert.equal(first.duplicate, false);
   assert.equal(duplicate.duplicate, true);
+  assert.match(first.sha256, /^[a-f0-9]{64}$/);
+  assert.equal(duplicate.sha256, first.sha256);
   await assert.rejects(
     () =>
       sessions.saveAudioSessionChunk(
@@ -62,6 +64,22 @@ test("chunk retry is idempotent and conflicting content is rejected", async () =
     (error: unknown) =>
       error instanceof sessions.AudioUploadError &&
       error.code === "CHUNK_CONFLICT",
+  );
+});
+
+test("chunk checksum supplied by the client must match uploaded bytes", async () => {
+  const sessionId = await sessions.createAudioUploadSession();
+  await assert.rejects(
+    () =>
+      sessions.saveAudioSessionChunk(
+        sessionId,
+        0,
+        new File([Buffer.from("audio")], "chunk.pcm"),
+        "0".repeat(64),
+      ),
+    (error: unknown) =>
+      error instanceof sessions.AudioUploadError &&
+      error.code === "CHUNK_CHECKSUM_MISMATCH",
   );
 });
 
@@ -95,6 +113,31 @@ test("finalize rejects a missing chunk sequence", async () => {
     (error: unknown) =>
       error instanceof sessions.AudioUploadError &&
       error.code === "MISSING_CHUNKS",
+  );
+});
+
+test("finalize reports a missing trailing chunk from expected chunkCount", async () => {
+  const sessionId = await sessions.createAudioUploadSession();
+  await sessions.saveAudioSessionChunk(
+    sessionId,
+    0,
+    new File([Buffer.from([1, 2])], "chunk-0.pcm"),
+  );
+
+  await assert.rejects(
+    () =>
+      sessions.finalizeAudioUploadSession(sessionId, "audio/wav", {
+        sampleRate: 24_000,
+        channelCount: 1,
+        bitsPerSample: 16,
+        pcmByteLength: 4,
+        chunkCount: 2,
+      }),
+    (error: unknown) =>
+      error instanceof sessions.AudioUploadError &&
+      error.code === "MISSING_CHUNKS" &&
+      Array.isArray(error.details?.missingSequences) &&
+      error.details.missingSequences[0] === 1,
   );
 });
 

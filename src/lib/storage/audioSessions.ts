@@ -112,6 +112,7 @@ export type Pcm16WavMetadata = {
   channelCount: number;
   bitsPerSample: 16;
   pcmByteLength: number;
+  chunkCount?: number;
 };
 
 export class AudioUploadError extends Error {
@@ -125,6 +126,7 @@ export class AudioUploadError extends Error {
       | "SESSION_TOO_LARGE"
       | "TOO_MANY_CHUNKS"
       | "CHUNK_CONFLICT"
+      | "CHUNK_CHECKSUM_MISMATCH"
       | "MISSING_CHUNKS"
       | "UNSUPPORTED_AUDIO_TYPE"
       | "INVALID_SEQUENCE"
@@ -208,12 +210,18 @@ function validatePcm16WavMetadata(
     Number.isInteger(value.pcmByteLength) &&
     value.pcmByteLength > 0 &&
     value.pcmByteLength <= getAudioUploadLimits().maxSessionBytes;
+  const validChunkCount =
+    value.chunkCount === undefined ||
+    (Number.isInteger(value.chunkCount) &&
+      value.chunkCount > 0 &&
+      value.chunkCount <= getAudioUploadLimits().maxChunks);
 
   if (
     !validSampleRate ||
     !validChannelCount ||
     value.bitsPerSample !== 16 ||
     !validPcmLength ||
+    !validChunkCount ||
     value.pcmByteLength % (value.channelCount * 2) !== 0
   ) {
     throw new AudioUploadError(
@@ -408,9 +416,9 @@ export async function cleanupExpiredAudioSessions(force = false) {
   return deleted;
 }
 
-export async function createAudioUploadSession() {
+export async function createAudioUploadSession(options?: { scoped?: boolean }) {
   await cleanupExpiredAudioSessions();
-  const sessionId = `audio_${crypto.randomUUID()}`;
+  const sessionId = `${options?.scoped ? "audio_v2-" : "audio_"}${crypto.randomUUID()}`;
   const now = new Date();
   const expiresAt = new Date(
     now.getTime() + getAudioUploadLimits().sessionTtlSeconds * 1000,
@@ -476,11 +484,20 @@ export async function saveAudioSessionChunk(
   sessionId: string,
   sequence: number,
   chunk: File,
+  expectedSha256?: string,
 ) {
   validateSessionId(sessionId);
   const buffer = Buffer.from(await chunk.arrayBuffer());
   validateChunk(sequence, buffer);
   const sha256 = hashBuffer(buffer);
+  if (expectedSha256 && expectedSha256 !== sha256) {
+    throw new AudioUploadError(
+      "CHUNK_CHECKSUM_MISMATCH",
+      "Checksum SHA-256 của audio chunk không khớp nội dung upload.",
+      400,
+      { sequence, expectedSha256, actualSha256: sha256 },
+    );
+  }
   const limits = getAudioUploadLimits();
 
   if (isPostgresStorageEnabled()) {
@@ -520,6 +537,7 @@ export async function saveAudioSessionChunk(
     if (session.inserted) {
       return {
         duplicate: false,
+        sha256,
         totalBytes: Number(session.total_bytes),
         chunkCount: session.chunk_count,
       };
@@ -528,6 +546,7 @@ export async function saveAudioSessionChunk(
     if (session.existing_sha256 === sha256) {
       return {
         duplicate: true,
+        sha256,
         totalBytes: Number(session.total_bytes),
         chunkCount: session.chunk_count,
       };
@@ -570,6 +589,7 @@ export async function saveAudioSessionChunk(
       if (hashBuffer(existing) === sha256) {
         return {
           duplicate: true,
+          sha256,
           totalBytes: metadata.totalBytes,
           chunkCount: metadata.chunkCount,
         };
@@ -624,13 +644,14 @@ export async function saveAudioSessionChunk(
     await writeLocalMetadata(nextMetadata);
     return {
       duplicate: false,
+      sha256,
       totalBytes: nextMetadata.totalBytes,
       chunkCount: nextMetadata.chunkCount,
     };
   });
 }
 
-function validateChunkSequence(sequences: number[]) {
+function validateChunkSequence(sequences: number[], expectedChunkCount?: number) {
   if (sequences.length === 0) {
     throw new AudioUploadError(
       "MISSING_CHUNKS",
@@ -639,7 +660,22 @@ function validateChunkSequence(sequences: number[]) {
     );
   }
 
-  const highest = sequences.at(-1) ?? -1;
+  const highest =
+    expectedChunkCount === undefined
+      ? (sequences.at(-1) ?? -1)
+      : expectedChunkCount - 1;
+  const unexpected =
+    expectedChunkCount === undefined
+      ? []
+      : sequences.filter((sequence) => sequence >= expectedChunkCount);
+  if (unexpected.length > 0) {
+    throw new AudioUploadError(
+      "INVALID_PCM_METADATA",
+      "Audio session có sequence vượt ngoài metadata finalize.",
+      409,
+      { unexpectedSequences: unexpected.slice(0, 100) },
+    );
+  }
   const sequenceSet = new Set(sequences);
   const missing: number[] = [];
 
@@ -700,7 +736,10 @@ export async function finalizeAudioUploadSession(
         ORDER BY sequence ASC`,
       [sessionId],
     );
-    validateChunkSequence(rows.map((row) => row.sequence));
+    validateChunkSequence(
+      rows.map((row) => row.sequence),
+      pcmMetadata?.chunkCount,
+    );
     buffers = rows.map((row) => Buffer.from(row.content_base64, "base64"));
   } else {
     const metadata = await readLocalMetadata(sessionId);
@@ -718,7 +757,7 @@ export async function finalizeAudioUploadSession(
       .filter((name) => /^\d{6}\.part$/.test(name))
       .sort();
     const sequences = chunkNames.map((name) => Number(name.slice(0, 6)));
-    validateChunkSequence(sequences);
+    validateChunkSequence(sequences, pcmMetadata?.chunkCount);
     buffers = await Promise.all(
       chunkNames.map((name) => readFile(path.join(sessionDir, name))),
     );
@@ -976,5 +1015,7 @@ export async function discardAudioUploadSession(sessionId: string) {
     return;
   }
 
-  await rm(getSessionDir(sessionId), { recursive: true, force: true });
+  await enqueueLocalMutation(() =>
+    rm(getSessionDir(sessionId), { recursive: true, force: true }),
+  );
 }

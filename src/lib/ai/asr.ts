@@ -8,7 +8,32 @@ import { resolveCloudflareAsrVadPolicy } from "./cloudflareWorkersAiRequest";
 import { sampleVietnameseByContext } from "./prompts";
 import { containsUnexpectedEastAsianScript } from "./languageValidation";
 import { repairVietnameseChildTranscript } from "./transcriptRepair";
+import { repairVietnameseTranscriptWithCorpus } from "./transcriptCorpusRepair";
 import { getVietnameseTranscriptQualityIssue } from "./transcriptQuality";
+
+function repairTranscriptFromChildSpeech(
+  text: string,
+  input: ConversationRequest,
+  provider: "cloudflare" | "openai" | "device",
+) {
+  const subjectRepaired = repairVietnameseChildTranscript(text);
+  const corpusRepair = repairVietnameseTranscriptWithCorpus(subjectRepaired);
+
+  if (subjectRepaired !== text || corpusRepair.repaired) {
+    logEvent("info", "asr_transcript_repaired", {
+      requestId: input.requestId,
+      provider,
+      subjectRepairApplied: subjectRepaired !== text,
+      corpusRepairApplied: corpusRepair.repaired,
+      corpusRuleId: corpusRepair.ruleId,
+      strategy: corpusRepair.strategy,
+      score: corpusRepair.score,
+      margin: corpusRepair.margin,
+    });
+  }
+
+  return corpusRepair.text;
+}
 
 function assertVietnameseTranscript(
   text: string,
@@ -185,9 +210,8 @@ export async function transcribeVietnamese(input: ConversationRequest) {
       provider: "device",
       utteranceDurationMs: input.benchmark?.utteranceDurationMs,
     });
-    return input.asrMode === "android_streaming" ||
-      input.asrMode === "openai_realtime"
-      ? repairVietnameseChildTranscript(sourceText)
+    return input.asrMode && input.asrMode !== "text"
+      ? repairTranscriptFromChildSpeech(sourceText, input, "device")
       : sourceText;
   }
 
@@ -207,7 +231,11 @@ export async function transcribeVietnamese(input: ConversationRequest) {
       utteranceDurationMs: input.benchmark?.utteranceDurationMs,
     });
 
-    return repairVietnameseChildTranscript(vietnameseText);
+    return repairTranscriptFromChildSpeech(
+      vietnameseText,
+      input,
+      getPrimaryAsrProvider(),
+    );
   }
 
   await delay(320);

@@ -57,6 +57,11 @@ const reviewedHistoricalCorrections = [
     vietnamese: "Con muốn đi thư viện.",
     english: "I want to go to the library.",
   },
+  {
+    id: "V1-CHILD-001",
+    vietnamese: "Hôm nay con rất vui.",
+    english: "Today, I'm very happy.",
+  },
 ] as const satisfies readonly ReviewedRuleSource[];
 
 /**
