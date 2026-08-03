@@ -11,13 +11,17 @@ import { buildEnglishInstruction } from "./prompts";
 import { getPromotedRule } from "./promotedRules";
 import { getCachedAiEnglishText, saveAiEnglishText } from "./textCache";
 import { containsUnexpectedEastAsianScript } from "./languageValidation";
-import { findReviewedAsrRuleMatch } from "./exactRules";
+import {
+  findReviewedAsrRuleMatch,
+  normalizeVietnameseForExactMatch,
+} from "./exactRules";
 import { findMissingTranslationRequirements } from "./translationFidelity";
 import { normalizeTranslationOutput } from "./translationOutputQuality";
 import {
   CloudflareTextProviderError,
   translateVietnameseWithCloudflare,
 } from "./cloudflareText";
+import { claimSingleFlight } from "./singleFlight";
 
 export type EnglishGenerationResult = {
   englishText: string;
@@ -35,6 +39,32 @@ type ProviderTranslation = {
   provider: TextProvider;
   model: string;
 };
+
+type TextGenerationGlobalState = typeof globalThis & {
+  __aiSpeakingTextGenerationFlights?: Map<
+    string,
+    Promise<EnglishGenerationResult>
+  >;
+};
+
+const textGenerationGlobal = globalThis as TextGenerationGlobalState;
+const textGenerationFlights =
+  textGenerationGlobal.__aiSpeakingTextGenerationFlights ??=
+    new Map<string, Promise<EnglishGenerationResult>>();
+const textGenerationFlightRetentionMs = 5_000;
+
+function getTextGenerationFlightKey(
+  vietnameseText: string,
+  context: PracticeContext,
+  childAge: number,
+) {
+  return [
+    getPrimaryTextProvider(),
+    context,
+    `age:${childAge}`,
+    normalizeVietnameseForExactMatch(vietnameseText),
+  ].join("::");
+}
 
 function getFixedEnglishSentence(vietnameseText: string) {
   const match = findReviewedAsrRuleMatch(vietnameseText);
@@ -330,71 +360,90 @@ export async function generateEnglishSentence(
   }
 
   const instructions = buildEnglishInstruction(context, childAge);
+  const flightKey = getTextGenerationFlightKey(
+    vietnameseText,
+    context,
+    childAge,
+  );
+  const claimedFlight = claimSingleFlight({
+    flights: textGenerationFlights,
+    key: flightKey,
+    retainForMs: textGenerationFlightRetentionMs,
+    operation: async (): Promise<EnglishGenerationResult> => {
+      try {
+        const result = await generateWithProviders(
+          vietnameseText,
+          instructions,
+          requestId,
+        );
 
-  try {
-    const result = await generateWithProviders(
-      vietnameseText,
-      instructions,
-      requestId,
-    );
+        const saveTextCache = () =>
+          saveAiEnglishText(
+            vietnameseText,
+            context,
+            childAge,
+            result.englishText,
+            clientId,
+            {
+              textProvider: result.provider,
+              textModel: result.model,
+              textFallbackUsed: result.fallbackUsed,
+              textFallbackReason: result.fallbackReason,
+            },
+          );
+        if (deferCacheWrite) {
+          after(async () => {
+            try {
+              await saveTextCache();
+            } catch (error) {
+              logEvent("error", "text_cache_write_failed", {
+                requestId,
+                error,
+              });
+            }
+          });
+        } else {
+          await saveTextCache();
+        }
 
-    const saveTextCache = () =>
-      saveAiEnglishText(
-        vietnameseText,
-        context,
-        childAge,
-        result.englishText,
-        clientId,
-        {
+        return {
+          englishText: result.englishText,
+          mode: "ai",
+          source: result.provider,
           textProvider: result.provider,
           textModel: result.model,
           textFallbackUsed: result.fallbackUsed,
           textFallbackReason: result.fallbackReason,
-        },
-      );
-    if (deferCacheWrite) {
-      after(async () => {
-        try {
-          await saveTextCache();
-        } catch (error) {
-          logEvent("error", "text_cache_write_failed", {
-            requestId,
-            error,
-          });
-        }
-      });
-    } else {
-      await saveTextCache();
-    }
+        };
+      } catch (error) {
+        const failureReason = getProviderFailureReason(error);
+        logEvent("error", "text_providers_failed", {
+          requestId,
+          primaryProvider: getPrimaryTextProvider(),
+          finalProvider: "openai",
+          failureReason,
+          error,
+        });
 
-    return {
-      englishText: result.englishText,
-      mode: "ai",
-      source: result.provider,
-      textProvider: result.provider,
-      textModel: result.model,
-      textFallbackUsed: result.fallbackUsed,
-      textFallbackReason: result.fallbackReason,
-    };
-  } catch (error) {
-    const failureReason = getProviderFailureReason(error);
-    logEvent("error", "text_providers_failed", {
+        return {
+          englishText: fallbackSentence,
+          mode: "fallback",
+          source: "fallback",
+          matchedRule: `providers_failed:${failureReason}`,
+          textFallbackUsed: getPrimaryTextProvider() === "cloudflare",
+          textFallbackReason: failureReason,
+        };
+      }
+    },
+  });
+  if (claimedFlight.joined) {
+    logEvent("info", "text_generation_flight_joined", {
       requestId,
-      primaryProvider: getPrimaryTextProvider(),
-      finalProvider: "openai",
-      failureReason,
-      error,
+      context,
+      childAge,
     });
-
-    return {
-      englishText: fallbackSentence,
-      mode: "fallback",
-      source: "fallback",
-      matchedRule: `providers_failed:${failureReason}`,
-      textFallbackUsed: getPrimaryTextProvider() === "cloudflare",
-      textFallbackReason: failureReason,
-    };
   }
+  return claimedFlight.promise;
 }
 
 export async function resolveFastEnglishSentence(

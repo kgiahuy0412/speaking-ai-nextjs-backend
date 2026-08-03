@@ -9,6 +9,7 @@ import { sampleVietnameseByContext } from "./prompts";
 import { containsUnexpectedEastAsianScript } from "./languageValidation";
 import { repairVietnameseChildTranscript } from "./transcriptRepair";
 import { repairVietnameseTranscriptWithCorpus } from "./transcriptCorpusRepair";
+import { normalizeRegionalVietnameseOutsideCorpus } from "./regionalVocabularyNormalizer";
 import { getVietnameseTranscriptQualityIssue } from "./transcriptQuality";
 
 function repairTranscriptFromChildSpeech(
@@ -18,8 +19,15 @@ function repairTranscriptFromChildSpeech(
 ) {
   const subjectRepaired = repairVietnameseChildTranscript(text);
   const corpusRepair = repairVietnameseTranscriptWithCorpus(subjectRepaired);
+  const regionalNormalization = corpusRepair.ruleId
+    ? null
+    : normalizeRegionalVietnameseOutsideCorpus(corpusRepair.text);
 
-  if (subjectRepaired !== text || corpusRepair.repaired) {
+  if (
+    subjectRepaired !== text ||
+    corpusRepair.repaired ||
+    regionalNormalization?.normalized
+  ) {
     logEvent("info", "asr_transcript_repaired", {
       requestId: input.requestId,
       provider,
@@ -29,10 +37,24 @@ function repairTranscriptFromChildSpeech(
       strategy: corpusRepair.strategy,
       score: corpusRepair.score,
       margin: corpusRepair.margin,
+      regionalVocabularyApplied: regionalNormalization?.normalized === true,
+      regionalVocabularyReplacementCount:
+        regionalNormalization?.replacements.length ?? 0,
+      regionalVocabularySourceRows: regionalNormalization
+        ? [
+            ...new Set(
+              regionalNormalization.replacements.flatMap(
+                (replacement) => replacement.sourceRows,
+              ),
+            ),
+          ]
+        : [],
+      unresolvedRegionalVariantCount:
+        regionalNormalization?.unresolvedVariants.length ?? 0,
     });
   }
 
-  return corpusRepair.text;
+  return regionalNormalization?.text ?? corpusRepair.text;
 }
 
 function assertVietnameseTranscript(

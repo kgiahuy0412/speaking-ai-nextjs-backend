@@ -23,6 +23,12 @@ export type BenchmarkMetadata = {
   initialNoiseRms?: number;
   /** True when the client already confirmed speech and controls end-of-turn. */
   clientVadApplied?: boolean;
+  clientAudioTrimmed?: boolean;
+  clientAudioTrimReason?: string;
+  clientAudioOriginalDurationMs?: number;
+  clientAudioRetainedDurationMs?: number;
+  clientAudioTrimThreshold?: number;
+  originalRecordedAudioBytes?: number;
   cloudflareVadFilter?: boolean;
   cloudflareVadMode?: "client" | "cloudflare";
   cloudflareVadReason?:

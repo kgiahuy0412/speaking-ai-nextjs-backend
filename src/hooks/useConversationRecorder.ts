@@ -10,6 +10,7 @@ import type {
   ConversationResponse,
   PracticeContext,
 } from "@/types/conversation";
+import { trimRecordedAudio } from "@/lib/audio/trimRecordedAudio";
 
 type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
 
@@ -48,11 +49,42 @@ type UseConversationRecorderOptions = {
   onError: (message: string) => void;
 };
 
-const chunkIntervalMs = 250;
 const recordingTimeoutMs = 45_000;
 const speechThreshold = 0.025;
 const minimumStreamingConfidence = 0.55;
 const initialNoiseWindowMs = 500;
+
+function getPreferredRecorderMimeType() {
+  const safari = getBrowserLabel() === "safari";
+  const candidates = safari
+    ? [
+        "audio/mp4;codecs=mp4a.40.2",
+        "audio/mp4",
+        "audio/webm;codecs=opus",
+        "audio/webm",
+      ]
+    : [
+        "audio/webm;codecs=opus",
+        "audio/webm",
+        "audio/mp4;codecs=mp4a.40.2",
+        "audio/mp4",
+      ];
+
+  return candidates.find((mimeType) => MediaRecorder.isTypeSupported(mimeType));
+}
+
+function getAudioFileName(mimeType: string) {
+  const normalized = mimeType.split(";", 1)[0]?.toLowerCase();
+  if (normalized === "audio/mp4" || normalized === "audio/m4a") {
+    return "speech.m4a";
+  }
+  if (normalized === "audio/ogg") return "speech.ogg";
+  if (normalized === "audio/mpeg") return "speech.mp3";
+  if (normalized === "audio/wav" || normalized === "audio/x-wav") {
+    return "speech.wav";
+  }
+  return "speech.webm";
+}
 
 function isBluetoothLabel(label: string) {
   return /bluetooth|headset|headphone|earbud|airpod|wireless/i.test(label);
@@ -163,9 +195,7 @@ export function useConversationRecorder({
   const audioInputLabelRef = useRef<string | undefined>(undefined);
   const isBluetoothInputRef = useRef(false);
   const initialNoiseRmsRef = useRef<number | undefined>(undefined);
-  const audioSessionIdRef = useRef("");
-  const uploadPromisesRef = useRef<Promise<void>[]>([]);
-  const chunkSequenceRef = useRef(0);
+  const recordedChunksRef = useRef<Blob[]>([]);
   const recordingStartedAtRef = useRef(0);
   const stoppedAtRef = useRef(0);
   const firstDeltaMsRef = useRef<number | undefined>(undefined);
@@ -174,6 +204,7 @@ export function useConversationRecorder({
   const timeoutRef = useRef<number | null>(null);
   const vadFrameRef = useRef<number | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const speechDetectedRef = useRef(false);
 
   function stopVad() {
     if (vadFrameRef.current !== null) {
@@ -245,6 +276,7 @@ export function useConversationRecorder({
 
       if (rms >= speechThreshold) {
         heardSpeech = true;
+        speechDetectedRef.current = true;
         lastSpeechAt = now;
         setSpeechDetected(true);
       } else if (heardSpeech && now - lastSpeechAt >= vadSilenceMs) {
@@ -258,34 +290,10 @@ export function useConversationRecorder({
     vadFrameRef.current = window.requestAnimationFrame(inspectAudio);
   }
 
-  async function uploadChunk(chunk: Blob, sequence: number) {
-    const formData = new FormData();
-    formData.append("sequence", sequence.toString());
-    formData.append("audio", chunk, `chunk-${sequence}.webm`);
-    const response = await fetch(
-      `/api/audio-sessions/${audioSessionIdRef.current}/chunks`,
-      {
-        method: "POST",
-        body: formData,
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(await responseError(response));
-    }
-  }
-
   async function finalizeRecording(mimeType: string) {
     setIsSubmitting(true);
 
     try {
-      const uploadDrainStartedAt = performance.now();
-      await Promise.all(uploadPromisesRef.current);
-      const uploadDrainAfterStopMs = Math.max(
-        0,
-        Math.round(performance.now() - uploadDrainStartedAt),
-      );
-
       if (
         effectiveAsrModeRef.current === "browser_streaming" &&
         recognitionEndedRef.current
@@ -326,10 +334,62 @@ export function useConversationRecorder({
         }
       }
 
+      const completeAudio = new Blob(recordedChunksRef.current, {
+        type: mimeType,
+      });
+      const trimmedAudio = canTrustStreamingTranscript
+        ? {
+            blob: completeAudio,
+            trimmed: false,
+            reason: "streaming_transcript_no_audio" as const,
+            originalDurationMs: undefined,
+            retainedDurationMs: undefined,
+            threshold: undefined,
+          }
+        : await trimRecordedAudio(
+            completeAudio,
+            initialNoiseRmsRef.current,
+          );
+      const uploadAudio = trimmedAudio.blob;
+      const benchmark = {
+        browser: getBrowserLabel(),
+        device: /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent)
+          ? ("mobile" as const)
+          : ("desktop" as const),
+        network: getNetworkLabel(),
+        utteranceDurationMs: Math.round(
+          stoppedAtRef.current - recordingStartedAtRef.current,
+        ),
+        vadSilenceMs,
+        requestedAsrMode: asrMode,
+        streamingFallbackReason: fallbackReasonRef.current,
+        audioInputLabel: audioInputLabelRef.current,
+        bluetoothAudioInput: isBluetoothInputRef.current,
+        initialNoiseRms: initialNoiseRmsRef.current,
+        clientVadApplied: speechDetectedRef.current,
+        clientAudioTrimmed: trimmedAudio.trimmed,
+        clientAudioTrimReason: trimmedAudio.reason,
+        clientAudioOriginalDurationMs: trimmedAudio.originalDurationMs,
+        clientAudioRetainedDurationMs: trimmedAudio.retainedDurationMs,
+        clientAudioTrimThreshold: trimmedAudio.threshold,
+        batchTransport: canTrustStreamingTranscript
+          ? "browser_transcript_no_audio"
+          : trimmedAudio.trimmed
+            ? "single_complete_file_vad_trimmed"
+            : "single_complete_file",
+        audioChunkCount: recordedChunksRef.current.length,
+        transportChunkCount: canTrustStreamingTranscript ? 0 : 1,
+        uploadedAudioBytes: canTrustStreamingTranscript
+          ? 0
+          : uploadAudio.size,
+        retainedAudioBytes: uploadAudio.size,
+        originalRecordedAudioBytes: completeAudio.size,
+      };
       const finalizeRequestStartedAt = performance.now();
-      const response = await fetch(
-        `/api/audio-sessions/${audioSessionIdRef.current}/finalize`,
-        {
+      let response: Response;
+
+      if (canTrustStreamingTranscript) {
+        response = await fetch("/api/conversation", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -340,26 +400,32 @@ export function useConversationRecorder({
               ? finalTranscript
               : undefined,
             asrMode: sessionAsrMode,
-            mimeType,
-            benchmark: {
-              browser: getBrowserLabel(),
-              device: /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent)
-                ? "mobile"
-                : "desktop",
-              network: getNetworkLabel(),
-              utteranceDurationMs: Math.round(
-                stoppedAtRef.current - recordingStartedAtRef.current,
-              ),
-              vadSilenceMs,
-              requestedAsrMode: asrMode,
-              streamingFallbackReason: fallbackReasonRef.current,
-              audioInputLabel: audioInputLabelRef.current,
-              bluetoothAudioInput: isBluetoothInputRef.current,
-              initialNoiseRms: initialNoiseRmsRef.current,
-            },
+            benchmark,
           }),
-        },
-      );
+        });
+      } else {
+        if (uploadAudio.size === 0) {
+          throw new Error(
+            pick(
+              "Không thu được dữ liệu âm thanh. Con thử nói lại nhé.",
+              "未录到音频，请再说一次。",
+            ),
+          );
+        }
+        const formData = new FormData();
+        formData.append("context", context);
+        formData.append("childAge", "6");
+        formData.append("benchmark", JSON.stringify(benchmark));
+        formData.append(
+          "audio",
+          uploadAudio,
+          getAudioFileName(uploadAudio.type || mimeType),
+        );
+        response = await fetch("/api/conversation", {
+          method: "POST",
+          body: formData,
+        });
+      }
 
       if (!response.ok) {
         throw new Error(await responseError(response));
@@ -384,7 +450,9 @@ export function useConversationRecorder({
       const latency = {
         asrFirstDeltaMs: firstDeltaMsRef.current,
         asrFinalAfterStopMs,
-        uploadDrainAfterStopMs,
+        ...(canTrustStreamingTranscript
+          ? { uploadDrainAfterStopMs: 0 }
+          : {}),
       };
 
       result.latency = { ...result.latency, ...latency };
@@ -421,11 +489,11 @@ export function useConversationRecorder({
     recognitionConfidenceRef.current = undefined;
     fallbackReasonRef.current = undefined;
     initialNoiseRmsRef.current = undefined;
-    uploadPromisesRef.current = [];
-    chunkSequenceRef.current = 0;
+    recordedChunksRef.current = [];
     firstDeltaMsRef.current = undefined;
     asrFinalAtRef.current = undefined;
     stopRequestedRef.current = false;
+    speechDetectedRef.current = false;
 
     if (!navigator.mediaDevices?.getUserMedia) {
       onError(pick("Trình duyệt không hỗ trợ ghi âm.", "浏览器不支持录音。"));
@@ -440,26 +508,11 @@ export function useConversationRecorder({
     isBluetoothInputRef.current = isBluetoothLabel(inputLabel);
     setAudioInputLabel(inputLabel);
     setIsBluetoothInput(isBluetoothInputRef.current);
-    const sessionResponse = await fetch("/api/audio-sessions", {
-      method: "POST",
-    });
-
-    if (!sessionResponse.ok) {
-      stream.getTracks().forEach((track) => track.stop());
-      throw new Error(await responseError(sessionResponse));
-    }
-
-    const session = (await sessionResponse.json()) as {
-      audioSessionId: string;
-    };
-    audioSessionIdRef.current = session.audioSessionId;
-
-    const mimeType = MediaRecorder.isTypeSupported(
-      "audio/webm;codecs=opus",
-    )
-      ? "audio/webm;codecs=opus"
-      : "audio/webm";
-    const recorder = new MediaRecorder(stream, { mimeType });
+    const preferredMimeType = getPreferredRecorderMimeType();
+    const recorder = preferredMimeType
+      ? new MediaRecorder(stream, { mimeType: preferredMimeType })
+      : new MediaRecorder(stream);
+    const mimeType = recorder.mimeType || preferredMimeType || "audio/webm";
     recordingStartedAtRef.current = performance.now();
     const unavailableReason =
       asrMode === "browser_streaming"
@@ -563,8 +616,7 @@ export function useConversationRecorder({
         return;
       }
 
-      const sequence = chunkSequenceRef.current++;
-      uploadPromisesRef.current.push(uploadChunk(event.data, sequence));
+      recordedChunksRef.current.push(event.data);
     };
     recorder.onstop = () => {
       stream.getTracks().forEach((track) => track.stop());
@@ -574,7 +626,10 @@ export function useConversationRecorder({
     };
 
     mediaRecorderRef.current = recorder;
-    recorder.start(chunkIntervalMs);
+    // A single complete MediaRecorder file is more reliable on Safari than
+    // hundreds of 250 ms fragments. It is uploaded only after the end of
+    // speech, and is not uploaded at all when browser ASR is trustworthy.
+    recorder.start();
     setIsRecording(true);
     startVad(stream);
     timeoutRef.current = window.setTimeout(
