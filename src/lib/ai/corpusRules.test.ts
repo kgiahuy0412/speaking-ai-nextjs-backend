@@ -7,15 +7,19 @@ import {
   reviewedExactRulesV1,
 } from "./exactRules";
 
-test("AIV0 V1 imports exactly the first 1,000 complete reviewed rules", () => {
-  assert.equal(reviewedCorpusRulesV1.length, 1_000);
+test("AIV0 V1 imports all 5,000 complete reviewed rules", () => {
+  assert.equal(reviewedCorpusRulesV1.length, 5_000);
   assert.equal(reviewedCorpusRulesV1[0]?.id, "AIV0-0001");
   assert.equal(reviewedCorpusRulesV1[499]?.id, "AIV0-0500");
   assert.equal(reviewedCorpusRulesV1[500]?.id, "AIV0-0501");
-  assert.equal(reviewedCorpusRulesV1.at(-1)?.id, "AIV0-1000");
+  assert.equal(reviewedCorpusRulesV1[999]?.id, "AIV0-1000");
+  assert.equal(reviewedCorpusRulesV1[1_000]?.id, "AIV0-1001");
+  assert.equal(reviewedCorpusRulesV1[2_499]?.id, "AIV0-2500");
+  assert.equal(reviewedCorpusRulesV1[4_500]?.id, "AIV0-4501");
+  assert.equal(reviewedCorpusRulesV1.at(-1)?.id, "AIV0-5000");
   assert.equal(
     new Set(reviewedCorpusRulesV1.map((rule) => rule.id)).size,
-    1_000,
+    5_000,
   );
   assert.ok(
     reviewedCorpusRulesV1.every(
@@ -60,14 +64,28 @@ test("second AIV0 batch is active and keeps corpus priority", () => {
   );
 });
 
-test("all 500 new corpus translations are active in the 1,265-rule runtime", () => {
-  assert.equal(reviewedExactRulesV1.length, 1_265);
+test("all 4,000 new corpus translations are active in the 5,265-rule runtime", () => {
+  assert.equal(reviewedExactRulesV1.length, 5_265);
 
-  for (const rule of reviewedCorpusRulesV1.slice(500)) {
+  for (const rule of reviewedCorpusRulesV1.slice(1_000)) {
     assert.equal(
       findReviewedExactRule(rule.vietnamese)?.english,
       rule.english,
       `Inactive or changed translation for ${rule.id}`,
     );
+  }
+});
+
+test("samples at the start, middle and end of every new batch use exact rules", () => {
+  for (let start = 1_000; start < 5_000; start += 500) {
+    for (const index of [start, start + 249, start + 499]) {
+      const rule = reviewedCorpusRulesV1[index];
+      assert.ok(rule, `Missing corpus sample at index ${index}`);
+      assert.equal(
+        findReviewedExactRule(rule.vietnamese)?.english,
+        rule.english,
+        `Inactive smoke-test rule ${rule.id}`,
+      );
+    }
   }
 });
