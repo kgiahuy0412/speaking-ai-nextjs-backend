@@ -65,6 +65,18 @@ test("chunk retry is idempotent and conflicting content is rejected", async () =
   );
 });
 
+test("PostgreSQL chunk query gives the byte-size parameter one explicit type", () => {
+  const byteSizeParameters = [
+    ...sessions.postgresAudioChunkUpsertQuery.matchAll(/\$4(?:::integer)?/g),
+  ].map((match) => match[0]);
+
+  assert.deepEqual(byteSizeParameters, [
+    "$4::integer",
+    "$4::integer",
+    "$4::integer",
+  ]);
+});
+
 test("finalize rejects a missing chunk sequence", async () => {
   const sessionId = await sessions.createAudioUploadSession();
   await sessions.saveAudioSessionChunk(

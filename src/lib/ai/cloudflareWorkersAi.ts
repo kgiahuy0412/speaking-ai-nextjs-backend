@@ -130,6 +130,7 @@ export async function translateAudioToEnglish(
 
 export async function transcribeAudioToVietnamese(
   audio: File,
+  options: { vadFilter?: boolean } = {},
 ): Promise<AudioTranscriptionResult> {
   const config = getCloudflareAudioTranslationConfig();
   const timeoutMs = positiveInteger(
@@ -139,6 +140,7 @@ export async function transcribeAudioToVietnamese(
   const body = buildCloudflareAudioTranscriptionBody(
     await audio.arrayBuffer(),
     "vi",
+    options,
   );
 
   let response: Response;

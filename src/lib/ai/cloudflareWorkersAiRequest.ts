@@ -9,6 +9,37 @@ export type CloudflareWorkersAiEnvelope = {
   errors?: Array<{ code?: number; message?: string }>;
 };
 
+export type CloudflareAsrVadMode = "client" | "cloudflare";
+
+export type CloudflareAsrVadPolicy = {
+  vadFilter: boolean;
+  mode: CloudflareAsrVadMode;
+  reason: "client_vad_confirmed" | "cloudflare_vad_required";
+};
+
+export function resolveCloudflareAsrVadPolicy(input: {
+  clientVadApplied?: boolean;
+  configuredMode?: string;
+}): CloudflareAsrVadPolicy {
+  const configuredMode = input.configuredMode?.trim().toLowerCase();
+  const mode: CloudflareAsrVadMode =
+    configuredMode === "cloudflare" ? "cloudflare" : "client";
+
+  if (mode === "client" && input.clientVadApplied === true) {
+    return {
+      vadFilter: false,
+      mode,
+      reason: "client_vad_confirmed",
+    };
+  }
+
+  return {
+    vadFilter: true,
+    mode,
+    reason: "cloudflare_vad_required",
+  };
+}
+
 export function classifyCloudflareTranscriptionResponse(input: {
   responseOk: boolean;
   success: boolean | undefined;
@@ -41,12 +72,17 @@ export function buildCloudflareAudioTranslationBody(
 export function buildCloudflareAudioTranscriptionBody(
   audio: ArrayBuffer,
   sourceLanguage: string,
+  options: { vadFilter?: boolean } = {},
 ) {
   return {
     audio: Buffer.from(audio).toString("base64"),
     task: "transcribe",
     language: sourceLanguage,
-    vad_filter: true,
+    // Flutter already confirms speech and controls the end of an utterance.
+    // Disabling the provider VAD for that audio prevents a second trimming
+    // pass from removing quiet first/last syllables. Legacy/raw clients keep
+    // the provider VAD through the default value below.
+    vad_filter: options.vadFilter ?? true,
     condition_on_previous_text: false,
     // Client VAD has already confirmed speech. These values stay conservative
     // against noise while avoiding false rejection of short or quiet child

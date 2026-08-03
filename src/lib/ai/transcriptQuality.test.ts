@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { getVietnameseTranscriptQualityIssue } from "./transcriptQuality";
 
@@ -53,6 +54,51 @@ test("rejects silence hallucinations before translation", () => {
       { avg_logprob: -0.55, no_speech_prob: 0.78 },
     ]),
     "no_speech",
+  );
+});
+
+test("rejects stock hallucinations found in the Cloudflare child-audio audit", () => {
+  const hallucinations = [
+    "Hãy subscribe cho kênh La La School để không bỏ lỡ những video hấp dẫn.",
+    "Các bạn hãy đăng ký kênh để ủng hộ kênh của mình nhé.",
+    "Cảm ơn các bạn đã xem video này.",
+    "Cảm ơn các bạn đã theo dõi và hẹn gặp lại trong những video tiếp theo.",
+    "Phụ đề được thực hiện bởi Amara.org.",
+  ];
+
+  for (const transcript of hallucinations) {
+    assert.equal(
+      getVietnameseTranscriptQualityIssue(transcript),
+      "common_hallucination",
+      transcript,
+    );
+  }
+});
+
+test("does not block legitimate child phrases that mention video or meeting again", () => {
+  const validPhrases = [
+    "Con muốn xem video về con mèo.",
+    "Con muốn đăng ký học bơi.",
+    "Hẹn gặp lại mẹ sau giờ học.",
+  ];
+
+  for (const transcript of validPhrases) {
+    assert.equal(getVietnameseTranscriptQualityIssue(transcript), null);
+  }
+});
+
+test("pipeline validates ASR before translation and TTS", async () => {
+  const asrSource = await readFile(new URL("./asr.ts", import.meta.url), "utf8");
+  const pipelineSource = await readFile(
+    new URL("./pipeline.ts", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(asrSource, /getVietnameseTranscriptQualityIssue/);
+  assert.match(asrSource, /"ASR_LOW_CONFIDENCE"/);
+  assert.ok(
+    pipelineSource.indexOf("transcribeVietnamese(input)") <
+      pipelineSource.indexOf("generateEnglishSentence("),
   );
 });
 

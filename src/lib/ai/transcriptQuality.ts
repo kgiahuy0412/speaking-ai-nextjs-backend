@@ -24,11 +24,30 @@ const commonHallucinationFragments = [
   "amara org",
   "cam on cac ban da theo doi",
   "cam on cac ban da xem",
+  "cam on cac ban da xem video nay",
   "cam on moi nguoi da theo doi",
   "dang ky kenh",
+  "hay subscribe cho kenh",
   "hen gap lai cac ban trong video",
+  "khong bo lo nhung video hap dan",
   "phu de duoc thuc hien",
   "thanks for watching",
+  "ung ho kenh cua minh",
+];
+
+// Keep these patterns specific enough that legitimate phrases such as
+// "Con muốn xem video" or "Hẹn gặp lại mẹ" are still accepted. These
+// combinations are stock Whisper completions observed repeatedly in noisy or
+// low-speech child recordings, not useful communication utterances.
+const commonHallucinationPatterns = [
+  /\b(?:hay )?subscribe (?:cho )?kenh\b/u,
+  /\b(?:hay )?dang ky kenh\b/u,
+  /\bung ho kenh(?: cua minh)?\b/u,
+  /\bkhong bo lo (?:nhung )?video\b/u,
+  /\bcam on (?:cac ban|moi nguoi).*\b(?:xem|theo doi)\b.*\bvideo\b/u,
+  /\bhen gap lai\b.*\bvideo(?: tiep theo)?\b/u,
+  /\bphu de\b.*\b(?:thuc hien|boi)\b/u,
+  /\bamara org\b/u,
 ];
 
 const commonEnglishWords = new Set([
@@ -109,6 +128,13 @@ function looksRepetitive(words: string[]) {
   return uniqueRatio < 0.3 || repeatedTail;
 }
 
+function looksLikeCommonHallucination(value: string) {
+  return (
+    commonHallucinationFragments.some((fragment) => value.includes(fragment)) ||
+    commonHallucinationPatterns.some((pattern) => pattern.test(value))
+  );
+}
+
 export function getVietnameseTranscriptQualityIssue(
   transcript: string,
   segments: unknown[] = [],
@@ -128,11 +154,7 @@ export function getVietnameseTranscriptQualityIssue(
   if (promptEchoFragments.some((fragment) => normalized.includes(fragment))) {
     return "prompt_echo" as const;
   }
-  if (
-    commonHallucinationFragments.some((fragment) =>
-      normalizedWithoutDiacritics.includes(fragment),
-    )
-  ) {
+  if (looksLikeCommonHallucination(normalizedWithoutDiacritics)) {
     return "common_hallucination" as const;
   }
   if (looksEnglishOnly(normalized, words)) {

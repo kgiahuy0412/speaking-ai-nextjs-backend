@@ -21,6 +21,13 @@ export type BenchmarkMetadata = {
   audioInputLabel?: string;
   bluetoothAudioInput?: boolean;
   initialNoiseRms?: number;
+  /** True when the client already confirmed speech and controls end-of-turn. */
+  clientVadApplied?: boolean;
+  cloudflareVadFilter?: boolean;
+  cloudflareVadMode?: "client" | "cloudflare";
+  cloudflareVadReason?:
+    | "client_vad_confirmed"
+    | "cloudflare_vad_required";
   asrConfidence?: number;
   asrFirstDeltaMs?: number;
   asrFinalAfterStopMs?: number;

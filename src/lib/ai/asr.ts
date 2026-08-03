@@ -4,6 +4,7 @@ import { delay } from "@/lib/latency";
 import { logEvent } from "@/lib/observability";
 import { getOpenAIClient } from "./openai";
 import { transcribeAudioToVietnamese } from "./cloudflareWorkersAi";
+import { resolveCloudflareAsrVadPolicy } from "./cloudflareWorkersAiRequest";
 import { sampleVietnameseByContext } from "./prompts";
 import { containsUnexpectedEastAsianScript } from "./languageValidation";
 import { repairVietnameseChildTranscript } from "./transcriptRepair";
@@ -71,8 +72,29 @@ async function transcribeAudio(input: ConversationRequest) {
 
   if (primaryProvider === "cloudflare") {
     const startedAt = performance.now();
+    const vadPolicy = resolveCloudflareAsrVadPolicy({
+      clientVadApplied: input.benchmark?.clientVadApplied,
+      configuredMode: process.env.CLOUDFLARE_ASR_VAD_MODE,
+    });
+    input.benchmark = {
+      ...input.benchmark,
+      cloudflareVadFilter: vadPolicy.vadFilter,
+      cloudflareVadMode: vadPolicy.mode,
+      cloudflareVadReason: vadPolicy.reason,
+    };
+    logEvent("info", "cloudflare_asr_vad_policy", {
+      requestId: input.requestId,
+      clientVadApplied: input.benchmark.clientVadApplied === true,
+      vadFilter: vadPolicy.vadFilter,
+      mode: vadPolicy.mode,
+      reason: vadPolicy.reason,
+      audioInputLabel: input.benchmark.audioInputLabel,
+      bluetoothAudioInput: input.benchmark.bluetoothAudioInput,
+    });
     const cloudflareTranscription = (async () => {
-      const result = await transcribeAudioToVietnamese(audioFile);
+      const result = await transcribeAudioToVietnamese(audioFile, {
+        vadFilter: vadPolicy.vadFilter,
+      });
       assertVietnameseTranscript(result.vietnameseText, result.segments, {
         requestId: input.requestId,
         provider: "cloudflare",

@@ -14,6 +14,58 @@ import { getAudioUploadLimits } from "@/lib/storage/config";
 
 const sessionIdPattern = /^audio_[a-z0-9-]+$/;
 const metadataFileName = "session.json";
+export const postgresAudioChunkUpsertQuery = `WITH target AS (
+         SELECT session_id, status, expires_at, total_bytes, chunk_count
+           FROM audio_upload_sessions
+          WHERE session_id = $1
+          FOR UPDATE
+       ), upserted AS (
+         INSERT INTO audio_upload_chunks
+           (session_id, sequence, sha256, size_bytes, content_base64)
+         SELECT session_id, $2, $3, $4::integer, $7
+           FROM target
+          WHERE status = 'uploading'
+            AND expires_at > NOW()
+            AND (
+              EXISTS (
+                SELECT 1
+                  FROM audio_upload_chunks
+                 WHERE session_id = $1 AND sequence = $2
+              )
+              OR (
+                total_bytes + $4::integer <= $5
+                AND chunk_count < $6
+              )
+            )
+         ON CONFLICT (session_id, sequence) DO UPDATE
+           SET sha256 = audio_upload_chunks.sha256
+         RETURNING session_id, sha256, (xmax = 0) AS inserted
+       ), updated AS (
+         UPDATE audio_upload_sessions AS sessions
+            SET total_bytes = sessions.total_bytes + $4::integer,
+                chunk_count = sessions.chunk_count + 1,
+                updated_at = NOW()
+           FROM upserted
+          WHERE sessions.session_id = upserted.session_id
+            AND upserted.inserted
+         RETURNING sessions.total_bytes, sessions.chunk_count
+       )
+       SELECT target.status,
+              target.expires_at,
+              COALESCE(
+                (SELECT total_bytes FROM updated),
+                target.total_bytes
+              ) AS total_bytes,
+              COALESCE(
+                (SELECT chunk_count FROM updated),
+                target.chunk_count
+              ) AS chunk_count,
+              COALESCE(
+                (SELECT inserted FROM upserted),
+                FALSE
+              ) AS inserted,
+              (SELECT sha256 FROM upserted) AS existing_sha256
+         FROM target`;
 const allowedMimeTypes = new Map([
   ["audio/mp4", "speech.m4a"],
   ["audio/m4a", "speech.m4a"],
@@ -440,58 +492,7 @@ export async function saveAudioSessionChunk(
       inserted: boolean;
       existing_sha256: string | null;
     }>(
-      `WITH target AS (
-         SELECT session_id, status, expires_at, total_bytes, chunk_count
-           FROM audio_upload_sessions
-          WHERE session_id = $1
-          FOR UPDATE
-       ), upserted AS (
-         INSERT INTO audio_upload_chunks
-           (session_id, sequence, sha256, size_bytes, content_base64)
-         SELECT session_id, $2, $3, $4, $7
-           FROM target
-          WHERE status = 'uploading'
-            AND expires_at > NOW()
-            AND (
-              EXISTS (
-                SELECT 1
-                  FROM audio_upload_chunks
-                 WHERE session_id = $1 AND sequence = $2
-              )
-              OR (
-                total_bytes + $4 <= $5
-                AND chunk_count < $6
-              )
-            )
-         ON CONFLICT (session_id, sequence) DO UPDATE
-           SET sha256 = audio_upload_chunks.sha256
-         RETURNING session_id, sha256, (xmax = 0) AS inserted
-       ), updated AS (
-         UPDATE audio_upload_sessions AS sessions
-            SET total_bytes = sessions.total_bytes + $4,
-                chunk_count = sessions.chunk_count + 1,
-                updated_at = NOW()
-           FROM upserted
-          WHERE sessions.session_id = upserted.session_id
-            AND upserted.inserted
-         RETURNING sessions.total_bytes, sessions.chunk_count
-       )
-       SELECT target.status,
-              target.expires_at,
-              COALESCE(
-                (SELECT total_bytes FROM updated),
-                target.total_bytes
-              ) AS total_bytes,
-              COALESCE(
-                (SELECT chunk_count FROM updated),
-                target.chunk_count
-              ) AS chunk_count,
-              COALESCE(
-                (SELECT inserted FROM upserted),
-                FALSE
-              ) AS inserted,
-              (SELECT sha256 FROM upserted) AS existing_sha256
-         FROM target`,
+      postgresAudioChunkUpsertQuery,
       [
         sessionId,
         sequence,

@@ -13,6 +13,7 @@ import { getCachedAiEnglishText, saveAiEnglishText } from "./textCache";
 import { containsUnexpectedEastAsianScript } from "./languageValidation";
 import { findReviewedAsrRuleMatch } from "./exactRules";
 import { findMissingTranslationRequirements } from "./translationFidelity";
+import { normalizeTranslationOutput } from "./translationOutputQuality";
 import {
   CloudflareTextProviderError,
   translateVietnameseWithCloudflare,
@@ -123,31 +124,6 @@ async function withTimeout<T>(
       clearTimeout(timeoutId);
     }
   }
-}
-
-function normalizeTranslationOutput(text: string) {
-  let value = text.trim();
-
-  value = value.replace(/^(english|translation)\s*:\s*/i, "").trim();
-
-  if (
-    value.length >= 2 &&
-    ((value.startsWith('"') && value.endsWith('"')) ||
-      (value.startsWith("'") && value.endsWith("'")))
-  ) {
-    value = value.slice(1, -1).trim();
-  }
-
-  if (
-    !value ||
-    value.length > 500 ||
-    containsUnexpectedEastAsianScript(value) ||
-    /^(vietnamese|source)\s*:/i.test(value)
-  ) {
-    return null;
-  }
-
-  return value;
 }
 
 function getProviderFailureReason(error: unknown) {
