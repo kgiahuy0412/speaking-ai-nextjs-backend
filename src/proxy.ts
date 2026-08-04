@@ -7,9 +7,9 @@ const developmentOriginPattern =
 const corsHeaders = {
   "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
   "Access-Control-Allow-Headers":
-    "Content-Type, X-Request-Id, Idempotency-Key, Authorization, Range",
+    "Content-Type, X-Request-Id, Idempotency-Key, X-Chunk-SHA256, X-Discard-Reason, Authorization, Range",
   "Access-Control-Expose-Headers":
-    "X-Request-Id, X-Audio-Source, Accept-Ranges, Content-Length, Content-Range",
+    "X-Request-Id, X-Audio-Source, Retry-After, Accept-Ranges, Content-Length, Content-Range",
   "Access-Control-Max-Age": "600",
 } as const;
 

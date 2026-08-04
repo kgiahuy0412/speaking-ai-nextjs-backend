@@ -26,6 +26,7 @@ Hard requirements:
 - When the child points to text, homework or an object, "chỗ này" means "this part/this" unless the source clearly refers to a physical place.
 - "Cây bút" means "pen". Use "pencil", "colored pencil", "crayon" or another subtype only when that subtype is stated in Vietnamese.
 - Apply these mandatory child-speech mappings when the stated meaning is present: bố/ba = Dad; mẹ/má = Mom; ông = Grandpa; bà/ngoại/nội = Grandma; công viên = park; trường = school.
+- The child may use Northern, Central or Southern Vietnamese vocabulary. Interpret regional words from the complete sentence context. Never replace a valid homonym merely because it resembles a regional variant.
 - Preserve every explicit color, number, time and place. Never replace it with a related or more specific concept. For example, màu tím = purple and công viên = park, never kindergarten.
 - Return exactly one English translation. English only, without quotation marks, labels, notes or explanations.
 

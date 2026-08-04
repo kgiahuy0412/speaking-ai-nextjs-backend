@@ -9,8 +9,50 @@ export type CloudflareWorkersAiEnvelope = {
   errors?: Array<{ code?: number; message?: string }>;
 };
 
-export const VIETNAMESE_CHILD_ASR_PROMPT =
-  "con; mẹ; bố; cô; chú; thầy; bạn; tên; tuổi; uống nước; ăn cơm; màu đỏ; đi chơi; nghe lại; không hiểu; nói chậm lại; cần giúp; quả bóng; con mèo";
+export type CloudflareAsrVadMode = "client" | "cloudflare";
+
+export type CloudflareAsrVadPolicy = {
+  vadFilter: boolean;
+  mode: CloudflareAsrVadMode;
+  reason: "client_vad_confirmed" | "cloudflare_vad_required";
+};
+
+export function resolveCloudflareAsrVadPolicy(input: {
+  clientVadApplied?: boolean;
+  configuredMode?: string;
+}): CloudflareAsrVadPolicy {
+  const configuredMode = input.configuredMode?.trim().toLowerCase();
+  const mode: CloudflareAsrVadMode =
+    configuredMode === "cloudflare" ? "cloudflare" : "client";
+
+  if (mode === "client" && input.clientVadApplied === true) {
+    return {
+      vadFilter: false,
+      mode,
+      reason: "client_vad_confirmed",
+    };
+  }
+
+  return {
+    vadFilter: true,
+    mode,
+    reason: "cloudflare_vad_required",
+  };
+}
+
+export function classifyCloudflareTranscriptionResponse(input: {
+  responseOk: boolean;
+  success: boolean | undefined;
+  transcript: string;
+}) {
+  if (!input.responseOk || input.success === false) {
+    return "provider_error" as const;
+  }
+  if (!input.transcript.trim()) {
+    return "unclear_speech" as const;
+  }
+  return null;
+}
 
 export function buildCloudflareAudioTranslationBody(
   audio: ArrayBuffer,
@@ -30,20 +72,21 @@ export function buildCloudflareAudioTranslationBody(
 export function buildCloudflareAudioTranscriptionBody(
   audio: ArrayBuffer,
   sourceLanguage: string,
+  options: { vadFilter?: boolean } = {},
 ) {
   return {
     audio: Buffer.from(audio).toString("base64"),
     task: "transcribe",
     language: sourceLanguage,
-    vad_filter: true,
+    // Flutter already confirms speech and controls the end of an utterance.
+    // Disabling the provider VAD for that audio prevents a second trimming
+    // pass from removing quiet first/last syllables. Legacy/raw clients keep
+    // the provider VAD through the default value below.
+    vad_filter: options.vadFilter ?? true,
     condition_on_previous_text: false,
-    // A compact vocabulary prompt improves recognition of short Vietnamese child
-    // speech without giving Whisper an instruction sentence that it can echo.
-    initial_prompt: VIETNAMESE_CHILD_ASR_PROMPT,
-    beam_size: 10,
-    hallucination_silence_threshold: 0.8,
-    // Reject low-confidence/repetitive Whisper segments before they can become a
-    // translation or a learned rule.
+    // Client VAD has already confirmed speech. These values stay conservative
+    // against noise while avoiding false rejection of short or quiet child
+    // speech. They also align with the server-side transcript validator.
     no_speech_threshold: 0.55,
     compression_ratio_threshold: 2.2,
     log_prob_threshold: -0.8,

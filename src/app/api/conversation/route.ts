@@ -2,6 +2,7 @@ import type { ConversationRequest } from "@/types/conversation";
 import type { PracticeContext } from "@/types/conversation";
 import { AppError, toErrorResponse } from "@/lib/errors";
 import { runConversationPipeline } from "@/lib/ai/pipeline";
+import { getCloudflareAudioMaxBytes } from "@/lib/ai/cloudflareWorkersAi";
 import { scheduleConversationPostResponseTasks } from "@/lib/ai/postResponseTasks";
 import {
   getRequestId,
@@ -39,6 +40,7 @@ function validateRequest(body: unknown): ConversationRequest {
     sessionId: input.sessionId,
     sourceText: input.sourceText,
     asrMode:
+      input.asrMode === "browser_streaming" ||
       input.asrMode === "android_streaming" ||
       input.asrMode === "openai_realtime" ||
       input.asrMode === "ble_offline_intent"
@@ -82,6 +84,17 @@ function validateFormData(formData: FormData): ConversationRequest {
 
   if (audioFile && !(audioFile instanceof File)) {
     throw new AppError("BAD_REQUEST", "Tệp âm thanh tải lên không hợp lệ.");
+  }
+
+  if (
+    audioFile instanceof File &&
+    audioFile.size > getCloudflareAudioMaxBytes()
+  ) {
+    throw new AppError(
+      "AUDIO_TOO_LONG",
+      "Tệp audio vượt quá dung lượng cho phép.",
+      413,
+    );
   }
 
   if (!audioFile && !sourceText) {
@@ -140,6 +153,7 @@ export async function POST(request: Request) {
     scheduleConversationPostResponseTasks(
       result,
       isMultipart ||
+        input.asrMode === "browser_streaming" ||
         input.asrMode === "openai_realtime" ||
         input.asrMode === "ble_offline_intent"
         ? "audio"

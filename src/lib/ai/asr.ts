@@ -3,26 +3,120 @@ import { AppError } from "@/lib/errors";
 import { delay } from "@/lib/latency";
 import { logEvent } from "@/lib/observability";
 import { transcribeAudioToVietnamese } from "./cloudflareWorkersAi";
+import { resolveCloudflareAsrVadPolicy } from "./cloudflareWorkersAiRequest";
 import { sampleVietnameseByContext } from "./prompts";
 import { containsUnexpectedEastAsianScript } from "./languageValidation";
 import { repairVietnameseChildTranscript } from "./transcriptRepair";
+import { repairVietnameseTranscriptWithCorpus } from "./transcriptCorpusRepair";
+import { normalizeRegionalVietnameseOutsideCorpus } from "./regionalVocabularyNormalizer";
 import { getVietnameseTranscriptQualityIssue } from "./transcriptQuality";
 
-function assertVietnameseTranscript(text: string, segments: unknown[] = []) {
-  const qualityIssue = getVietnameseTranscriptQualityIssue(text, segments);
-  if (!containsUnexpectedEastAsianScript(text) && !qualityIssue) return;
+function repairTranscriptFromChildSpeech(
+  text: string,
+  input: ConversationRequest,
+  provider: "cloudflare" | "device",
+) {
+  const subjectRepaired = repairVietnameseChildTranscript(text);
+  const corpusRepair = repairVietnameseTranscriptWithCorpus(subjectRepaired);
+  const regionalNormalization = corpusRepair.ruleId
+    ? null
+    : normalizeRegionalVietnameseOutsideCorpus(corpusRepair.text);
+
+  if (
+    subjectRepaired !== text ||
+    corpusRepair.repaired ||
+    regionalNormalization?.normalized
+  ) {
+    logEvent("info", "asr_transcript_repaired", {
+      requestId: input.requestId,
+      provider,
+      subjectRepairApplied: subjectRepaired !== text,
+      corpusRepairApplied: corpusRepair.repaired,
+      corpusRuleId: corpusRepair.ruleId,
+      strategy: corpusRepair.strategy,
+      score: corpusRepair.score,
+      margin: corpusRepair.margin,
+      regionalVocabularyApplied: regionalNormalization?.normalized === true,
+      regionalVocabularyReplacementCount:
+        regionalNormalization?.replacements.length ?? 0,
+      regionalVocabularySourceRows: regionalNormalization
+        ? [
+            ...new Set(
+              regionalNormalization.replacements.flatMap(
+                (replacement) => replacement.sourceRows,
+              ),
+            ),
+          ]
+        : [],
+      unresolvedRegionalVariantCount:
+        regionalNormalization?.unresolvedVariants.length ?? 0,
+    });
+  }
+
+  return regionalNormalization?.text ?? corpusRepair.text;
+}
+
+function assertVietnameseTranscript(
+  text: string,
+  segments: unknown[] = [],
+  options: {
+    requestId?: string;
+    provider?: "cloudflare" | "device";
+    utteranceDurationMs?: number;
+  } = {},
+) {
+  const unexpectedScript = containsUnexpectedEastAsianScript(text);
+  const qualityIssue = getVietnameseTranscriptQualityIssue(text, segments, {
+    utteranceDurationMs: options.utteranceDurationMs,
+  });
+  if (!unexpectedScript && !qualityIssue) return;
+
+  logEvent("warn", "asr_transcript_rejected", {
+    requestId: options.requestId,
+    provider: options.provider,
+    reason: unexpectedScript ? "unexpected_script" : qualityIssue,
+    utteranceDurationMs: options.utteranceDurationMs,
+    transcriptLength: text.trim().length,
+  });
 
   throw new AppError(
     "ASR_LOW_CONFIDENCE",
-    "Nhận diện giọng nói chưa đủ chắc chắn. Vui lòng nói lại gần micro hơn.",
+    "Mình chưa nghe rõ. Con đưa micro lại gần và nói rõ hơn nhé.",
+    422,
   );
 }
 
 async function transcribeAudio(input: ConversationRequest) {
   const audioFile = input.audioFile!;
   const startedAt = performance.now();
-  const result = await transcribeAudioToVietnamese(audioFile);
-  assertVietnameseTranscript(result.vietnameseText, result.segments);
+  const vadPolicy = resolveCloudflareAsrVadPolicy({
+    clientVadApplied: input.benchmark?.clientVadApplied,
+    configuredMode: process.env.CLOUDFLARE_ASR_VAD_MODE,
+  });
+  input.benchmark = {
+    ...input.benchmark,
+    cloudflareVadFilter: vadPolicy.vadFilter,
+    cloudflareVadMode: vadPolicy.mode,
+    cloudflareVadReason: vadPolicy.reason,
+  };
+  logEvent("info", "cloudflare_asr_vad_policy", {
+    requestId: input.requestId,
+    clientVadApplied: input.benchmark.clientVadApplied === true,
+    vadFilter: vadPolicy.vadFilter,
+    mode: vadPolicy.mode,
+    reason: vadPolicy.reason,
+    audioInputLabel: input.benchmark.audioInputLabel,
+    bluetoothAudioInput: input.benchmark.bluetoothAudioInput,
+  });
+
+  const result = await transcribeAudioToVietnamese(audioFile, {
+    vadFilter: vadPolicy.vadFilter,
+  });
+  assertVietnameseTranscript(result.vietnameseText, result.segments, {
+    requestId: input.requestId,
+    provider: "cloudflare",
+    utteranceDurationMs: input.benchmark?.utteranceDurationMs,
+  });
   logEvent("info", "asr_provider_latency", {
     requestId: input.requestId,
     provider: "cloudflare",
@@ -45,13 +139,17 @@ export async function transcribeVietnamese(input: ConversationRequest) {
     ) {
       throw new AppError(
         "ASR_LOW_CONFIDENCE",
-        "Ứng dụng chưa nghe rõ câu nói. Vui lòng nói lại gần micro hơn.",
+        "Mình chưa nghe rõ. Con đưa micro lại gần và nói rõ hơn nhé.",
+        422,
       );
     }
-    assertVietnameseTranscript(sourceText);
-    return input.asrMode === "android_streaming" ||
-      input.asrMode === "openai_realtime"
-      ? repairVietnameseChildTranscript(sourceText)
+    assertVietnameseTranscript(sourceText, [], {
+      requestId: input.requestId,
+      provider: "device",
+      utteranceDurationMs: input.benchmark?.utteranceDurationMs,
+    });
+    return input.asrMode && input.asrMode !== "text"
+      ? repairTranscriptFromChildSpeech(sourceText, input, "device")
       : sourceText;
   }
 
@@ -61,13 +159,21 @@ export async function transcribeVietnamese(input: ConversationRequest) {
     if (!vietnameseText) {
       throw new AppError(
         "ASR_LOW_CONFIDENCE",
-        "Không nghe thấy giọng nói. Hãy bật micro của máy ảo và nói lại.",
+        "Mình chưa nghe thấy giọng nói. Con đưa micro lại gần và nói rõ hơn nhé.",
+        422,
       );
     }
 
-    assertVietnameseTranscript(vietnameseText);
+    assertVietnameseTranscript(vietnameseText, [], {
+      requestId: input.requestId,
+      utteranceDurationMs: input.benchmark?.utteranceDurationMs,
+    });
 
-    return repairVietnameseChildTranscript(vietnameseText);
+    return repairTranscriptFromChildSpeech(
+      vietnameseText,
+      input,
+      "cloudflare",
+    );
   }
 
   await delay(320);

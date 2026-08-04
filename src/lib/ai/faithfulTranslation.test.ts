@@ -5,6 +5,7 @@ import {
   faithfulTranslationGoldenSet,
 } from "./faithfulTranslationGoldenSet";
 import {
+  findReviewedAsrRuleMatch,
   findReviewedExactRule,
   findReviewedExactRuleMatch,
   normalizeVietnameseForExactMatch,
@@ -18,6 +19,7 @@ import {
   TRANSLATION_POLICY_VERSION,
 } from "./translationPolicy";
 import { findMissingTranslationRequirements } from "./translationFidelity";
+import { normalizeTranslationOutput } from "./translationOutputQuality";
 import { getOfflineIntentManifest } from "./offlineIntentManifest";
 
 test("golden set contains 50 unique faithful-translation cases", () => {
@@ -96,6 +98,24 @@ test("reviewed aliases resolve to the canonical exact rule", () => {
   );
 });
 
+test("ASR rule matching tolerates omitted diacritics without becoming fuzzy", () => {
+  const positive = findReviewedAsrRuleMatch(
+    "Me oi, con muon mua cai nay",
+  );
+  const negative = findReviewedAsrRuleMatch(
+    "Con khong muon mua cai nay",
+  );
+
+  assert.equal(positive?.matchType, "asr_folded");
+  assert.equal(positive?.rule.english, "Mom, I want to buy this.");
+  assert.equal(negative?.rule.english, "I don't want to buy this.");
+  assert.equal(findReviewedExactRule("Me oi, con muon mua cai nay"), null);
+  assert.equal(
+    findReviewedAsrRuleMatch("Me oi, con muon mua cai nay nhe"),
+    null,
+  );
+});
+
 test("exact normalization ignores compatibility and invisible formatting only", () => {
   assert.equal(
     normalizeVietnameseForExactMatch("Ｃｏｎ\u200B muốn   đi sở thú!!!"),
@@ -160,7 +180,7 @@ test("online LLM fast path cannot use legacy keyword or semantic outputs", async
   assert.doesNotMatch(llmSource, /keywordIntentRules/);
   assert.doesNotMatch(llmSource, /findSemanticIntent/);
   assert.doesNotMatch(llmSource, /semantic_cache/);
-  assert.match(llmSource, /findReviewedExactRule/);
+  assert.match(llmSource, /findReviewedAsrRuleMatch/);
 });
 
 test("Cloudflare is the only online text provider", async () => {
@@ -185,6 +205,25 @@ test("prompt, rule and text cache use explicit V1 versions", () => {
       TEXT_CACHE_VERSION,
     ]).size,
     4,
+  );
+});
+
+test("translation output guard rejects provider instructions before caching or TTS", () => {
+  assert.equal(
+    normalizeTranslationOutput(
+      "The child is 4 years old. However, you didn't provide a Vietnamese utterance for me to translate. Please provide the utterance.",
+    ),
+    null,
+  );
+  assert.equal(
+    normalizeTranslationOutput(
+      "Please provide the Vietnamese sentence you would like me to translate.",
+    ),
+    null,
+  );
+  assert.equal(
+    normalizeTranslationOutput("Translation: I want some water."),
+    "I want some water.",
   );
 });
 

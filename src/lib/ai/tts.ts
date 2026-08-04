@@ -34,9 +34,13 @@ export function getTtsProfile() {
   return getConfiguredTtsProfile();
 }
 
+function normalizeEnglishAudioText(englishText: string) {
+  return englishText.normalize("NFKC").replace(/\s+/g, " ").trim();
+}
+
 function getAudioDescriptor(englishText: string, profile = getTtsProfile()) {
   return {
-    text: englishText,
+    text: normalizeEnglishAudioText(englishText),
     model: profile.model,
     voice: profile.voice,
     speed: profile.speed,
@@ -73,7 +77,7 @@ function getKnownMissAudioStreamUrl(englishText: string) {
   }
   const token = crypto.randomUUID();
   audioMissTokens.set(token, {
-    normalizedText: englishText.trim(),
+    normalizedText: normalizeEnglishAudioText(englishText),
     expiresAt: now + 30_000,
   });
   return `${getEnglishAudioStreamUrl(englishText)}&missToken=${token}`;
@@ -91,7 +95,7 @@ export function consumeKnownAudioCacheMiss(
   return Boolean(
     entry &&
       entry.expiresAt > Date.now() &&
-      entry.normalizedText === englishText.trim(),
+      entry.normalizedText === normalizeEnglishAudioText(englishText),
   );
 }
 

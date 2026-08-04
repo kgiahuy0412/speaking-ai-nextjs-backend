@@ -68,3 +68,35 @@ test("cache fill survives cancellation of the client response branch", async () 
     "complete mp3 bytes",
   );
 });
+
+test("equivalent whitespace joins one TTS cache fill", async () => {
+  const owner = claimEnglishAudioCacheFill("  Welcome   home.  ");
+  const joined = claimEnglishAudioCacheFill("Welcome home.");
+
+  assert.equal(owner.owner, true);
+  assert.equal(joined.owner, false);
+  assert.ok(owner.owner);
+
+  const completion = owner.cacheResponse(
+    {
+      response: new Response(Buffer.from("normalized audio bytes"), {
+        headers: { "content-type": "audio/mpeg" },
+      }),
+      source: "cloudflare_tts",
+      profile: {
+        provider: "cloudflare",
+        model: "test-tts-model",
+        voice: "test-voice",
+        speed: 1,
+        extension: "mp3",
+      },
+    },
+    false,
+  );
+
+  const [ownerResult, joinedResult] = await Promise.all([
+    completion,
+    joined.completion,
+  ]);
+  assert.equal(ownerResult.audioUrl, joinedResult.audioUrl);
+});

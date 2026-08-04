@@ -1,0 +1,5002 @@
+[
+  {
+    "id": "AIV0-2501",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, con sẽ đặt cốc lên bàn.",
+    "english": "After that, I will put my cup on the table.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2502",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, con sẽ cất sách vào cặp.",
+    "english": "After that, I will put my book in my bag.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2503",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, con sẽ chọn áo để mặc.",
+    "english": "After that, I will choose a shirt to wear.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2504",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, con sẽ rửa mặt.",
+    "english": "After that, I will wash my face.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2505",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, con sẽ lau khô tay.",
+    "english": "After that, I will dry my hands.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2506",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, con sẽ dọn sau khi vẽ.",
+    "english": "After that, I will clean up after drawing.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2507",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, con sẽ bỏ đồ chơi vào hộp.",
+    "english": "After that, I will put my toys in the box.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2508",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, con sẽ nhờ mẹ giúp.",
+    "english": "After that, I will ask Mom for help.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2509",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, con sẽ nói cảm ơn.",
+    "english": "After that, I will say thank you.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2510",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, con sẽ chờ đến lượt.",
+    "english": "After that, I will wait for my turn.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2511",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Con sẽ chia sẻ đồ ăn nhẹ.",
+    "english": "I will share my snack.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2512",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, con sẽ bỏ quần áo bẩn vào giỏ.",
+    "english": "After that, I will put dirty clothes in the basket.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2513",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, con sẽ khóa vòi nước.",
+    "english": "After that, I will turn off the tap.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2514",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, con sẽ mang đĩa vào bếp.",
+    "english": "After that, I will take my plate to the kitchen.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2515",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, con sẽ đặt giày lên kệ.",
+    "english": "After that, I will put my shoes on the shelf.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2516",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, con sẽ tìm đôi tất.",
+    "english": "After that, I will find my socks.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2517",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, con sẽ ôm bố.",
+    "english": "After that, I will hug Dad.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2518",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, con sẽ ngồi vào bàn.",
+    "english": "After that, I will sit at the table.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2519",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, con sẽ nghe mọi người nói.",
+    "english": "After that, I will listen to everyone.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2520",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, con sẽ giúp mang túi nhẹ.",
+    "english": "After that, I will help carry a light bag.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2521",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, con cần đặt cốc lên bàn.",
+    "english": "Today, I need to put my cup on the table.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2522",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, con cần cất sách vào cặp.",
+    "english": "Today, I need to put my book in my bag.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2523",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, con cần chọn áo để mặc.",
+    "english": "Today, I need to choose a shirt to wear.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2524",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, con cần rửa mặt.",
+    "english": "Today, I need to wash my face.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2525",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, con cần lau khô tay.",
+    "english": "Today, I need to dry my hands.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2526",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, con cần dọn sau khi vẽ.",
+    "english": "Today, I need to clean up after drawing.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2527",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, con cần bỏ đồ chơi vào hộp.",
+    "english": "Today, I need to put my toys in the box.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2528",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, con cần nhờ mẹ giúp.",
+    "english": "Today, I need to ask Mom for help.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2529",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, con sẽ đứng gần người lớn.",
+    "english": "Next time, I will stay near an adult.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2530",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, con sẽ chờ ở cổng.",
+    "english": "Next time, I will wait at the gate.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2531",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, con sẽ đi theo hàng.",
+    "english": "Next time, I will follow the line.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2532",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, con sẽ bỏ rác vào thùng.",
+    "english": "Next time, I will put litter in the bin.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2533",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, con sẽ giữ mũ của mình.",
+    "english": "Next time, I will keep my hat with me.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2534",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, con sẽ nhìn hai bên đường.",
+    "english": "Next time, I will look both ways.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2535",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, con sẽ vẫy tay chào bạn.",
+    "english": "Next time, I will wave hello to my friend.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2536",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, con sẽ mang chai nước.",
+    "english": "Next time, I will carry my water bottle.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2537",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Con sẽ nhớ đứng gần người lớn khi ra ngoài.",
+    "english": "I will remember to stay near an adult when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2538",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Con sẽ nhớ chờ ở cổng khi ra ngoài.",
+    "english": "I will remember to wait at the gate when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2539",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Con sẽ nhớ đi theo hàng khi ra ngoài.",
+    "english": "I will remember to follow the line when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2540",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, con sẽ chào cô giáo.",
+    "english": "When I need to, I will say hello to my teacher.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2541",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, con sẽ cất bút màu.",
+    "english": "When I need to, I will put the crayons away.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2542",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, con sẽ cho cô xem bức tranh.",
+    "english": "When I need to, I will show my picture to the teacher.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2543",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, con sẽ lắng nghe cẩn thận.",
+    "english": "When I need to, I will listen carefully.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2544",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, con sẽ rủ bạn chơi cùng.",
+    "english": "When I need to, I will ask my friend to play.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2545",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Con sẽ nhớ chào cô giáo trong lớp.",
+    "english": "I will remember to say hello to my teacher in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2546",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Con sẽ nhớ cất bút màu trong lớp.",
+    "english": "I will remember to put the crayons away in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2547",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về màu vàng.",
+    "english": "I want to talk more about the color yellow.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2548",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về màu xanh lá.",
+    "english": "I want to talk more about the color green.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2549",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về màu tím.",
+    "english": "I want to talk more about the color purple.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2550",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về hình tam giác.",
+    "english": "I want to talk more about triangles.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2551",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về các bộ phận trên cơ thể.",
+    "english": "I want to talk more about parts of the body.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2552",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về quần áo.",
+    "english": "I want to talk more about clothes.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2553",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về thói quen buổi sáng.",
+    "english": "I want to talk more about morning routines.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2554",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về lời nói lịch sự.",
+    "english": "I want to talk more about polite words.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2555",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Con đang học từ “lên”.",
+    "english": "I am learning the word “up”.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2556",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Con đang học từ “xuống”.",
+    "english": "I am learning the word “down”.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2557",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về côn trùng.",
+    "english": "I want to talk more about insects.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2558",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về một ngày ở trường.",
+    "english": "I want to talk more about a day at school.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2559",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Con cần hiểu rõ hơn về màu vàng.",
+    "english": "I need to understand more about the color yellow.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2560",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Con cần hiểu rõ hơn về màu xanh lá.",
+    "english": "I need to understand more about the color green.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2561",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Con cần hiểu rõ hơn về màu tím.",
+    "english": "I need to understand more about the color purple.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2562",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Con cần hiểu rõ hơn về hình tam giác.",
+    "english": "I need to understand more about triangles.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2563",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Con cần hiểu rõ hơn về các bộ phận trên cơ thể.",
+    "english": "I need to understand more about parts of the body.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2564",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Con cần hiểu rõ hơn về quần áo.",
+    "english": "I need to understand more about clothes.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2565",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Con cần hiểu rõ hơn về thói quen buổi sáng.",
+    "english": "I need to understand more about morning routines.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2566",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Con cần hiểu rõ hơn về lời nói lịch sự.",
+    "english": "I need to understand more about polite words.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2567",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Con đang học từ “lên”.",
+    "english": "I am learning the word “up”.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2568",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Con đang học từ “xuống”.",
+    "english": "I am learning the word “down”.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2569",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Con cần hiểu rõ hơn về côn trùng.",
+    "english": "I need to understand more about insects.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2570",
+    "ageGroup": "3–5",
+    "schoolLevel": "Mầm non",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Con cần hiểu rõ hơn về một ngày ở trường.",
+    "english": "I need to understand more about a day at school.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2571",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ xếp khăn gọn gàng.",
+    "english": "After that, I will fold the towels neatly.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2572",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ chuẩn bị chai nước.",
+    "english": "After that, I will prepare my water bottle.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2573",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ chọn trái cây cho cả nhà.",
+    "english": "After that, I will choose fruit for the family.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2574",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ chăm sóc thú cưng.",
+    "english": "After that, I will look after the pet.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2575",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Em sẽ xem dự báo thời tiết.",
+    "english": "I will check the weather forecast.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2576",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ chuẩn bị ô.",
+    "english": "After that, I will get an umbrella ready.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2577",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ treo áo khoác đúng chỗ.",
+    "english": "After that, I will hang up my jacket properly.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2578",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ rửa cốc của mình.",
+    "english": "After that, I will wash my cup.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2579",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ giúp nhặt rau.",
+    "english": "After that, I will help pick the vegetables.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2580",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Em sẽ phân loại tất.",
+    "english": "I will sort the socks.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2581",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Em sẽ nhắc mọi người nghỉ ngơi.",
+    "english": "I will remind everyone to rest.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2582",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ trả đồ đã mượn.",
+    "english": "After that, I will return what I borrowed.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2583",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ đặt đồng phục sẵn sàng.",
+    "english": "After that, I will lay out my uniform.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2584",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ sắp xếp ngăn trong cặp.",
+    "english": "After that, I will organize my school bag pockets.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2585",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ tưới hoa.",
+    "english": "After that, I will water the flowers.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2586",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Em sẽ đếm tiền tiết kiệm.",
+    "english": "I will count my savings.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2587",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Em sẽ dán nhãn đồ dùng.",
+    "english": "I will label my things.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2588",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ giúp dọn bàn ăn.",
+    "english": "After that, I will help clear the table.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2589",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ xem lại lịch ngày mai.",
+    "english": "After that, I will check tomorrow’s schedule.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2590",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Em sẽ mang khăn lau.",
+    "english": "I will bring a cleaning cloth.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2591",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, em cần xếp khăn gọn gàng.",
+    "english": "Today, I need to fold the towels neatly.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2592",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, em cần chuẩn bị chai nước.",
+    "english": "Today, I need to prepare my water bottle.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2593",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, em cần chọn trái cây cho cả nhà.",
+    "english": "Today, I need to choose fruit for the family.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2594",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, em cần chăm sóc thú cưng.",
+    "english": "Today, I need to look after the pet.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2595",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Em cần xem dự báo thời tiết.",
+    "english": "I need to check the weather forecast.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2596",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, em cần chuẩn bị ô.",
+    "english": "Today, I need to get an umbrella ready.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2597",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, em cần treo áo khoác đúng chỗ.",
+    "english": "Today, I need to hang up my jacket properly.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2598",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, em cần rửa cốc của mình.",
+    "english": "Today, I need to wash my cup.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2599",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, em cần giúp nhặt rau.",
+    "english": "Today, I need to help pick the vegetables.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2600",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Em cần phân loại tất.",
+    "english": "I need to sort the socks.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2601",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, em sẽ đi cùng người lớn.",
+    "english": "Next time, I will go with an adult.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2602",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, em sẽ dừng lại trước khi qua đường.",
+    "english": "Next time, I will stop before crossing the road.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2603",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, em sẽ giữ vé xe buýt.",
+    "english": "Next time, I will keep my bus ticket.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2604",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, em sẽ xem biển chỉ dẫn.",
+    "english": "Next time, I will look at the signs.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2605",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, em sẽ đợi bạn ở nơi đã hẹn.",
+    "english": "Next time, I will wait for my friend at the meeting place.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2606",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, em sẽ đi chậm ở nơi đông người.",
+    "english": "Next time, I will walk slowly in a crowded place.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2607",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, em sẽ mang áo mưa.",
+    "english": "Next time, I will bring a raincoat.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2608",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, em sẽ nhường chỗ cho người khác.",
+    "english": "Next time, I will give up my seat for someone else.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2609",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Em sẽ nhớ đi cùng người lớn khi ra ngoài.",
+    "english": "I will remember to go with an adult when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2610",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Em sẽ nhớ dừng lại trước khi qua đường khi ra ngoài.",
+    "english": "I will remember to stop before crossing the road when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2611",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Em sẽ nhớ giữ vé xe buýt khi ra ngoài.",
+    "english": "I will remember to keep my bus ticket when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2612",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, em sẽ xếp sách ngay ngắn.",
+    "english": "When I need to, I will stack my books neatly.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2613",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, em sẽ ghi ngày vào vở.",
+    "english": "When I need to, I will write the date in my notebook.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2614",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, em sẽ giơ tay trước khi nói.",
+    "english": "When I need to, I will raise my hand before speaking.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2615",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, em sẽ chia sẻ bút với bạn.",
+    "english": "When I need to, I will share a pen with my friend.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2616",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, em sẽ đọc hướng dẫn.",
+    "english": "When I need to, I will read the instructions.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2617",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Em sẽ nhớ xếp sách ngay ngắn trong lớp.",
+    "english": "I will remember to stack my books neatly in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2618",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Em sẽ nhớ ghi ngày vào vở trong lớp.",
+    "english": "I will remember to write the date in my notebook in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2619",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Em sẽ nhớ giơ tay trước khi nói trong lớp.",
+    "english": "I will remember to raise my hand before speaking in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2620",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về các phòng trong nhà.",
+    "english": "I want to talk more about rooms in a home.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2621",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em muốn nói thêm về các món ăn Việt Nam.",
+    "english": "I want to talk more about Vietnamese dishes.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2622",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em muốn nói thêm về các hoạt động cuối tuần.",
+    "english": "I want to talk more about weekend activities.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2623",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về đồ vật ở công viên.",
+    "english": "I want to talk more about things in a park.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2624",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về các con số lớn hơn.",
+    "english": "I want to talk more about bigger numbers.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2625",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về cách nói về thời gian.",
+    "english": "I want to talk more about how to tell the time.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2626",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em muốn nói thêm về các giác quan.",
+    "english": "I want to talk more about the five senses.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2627",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về bưu thiếp.",
+    "english": "I want to talk more about postcards.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2628",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em muốn nói thêm về ngày hội ở trường.",
+    "english": "I want to talk more about a school festival.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2629",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em muốn nói thêm về các mùa trong năm.",
+    "english": "I want to talk more about the seasons.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2630",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em muốn nói thêm về một chuyến đi ngắn.",
+    "english": "I want to talk more about a short trip.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2631",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em muốn nói thêm về sở thích của em.",
+    "english": "I want to talk more about my hobbies.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2632",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về các phòng trong nhà.",
+    "english": "I need to understand more about rooms in a home.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2633",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về các món ăn Việt Nam.",
+    "english": "I need to understand more about Vietnamese dishes.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2634",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về các hoạt động cuối tuần.",
+    "english": "I need to understand more about weekend activities.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2635",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về đồ vật ở công viên.",
+    "english": "I need to understand more about things in a park.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2636",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về các con số lớn hơn.",
+    "english": "I need to understand more about bigger numbers.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2637",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về cách nói về thời gian.",
+    "english": "I need to understand more about how to tell the time.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2638",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về các giác quan.",
+    "english": "I need to understand more about the five senses.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2639",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về bưu thiếp.",
+    "english": "I need to understand more about postcards.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2640",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về ngày hội ở trường.",
+    "english": "I need to understand more about a school festival.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2641",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về các mùa trong năm.",
+    "english": "I need to understand more about the seasons.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2642",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về một chuyến đi ngắn.",
+    "english": "I need to understand more about a short trip.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2643",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về sở thích của em.",
+    "english": "I need to understand more about my hobbies.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2644",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em muốn làm bài về các phòng trong nhà.",
+    "english": "I want to do an exercise about rooms in a home.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2645",
+    "ageGroup": "6–7",
+    "schoolLevel": "Tiểu học 1–2",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em muốn làm bài về các món ăn Việt Nam.",
+    "english": "I want to do an exercise about Vietnamese dishes.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2646",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ viết lời nhắn cho gia đình.",
+    "english": "After that, I will write a note for my family.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2647",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình sẽ chuẩn bị bữa phụ.",
+    "english": "I will prepare a snack.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2648",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ kiểm tra đồ dùng trước khi ra ngoài.",
+    "english": "After that, I will check my things before going out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2649",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ sắp xếp góc đọc sách.",
+    "english": "After that, I will organize my reading corner.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2650",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ nhắc em cất đồ chơi.",
+    "english": "After that, I will remind my younger sibling to put toys away.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2651",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình sẽ giúp chọn thực đơn.",
+    "english": "I will help choose the menu.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2652",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình sẽ thay ga gối.",
+    "english": "I will change the pillowcases.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2653",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ lau bàn học.",
+    "english": "After that, I will wipe my desk.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2654",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình sẽ xem lại việc nhà.",
+    "english": "I will review the chores.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2655",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ chia sẻ truyện đã đọc.",
+    "english": "After that, I will share a story I have read.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2656",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ gọi điện cho người thân.",
+    "english": "After that, I will call a relative.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2657",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ giúp chuẩn bị quà.",
+    "english": "After that, I will help prepare a gift.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2658",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ để dành giấy tái sử dụng.",
+    "english": "After that, I will save paper for reuse.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2659",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ kiểm tra cửa trước khi ngủ.",
+    "english": "After that, I will check the door before bed.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2660",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ rửa trái cây.",
+    "english": "After that, I will wash the fruit.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2661",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình sẽ sắp xếp ảnh gia đình.",
+    "english": "I will organize family photos.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2662",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ giúp em tìm sách.",
+    "english": "After that, I will help my younger sibling find a book.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2663",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ nhớ giờ ăn tối.",
+    "english": "After that, I will remember dinner time.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2664",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ chuẩn bị đồ thể thao.",
+    "english": "After that, I will prepare my sports gear.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2665",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ dọn bàn sau bữa ăn.",
+    "english": "After that, I will clear the table after the meal.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2666",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần viết lời nhắn cho gia đình.",
+    "english": "Today, I need to write a note for my family.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2667",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình cần chuẩn bị bữa phụ.",
+    "english": "I need to prepare a snack.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2668",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần kiểm tra đồ dùng trước khi ra ngoài.",
+    "english": "Today, I need to check my things before going out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2669",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần sắp xếp góc đọc sách.",
+    "english": "Today, I need to organize my reading corner.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2670",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần nhắc em cất đồ chơi.",
+    "english": "Today, I need to remind my younger sibling to put toys away.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2671",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình cần giúp chọn thực đơn.",
+    "english": "I need to help choose the menu.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2672",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình cần thay ga gối.",
+    "english": "I need to change the pillowcases.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2673",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần lau bàn học.",
+    "english": "Today, I need to wipe my desk.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2674",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình cần xem lại việc nhà.",
+    "english": "I need to review the chores.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2675",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần chia sẻ truyện đã đọc.",
+    "english": "Today, I need to share a story I have read.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2676",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần gọi điện cho người thân.",
+    "english": "Today, I need to call a relative.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2677",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần giúp chuẩn bị quà.",
+    "english": "Today, I need to help prepare a gift.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2678",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ mang theo bản đồ nhỏ.",
+    "english": "Next time, I will bring a small map.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2679",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ hỏi giá trước khi mua.",
+    "english": "Next time, I will ask the price before buying.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2680",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ đi theo biển chỉ dẫn.",
+    "english": "Next time, I will follow the signs.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2681",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ tìm chỗ ngồi an toàn.",
+    "english": "Next time, I will find a safe place to sit.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2682",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ đặt hẹn với bạn.",
+    "english": "Next time, I will arrange to meet my friend.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2683",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ giữ đồ cá nhân cẩn thận.",
+    "english": "Next time, I will look after my belongings.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2684",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ tham gia hàng chờ.",
+    "english": "Next time, I will join the queue.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2685",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ nói nhỏ ở thư viện.",
+    "english": "Next time, I will speak quietly in the library.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2686",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Mình sẽ nhớ mang theo bản đồ nhỏ.",
+    "english": "I will remember to bring a small map.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2687",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Mình sẽ nhớ hỏi giá trước khi mua khi ra ngoài.",
+    "english": "I will remember to ask the price before buying when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2688",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Mình sẽ nhớ đi theo biển chỉ dẫn khi ra ngoài.",
+    "english": "I will remember to follow the signs when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2689",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Mình sẽ nhớ tìm chỗ ngồi an toàn khi ra ngoài.",
+    "english": "I will remember to find a safe place to sit when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2690",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, mình sẽ ghi ý chính.",
+    "english": "When I need to, I will write down the main points.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2691",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, mình sẽ hỏi bạn về bài tập.",
+    "english": "When I need to, I will ask my friend about the homework.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2692",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, mình sẽ đổi sách với bạn.",
+    "english": "When I need to, I will swap books with my friend.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2693",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, mình sẽ làm việc theo cặp.",
+    "english": "When I need to, I will work in pairs.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2694",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, mình sẽ kiểm tra lại câu trả lời.",
+    "english": "When I need to, I will check my answer again.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2695",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Mình sẽ nhớ ghi ý chính trong lớp.",
+    "english": "I will remember to write down the main points in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2696",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Mình sẽ nhớ hỏi bạn về bài tập trong lớp.",
+    "english": "I will remember to ask my friend about the homework in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2697",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Mình sẽ nhớ đổi sách với bạn trong lớp.",
+    "english": "I will remember to swap books with my friend in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2698",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn nói thêm về một thói quen lành mạnh.",
+    "english": "I want to talk more about a healthy habit.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2699",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn nói thêm về an toàn khi dùng điện.",
+    "english": "I want to talk more about electrical safety.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2700",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn nói thêm về một quy tắc trong lớp.",
+    "english": "I want to talk more about a classroom rule.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2701",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn nói thêm về các địa điểm trong thị trấn.",
+    "english": "I want to talk more about places in town.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2702",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn nói thêm về một câu chuyện dân gian.",
+    "english": "I want to talk more about a folk tale.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2703",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn nói thêm về cách chăm sóc sức khỏe.",
+    "english": "I want to talk more about ways to stay healthy.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2704",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn nói thêm về các loại vật liệu.",
+    "english": "I want to talk more about different materials.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2705",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn nói thêm về một khu vườn nhỏ.",
+    "english": "I want to talk more about a small garden.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2706",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn nói thêm về các hoạt động bảo vệ môi trường.",
+    "english": "I want to talk more about activities to protect the environment.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2707",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về một ngày không dùng nhựa.",
+    "english": "I want to talk more about a day without plastic.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2708",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn nói thêm về cách lập danh sách.",
+    "english": "I want to talk more about how to make a list.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2709",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về một buổi tham quan.",
+    "english": "I want to talk more about a visit.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2710",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về một thói quen lành mạnh.",
+    "english": "I need to understand more about a healthy habit.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2711",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về an toàn khi dùng điện.",
+    "english": "I need to understand more about electrical safety.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2712",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về một quy tắc trong lớp.",
+    "english": "I need to understand more about a classroom rule.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2713",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về các địa điểm trong thị trấn.",
+    "english": "I need to understand more about places in town.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2714",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về một câu chuyện dân gian.",
+    "english": "I need to understand more about a folk tale.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2715",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về cách chăm sóc sức khỏe.",
+    "english": "I need to understand more about ways to stay healthy.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2716",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về các loại vật liệu.",
+    "english": "I need to understand more about different materials.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2717",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về một khu vườn nhỏ.",
+    "english": "I need to understand more about a small garden.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2718",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về các hoạt động bảo vệ môi trường.",
+    "english": "I need to understand more about activities to protect the environment.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2719",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về một ngày không dùng nhựa.",
+    "english": "I need to understand more about a day without plastic.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2720",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về cách lập danh sách.",
+    "english": "I need to understand more about how to make a list.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2721",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về một buổi tham quan.",
+    "english": "I need to understand more about a visit.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2722",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về một thói quen lành mạnh.",
+    "english": "I want to do an exercise about a healthy habit.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2723",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về an toàn khi dùng điện.",
+    "english": "I want to do an exercise about electrical safety.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2724",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về một quy tắc trong lớp.",
+    "english": "I want to do an exercise about a classroom rule.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2725",
+    "ageGroup": "8–9",
+    "schoolLevel": "Tiểu học 3–4",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về các địa điểm trong thị trấn.",
+    "english": "I want to do an exercise about places in town.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2726",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ lập danh sách việc cần làm.",
+    "english": "After that, I will make a to-do list.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2727",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ chuẩn bị đồ ăn cho chuyến đi.",
+    "english": "After that, I will prepare food for a trip.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2728",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ kiểm tra thiết bị trước khi dùng.",
+    "english": "After that, I will check a device before using it.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2729",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ hướng dẫn em sắp xếp bàn học.",
+    "english": "After that, I will show my younger sibling how to organize a desk.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2730",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình sẽ đề xuất một việc nhà.",
+    "english": "I will suggest a household task.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2731",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ tìm cách tiết kiệm nước.",
+    "english": "After that, I will find ways to save water.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2732",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ ghi lại thời gian học.",
+    "english": "After that, I will record my study time.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2733",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ so sánh giá của hai món đồ.",
+    "english": "After that, I will compare the prices of two items.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2734",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ sửa một việc nhỏ trong nhà.",
+    "english": "After that, I will fix a small thing at home.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2735",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ sắp xếp lịch làm việc nhà.",
+    "english": "After that, I will organize the chore schedule.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2736",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ xem lại mục tiêu tuần này.",
+    "english": "After that, I will review this week’s goals.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2737",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình sẽ thảo luận về chi tiêu.",
+    "english": "I will talk about spending.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2738",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ giúp chuẩn bị đồ cho khách.",
+    "english": "After that, I will help prepare things for guests.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2739",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ phân loại rác tái chế.",
+    "english": "After that, I will sort recyclable waste.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2740",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ kiểm tra đèn trong phòng.",
+    "english": "After that, I will check the lights in the room.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2741",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ đặt sách tham khảo đúng chỗ.",
+    "english": "After that, I will put reference books in the right place.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2742",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ gói một món quà.",
+    "english": "After that, I will wrap a gift.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2743",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ nhắc gia đình mang ô.",
+    "english": "After that, I will remind my family to bring umbrellas.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2744",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ tự chuẩn bị bữa sáng.",
+    "english": "After that, I will make my own breakfast.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2745",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ lưu số điện thoại cần thiết.",
+    "english": "After that, I will save important phone numbers.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2746",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần lập danh sách việc cần làm.",
+    "english": "Today, I need to make a to-do list.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2747",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần chuẩn bị đồ ăn cho chuyến đi.",
+    "english": "Today, I need to prepare food for a trip.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2748",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần kiểm tra thiết bị trước khi dùng.",
+    "english": "Today, I need to check a device before using it.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2749",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần hướng dẫn em sắp xếp bàn học.",
+    "english": "Today, I need to show my younger sibling how to organize a desk.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2750",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình cần đề xuất một việc nhà.",
+    "english": "I need to suggest a household task.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2751",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần tìm cách tiết kiệm nước.",
+    "english": "Today, I need to find ways to save water.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2752",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần ghi lại thời gian học.",
+    "english": "Today, I need to record my study time.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2753",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần so sánh giá của hai món đồ.",
+    "english": "Today, I need to compare the prices of two items.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2754",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình cần sửa một việc nhỏ trong nhà.",
+    "english": "I need to fix a small thing at home.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2755",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần sắp xếp lịch làm việc nhà.",
+    "english": "Today, I need to organize the chore schedule.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2756",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần xem lại mục tiêu tuần này.",
+    "english": "Today, I need to review this week’s goals.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2757",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình cần thảo luận về chi tiêu.",
+    "english": "I need to talk about spending.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2758",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần giúp chuẩn bị đồ cho khách.",
+    "english": "Today, I need to help prepare things for guests.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2759",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần phân loại rác tái chế.",
+    "english": "Today, I need to sort recyclable waste.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2760",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ xem lịch trình xe buýt.",
+    "english": "Next time, I will check the bus timetable.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2761",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ xác nhận địa chỉ.",
+    "english": "Next time, I will confirm the address.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2762",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ chọn đường đi an toàn.",
+    "english": "Next time, I will choose a safe route.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2763",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ hỏi nhân viên hỗ trợ.",
+    "english": "Next time, I will ask a staff member for help.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2764",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ tìm quầy thông tin.",
+    "english": "Next time, I will find the information desk.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2765",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ đến trước giờ hẹn.",
+    "english": "Next time, I will arrive before the meeting time.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2766",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ tham gia buổi dọn vệ sinh.",
+    "english": "Next time, I will join a clean-up activity.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2767",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ mang túi tái sử dụng.",
+    "english": "Next time, I will bring a reusable bag.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2768",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Mình sẽ nhớ xem lịch trình xe buýt khi ra ngoài.",
+    "english": "I will remember to check the bus timetable when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2769",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Mình sẽ nhớ xác nhận địa chỉ khi ra ngoài.",
+    "english": "I will remember to confirm the address when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2770",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Mình sẽ nhớ chọn đường đi an toàn khi ra ngoài.",
+    "english": "I will remember to choose a safe route when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2771",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Mình sẽ nhớ hỏi nhân viên hỗ trợ khi ra ngoài.",
+    "english": "I will remember to ask a staff member for help when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2772",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Mình sẽ nhớ tìm quầy thông tin khi ra ngoài.",
+    "english": "I will remember to find the information desk when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2773",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, mình sẽ lập dàn ý cho bài viết.",
+    "english": "When I need to, I will make an outline for my writing.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2774",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, mình sẽ xác nhận phần việc của mình.",
+    "english": "When I need to, I will confirm my part of the work.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2775",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, mình sẽ đề nghị bạn giải thích lại.",
+    "english": "When I need to, I will ask my friend to explain again.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2776",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, mình sẽ ghi nguồn thông tin.",
+    "english": "When I need to, I will write down the source of information.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2777",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, mình sẽ chuẩn bị câu hỏi cho nhóm.",
+    "english": "When I need to, I will prepare questions for my group.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2778",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Mình sẽ nhớ lập dàn ý cho bài viết trong lớp.",
+    "english": "I will remember to make an outline for my writing in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2779",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Mình sẽ nhớ xác nhận phần việc của mình trong lớp.",
+    "english": "I will remember to confirm my part of the work in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2780",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Mình sẽ nhớ đề nghị bạn giải thích lại trong lớp.",
+    "english": "I will remember to ask my friend to explain again in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2781",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn nói thêm về chu trình nước.",
+    "english": "I want to talk more about the water cycle.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2782",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn nói thêm về một thí nghiệm đơn giản.",
+    "english": "I want to talk more about a simple experiment.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2783",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn nói thêm về cách đọc bảng số liệu.",
+    "english": "I want to talk more about how to read a data table.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2784",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về sự đa dạng văn hóa.",
+    "english": "I want to talk more about cultural diversity.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2785",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về một bài giới thiệu.",
+    "english": "I want to talk more about an introduction.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2786",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn nói thêm về các quy tắc an toàn.",
+    "english": "I want to talk more about safety rules.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2787",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn nói thêm về vai trò trong nhóm.",
+    "english": "I want to talk more about roles in a group.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2788",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn nói thêm về cách lập kế hoạch.",
+    "english": "I want to talk more about how to make a plan.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2789",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn nói thêm về một địa danh nổi tiếng.",
+    "english": "I want to talk more about a famous place.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2790",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về lịch sử địa phương.",
+    "english": "I want to talk more about local history.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2791",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về một vấn đề môi trường.",
+    "english": "I want to talk more about an environmental problem.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2792",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn nói thêm về cách dùng thư viện.",
+    "english": "I want to talk more about how to use a library.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2793",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về chu trình nước.",
+    "english": "I need to understand more about the water cycle.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2794",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về một thí nghiệm đơn giản.",
+    "english": "I need to understand more about a simple experiment.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2795",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về cách đọc bảng số liệu.",
+    "english": "I need to understand more about how to read a data table.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2796",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về sự đa dạng văn hóa.",
+    "english": "I need to understand more about cultural diversity.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2797",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về một bài giới thiệu.",
+    "english": "I need to understand more about an introduction.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2798",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về các quy tắc an toàn.",
+    "english": "I need to understand more about safety rules.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2799",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về vai trò trong nhóm.",
+    "english": "I need to understand more about roles in a group.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2800",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về cách lập kế hoạch.",
+    "english": "I need to understand more about how to make a plan.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2801",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về một địa danh nổi tiếng.",
+    "english": "I need to understand more about a famous place.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2802",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về lịch sử địa phương.",
+    "english": "I need to understand more about local history.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2803",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về một vấn đề môi trường.",
+    "english": "I need to understand more about an environmental problem.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2804",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về cách dùng thư viện.",
+    "english": "I need to understand more about how to use a library.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2805",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về chu trình nước.",
+    "english": "I want to do an exercise about the water cycle.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2806",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về một thí nghiệm đơn giản.",
+    "english": "I want to do an exercise about a simple experiment.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2807",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về cách đọc bảng số liệu.",
+    "english": "I want to do an exercise about how to read a data table.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2808",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về sự đa dạng văn hóa.",
+    "english": "I want to do an exercise about cultural diversity.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2809",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về một bài giới thiệu.",
+    "english": "I want to do an exercise about an introduction.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2810",
+    "ageGroup": "10–11",
+    "schoolLevel": "Tiểu học 5 / THCS 6",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về các quy tắc an toàn.",
+    "english": "I want to do an exercise about safety rules.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2811",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ phân chia thời gian học và nghỉ.",
+    "english": "After that, I will balance study and rest time.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2812",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ tự chuẩn bị đồ dùng cá nhân.",
+    "english": "After that, I will prepare my own personal items.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2813",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ đề nghị một kế hoạch cho gia đình.",
+    "english": "After that, I will suggest a plan for the family.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2814",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ giúp chọn thực phẩm lành mạnh.",
+    "english": "After that, I will help choose healthy food.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2815",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ kiểm tra thông tin trước khi chia sẻ.",
+    "english": "After that, I will check information before sharing it.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2816",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ nhắc mọi người khóa cửa.",
+    "english": "After that, I will remind everyone to lock the door.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2817",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ tìm cách giảm rác thải.",
+    "english": "After that, I will find ways to reduce waste.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2818",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ sắp xếp lịch ôn tập.",
+    "english": "After that, I will organize my revision schedule.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2819",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ hỗ trợ người thân dùng điện thoại.",
+    "english": "After that, I will help a relative use a phone.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2820",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ viết danh sách mua sắm.",
+    "english": "After that, I will write a shopping list.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2821",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ chia sẻ việc đã học hôm nay.",
+    "english": "After that, I will share what I learned today.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2822",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ xem lại chi tiêu trong tuần.",
+    "english": "After that, I will review spending for the week.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2823",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Em sẽ chuẩn bị tài liệu cho buổi họp.",
+    "english": "I will prepare materials for a meeting.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2824",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ trao đổi về một quy định ở nhà.",
+    "english": "After that, I will talk about a rule at home.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2825",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Em sẽ bảo quản đồ điện tử.",
+    "english": "I will take care of electronic devices.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2826",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ chọn giờ dùng mạng hợp lý.",
+    "english": "After that, I will choose a suitable time to go online.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2827",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ gợi ý một hoạt động cuối tuần.",
+    "english": "After that, I will suggest a weekend activity.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2828",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ giúp lập thực đơn.",
+    "english": "After that, I will help make a meal plan.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2829",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Em sẽ theo dõi việc đã hoàn thành.",
+    "english": "I will track what I have finished.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2830",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, em sẽ nhắc em chuẩn bị sách.",
+    "english": "After that, I will remind my younger sibling to prepare books.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2831",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, em cần phân chia thời gian học và nghỉ.",
+    "english": "Today, I need to balance study and rest time.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2832",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, em cần tự chuẩn bị đồ dùng cá nhân.",
+    "english": "Today, I need to prepare my own personal items.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2833",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Em cần đề nghị một kế hoạch cho gia đình.",
+    "english": "I need to suggest a plan for the family.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2834",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, em cần giúp chọn thực phẩm lành mạnh.",
+    "english": "Today, I need to help choose healthy food.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2835",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, em cần kiểm tra thông tin trước khi chia sẻ.",
+    "english": "Today, I need to check information before sharing it.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2836",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, em cần nhắc mọi người khóa cửa.",
+    "english": "Today, I need to remind everyone to lock the door.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2837",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, em cần tìm cách giảm rác thải.",
+    "english": "Today, I need to find ways to reduce waste.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2838",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, em cần sắp xếp lịch ôn tập.",
+    "english": "Today, I need to organize my revision schedule.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2839",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, em cần hỗ trợ người thân dùng điện thoại.",
+    "english": "Today, I need to help a relative use a phone.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2840",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, em cần viết danh sách mua sắm.",
+    "english": "Today, I need to write a shopping list.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2841",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Em cần chia sẻ việc đã học hôm nay.",
+    "english": "I need to share what I learned today.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2842",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, em cần xem lại chi tiêu trong tuần.",
+    "english": "Today, I need to review spending for the week.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2843",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Em cần chuẩn bị tài liệu cho buổi họp.",
+    "english": "I need to prepare materials for a meeting.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2844",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, em cần trao đổi về một quy định ở nhà.",
+    "english": "Today, I need to talk about a rule at home.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2845",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Em cần bảo quản đồ điện tử.",
+    "english": "I need to take care of electronic devices.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2846",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Em cần chọn lúc lên mạng cho hợp lý.",
+    "english": "I need to choose a suitable time to go online.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2847",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, em sẽ kiểm tra giờ hoạt động.",
+    "english": "Next time, I will check the opening hours.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2848",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, em sẽ tìm khu vực chờ.",
+    "english": "Next time, I will find the waiting area.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2849",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, em sẽ mua đồ theo ngân sách.",
+    "english": "Next time, I will buy things within my budget.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2850",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, em sẽ đề nghị giúp một người bị lạc.",
+    "english": "Next time, I will offer to help someone who is lost.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2851",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, em sẽ hỏi về quy định tham quan.",
+    "english": "Next time, I will ask about visitor rules.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2852",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, em sẽ đặt chỗ cho hoạt động.",
+    "english": "Next time, I will book a place for an activity.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2853",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, em sẽ đi cùng nhóm đúng giờ.",
+    "english": "Next time, I will go with my group on time.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2854",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, em sẽ báo cho người lớn khi cần.",
+    "english": "Next time, I will tell an adult when needed.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2855",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Em sẽ nhớ kiểm tra giờ hoạt động khi ra ngoài.",
+    "english": "I will remember to check the opening hours when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2856",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Em sẽ nhớ tìm khu vực chờ khi ra ngoài.",
+    "english": "I will remember to find the waiting area when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2857",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Em sẽ nhớ mua đồ theo ngân sách khi ra ngoài.",
+    "english": "I will remember to buy things within my budget when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2858",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Em sẽ nhớ đề nghị giúp một người bị lạc khi ra ngoài.",
+    "english": "I will remember to offer to help someone who is lost when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2859",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Em sẽ nhớ hỏi về quy định tham quan khi ra ngoài.",
+    "english": "I will remember to ask about visitor rules when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2860",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, em sẽ lập kế hoạch cho dự án.",
+    "english": "When I need to, I will make a plan for the project.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2861",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, em sẽ đánh dấu phần cần sửa.",
+    "english": "When I need to, I will mark the part that needs changing.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2862",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, em sẽ đưa ra lý do cho ý kiến.",
+    "english": "When I need to, I will give reasons for my opinion.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2863",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, em sẽ hỏi về tiêu chí chấm điểm.",
+    "english": "When I need to, I will ask about the marking criteria.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2864",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, em sẽ chia sẻ kết quả với nhóm.",
+    "english": "When I need to, I will share the results with my group.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2865",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Em sẽ nhớ lập kế hoạch cho dự án trong lớp.",
+    "english": "I will remember to make a plan for the project in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2866",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Em sẽ nhớ đánh dấu phần cần sửa trong lớp.",
+    "english": "I will remember to mark the part that needs changing in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2867",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Em sẽ nhớ đưa ra lý do cho ý kiến trong lớp.",
+    "english": "I will remember to give reasons for my opinion in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2868",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Em sẽ nhớ hỏi về tiêu chí chấm điểm trong lớp.",
+    "english": "I will remember to ask about the marking criteria in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2869",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Em sẽ nhớ chia sẻ kết quả với nhóm trong lớp.",
+    "english": "I will remember to share the results with my group in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2870",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em muốn nói thêm về cách đặt câu hỏi tốt.",
+    "english": "I want to talk more about how to ask good questions.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2871",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về một bản tin ngắn.",
+    "english": "I want to talk more about a short news report.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2872",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về kỹ năng hợp tác.",
+    "english": "I want to talk more about cooperation skills.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2873",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về một sản phẩm địa phương.",
+    "english": "I want to talk more about a local product.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2874",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về cách chuẩn bị phỏng vấn.",
+    "english": "I want to talk more about how to prepare for an interview.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2875",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về một hoạt động gây quỹ.",
+    "english": "I want to talk more about a fundraising activity.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2876",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về các dạng năng lượng sạch.",
+    "english": "I want to talk more about forms of clean energy.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2877",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về cách tôn trọng sự khác biệt.",
+    "english": "I want to talk more about how to respect differences.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2878",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về một bài đánh giá sách.",
+    "english": "I want to talk more about a book review.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2879",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về cách quản lý cảm xúc.",
+    "english": "I want to talk more about how to manage emotions.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2880",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về quy tắc dùng mạng xã hội.",
+    "english": "I want to talk more about rules for using social media.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2881",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về một hoạt động hướng nghiệp.",
+    "english": "I want to talk more about a career activity.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2882",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về cách đặt câu hỏi tốt.",
+    "english": "I need to understand more about how to ask good questions.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2883",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về một bản tin ngắn.",
+    "english": "I need to understand more about a short news report.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2884",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về kỹ năng hợp tác.",
+    "english": "I need to understand more about cooperation skills.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2885",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về một sản phẩm địa phương.",
+    "english": "I need to understand more about a local product.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2886",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về cách chuẩn bị phỏng vấn.",
+    "english": "I need to understand more about how to prepare for an interview.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2887",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về một hoạt động gây quỹ.",
+    "english": "I need to understand more about a fundraising activity.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2888",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về các dạng năng lượng sạch.",
+    "english": "I need to understand more about forms of clean energy.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2889",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về cách tôn trọng sự khác biệt.",
+    "english": "I need to understand more about how to respect differences.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2890",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về một bài đánh giá sách.",
+    "english": "I need to understand more about a book review.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2891",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về cách quản lý cảm xúc.",
+    "english": "I need to understand more about how to manage emotions.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2892",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về quy tắc dùng mạng xã hội.",
+    "english": "I need to understand more about rules for using social media.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2893",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em cần hiểu rõ hơn về một hoạt động hướng nghiệp.",
+    "english": "I need to understand more about a career activity.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2894",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em muốn làm bài về cách đặt câu hỏi tốt.",
+    "english": "I want to do an exercise about how to ask good questions.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2895",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em muốn làm bài về một bản tin ngắn.",
+    "english": "I want to do an exercise about a short news report.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2896",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em muốn làm bài về kỹ năng hợp tác.",
+    "english": "I want to do an exercise about cooperation skills.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2897",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em muốn làm bài về một sản phẩm địa phương.",
+    "english": "I want to do an exercise about a local product.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2898",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em muốn làm bài về cách chuẩn bị phỏng vấn.",
+    "english": "I want to do an exercise about how to prepare for an interview.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2899",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em muốn làm bài về một hoạt động gây quỹ.",
+    "english": "I want to do an exercise about a fundraising activity.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2900",
+    "ageGroup": "12–13",
+    "schoolLevel": "THCS 7–8",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Em muốn làm bài về các dạng năng lượng sạch.",
+    "english": "I want to do an exercise about forms of clean energy.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2901",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ lập kế hoạch chi tiêu cho tháng này.",
+    "english": "After that, I will make a spending plan for this month.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2902",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình sẽ trao đổi về lựa chọn học tập.",
+    "english": "I will talk about study choices.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2903",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ tự chuẩn bị hồ sơ cá nhân.",
+    "english": "After that, I will prepare my personal documents.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2904",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình sẽ giúp gia đình so sánh dịch vụ.",
+    "english": "I will help my family compare services.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2905",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ kiểm tra thông tin trước khi đăng.",
+    "english": "After that, I will check information before posting it.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2906",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình sẽ thảo luận về mục tiêu dài hạn.",
+    "english": "I will discuss long-term goals.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2907",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình sẽ sắp xếp lịch hẹn quan trọng.",
+    "english": "I will organize important appointments.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2908",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình sẽ đề xuất cách tiết kiệm chi phí.",
+    "english": "I will suggest ways to save money.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2909",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ hỗ trợ người thân làm biểu mẫu.",
+    "english": "After that, I will help a relative fill in a form.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2910",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ lập danh sách ưu tiên.",
+    "english": "After that, I will make a priority list.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2911",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ xem lại kế hoạch ôn thi.",
+    "english": "After that, I will review my exam plan.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2912",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ trao đổi về trách nhiệm trong nhà.",
+    "english": "After that, I will talk about responsibilities at home.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2913",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ lưu tài liệu quan trọng.",
+    "english": "After that, I will save important documents.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2914",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ chọn một khóa học phù hợp.",
+    "english": "After that, I will choose a suitable course.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2915",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ tìm thông tin về học bổng.",
+    "english": "After that, I will find information about scholarships.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2916",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ giúp chuẩn bị chuyến đi gia đình.",
+    "english": "After that, I will help prepare a family trip.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2917",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ xem lại lịch làm việc.",
+    "english": "After that, I will review the work schedule.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2918",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ đặt mục tiêu học tiếng Anh.",
+    "english": "After that, I will set English-learning goals.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2919",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình sẽ trao đổi về sử dụng dữ liệu cá nhân.",
+    "english": "I will talk about using personal data.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2920",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Sau đó, mình sẽ chuẩn bị cho cuộc hẹn.",
+    "english": "After that, I will prepare for an appointment.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2921",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần lập kế hoạch chi tiêu cho tháng này.",
+    "english": "Today, I need to make a spending plan for this month.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2922",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình cần trao đổi về lựa chọn học tập.",
+    "english": "I need to talk about study choices.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2923",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần tự chuẩn bị hồ sơ cá nhân.",
+    "english": "Today, I need to prepare my personal documents.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2924",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình cần giúp gia đình so sánh dịch vụ.",
+    "english": "I need to help my family compare services.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2925",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần kiểm tra thông tin trước khi đăng.",
+    "english": "Today, I need to check information before posting it.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2926",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình cần thảo luận về mục tiêu dài hạn.",
+    "english": "I need to discuss long-term goals.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2927",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình cần sắp xếp lịch hẹn quan trọng.",
+    "english": "I need to organize important appointments.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2928",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình cần đề xuất cách tiết kiệm chi phí.",
+    "english": "I need to suggest ways to save money.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2929",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình cần hỗ trợ người thân làm biểu mẫu.",
+    "english": "I need to help a relative fill in a form.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2930",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần lập danh sách ưu tiên.",
+    "english": "Today, I need to make a priority list.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2931",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần xem lại kế hoạch ôn thi.",
+    "english": "Today, I need to review my exam plan.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2932",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần trao đổi về trách nhiệm trong nhà.",
+    "english": "Today, I need to talk about responsibilities at home.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2933",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần lưu tài liệu quan trọng.",
+    "english": "Today, I need to save important documents.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2934",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần chọn một khóa học phù hợp.",
+    "english": "Today, I need to choose a suitable course.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2935",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần tìm thông tin về học bổng.",
+    "english": "Today, I need to find information about scholarships.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2936",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần giúp chuẩn bị chuyến đi gia đình.",
+    "english": "Today, I need to help prepare a family trip.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2937",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần xem lại lịch làm việc.",
+    "english": "Today, I need to review the work schedule.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2938",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần đặt mục tiêu học tiếng Anh.",
+    "english": "Today, I need to set English-learning goals.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2939",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Mình cần trao đổi về sử dụng dữ liệu cá nhân.",
+    "english": "I need to talk about using personal data.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2940",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Gia đình",
+    "topic": "Nề nếp, giao tiếp và tự chăm sóc",
+    "vietnamese": "Hôm nay, mình cần chuẩn bị cho cuộc hẹn.",
+    "english": "Today, I need to prepare for an appointment.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2941",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ xác nhận thời gian đăng ký.",
+    "english": "Next time, I will confirm the registration time.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2942",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ hỏi về yêu cầu tham gia.",
+    "english": "Next time, I will ask about participation requirements.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2943",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ tìm địa điểm tổ chức.",
+    "english": "Next time, I will find the venue.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2944",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ đặt vé cho sự kiện.",
+    "english": "Next time, I will book a ticket for an event.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2945",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ tham gia buổi tư vấn.",
+    "english": "Next time, I will join an advisory session.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2946",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ kiểm tra điều kiện thời tiết.",
+    "english": "Next time, I will check the weather conditions.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2947",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ giữ liên lạc với nhóm.",
+    "english": "Next time, I will stay in touch with my group.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2948",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Lần tới, mình sẽ báo lại khi có thay đổi.",
+    "english": "Next time, I will let people know when there is a change.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2949",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Mình sẽ nhớ xác nhận thời gian đăng ký khi ra ngoài.",
+    "english": "I will remember to confirm the registration time when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2950",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Mình sẽ nhớ hỏi về yêu cầu tham gia khi ra ngoài.",
+    "english": "I will remember to ask about participation requirements when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2951",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Mình sẽ nhớ tìm địa điểm tổ chức khi ra ngoài.",
+    "english": "I will remember to find the venue when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2952",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Mình sẽ nhớ đặt vé cho sự kiện khi ra ngoài.",
+    "english": "I will remember to book a ticket for an event when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2953",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Mình sẽ nhớ tham gia buổi tư vấn.",
+    "english": "I will remember to join an advisory session.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2954",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Mình sẽ nhớ kiểm tra điều kiện thời tiết khi ra ngoài.",
+    "english": "I will remember to check the weather conditions when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2955",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Ngoài trời/Công cộng",
+    "topic": "Di chuyển, vui chơi và an toàn công cộng",
+    "vietnamese": "Mình sẽ nhớ giữ liên lạc với nhóm khi ra ngoài.",
+    "english": "I will remember to stay in touch with my group when I go out.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2956",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, mình sẽ làm rõ yêu cầu của bài tập.",
+    "english": "When I need to, I will clarify the assignment requirements.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2957",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, mình sẽ đề xuất cách phân công.",
+    "english": "When I need to, I will suggest how to divide the work.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2958",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, mình sẽ xin phản hồi về bài thuyết trình.",
+    "english": "When I need to, I will ask for feedback on my presentation.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2959",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, mình sẽ đánh giá tiến độ của nhóm.",
+    "english": "When I need to, I will review the group’s progress.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2960",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Khi cần, mình sẽ chuẩn bị bản tóm tắt.",
+    "english": "When I need to, I will prepare a summary.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2961",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Mình sẽ nhớ làm rõ yêu cầu của bài tập trong lớp.",
+    "english": "I will remember to clarify the assignment requirements in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2962",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Mình sẽ nhớ đề xuất cách phân công trong lớp.",
+    "english": "I will remember to suggest how to divide the work in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2963",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Mình sẽ nhớ xin phản hồi về bài thuyết trình trong lớp.",
+    "english": "I will remember to ask for feedback on my presentation in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2964",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Thói quen lớp học và bạn bè",
+    "vietnamese": "Mình sẽ nhớ đánh giá tiến độ của nhóm trong lớp.",
+    "english": "I will remember to review the group’s progress in class.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2965",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về một kế hoạch nghề nghiệp.",
+    "english": "I want to talk more about a career plan.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2966",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về cách làm việc với dữ liệu.",
+    "english": "I want to talk more about how to work with data.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2967",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về một bài thuyết trình thuyết phục.",
+    "english": "I want to talk more about a persuasive presentation.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2968",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về các lựa chọn tài chính cơ bản.",
+    "english": "I want to talk more about basic financial choices.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2969",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về cách viết email trang trọng.",
+    "english": "I want to talk more about how to write a formal email.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2970",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về một vấn đề toàn cầu.",
+    "english": "I want to talk more about a global issue.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2971",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về cách tổ chức sự kiện.",
+    "english": "I want to talk more about how to organize an event.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2972",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về một bài nghiên cứu nhỏ.",
+    "english": "I want to talk more about a small research project.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2973",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về quy tắc đạo đức số.",
+    "english": "I want to talk more about digital ethics rules.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2974",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về cách chuẩn bị hồ sơ.",
+    "english": "I want to talk more about how to prepare an application.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2975",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về một sáng kiến xanh.",
+    "english": "I want to talk more about a green initiative.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2976",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Thêm về mục tiêu sau tốt nghiệp.",
+    "english": "I want to talk more about goals after graduation.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2977",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về một kế hoạch nghề nghiệp.",
+    "english": "I need to understand more about a career plan.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2978",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về cách làm việc với dữ liệu.",
+    "english": "I need to understand more about how to work with data.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2979",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về một bài thuyết trình thuyết phục.",
+    "english": "I need to understand more about a persuasive presentation.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2980",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về các lựa chọn tài chính cơ bản.",
+    "english": "I need to understand more about basic financial choices.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2981",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về cách viết email trang trọng.",
+    "english": "I need to understand more about how to write a formal email.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2982",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về một vấn đề toàn cầu.",
+    "english": "I need to understand more about a global issue.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2983",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về cách tổ chức sự kiện.",
+    "english": "I need to understand more about how to organize an event.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2984",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về một bài nghiên cứu nhỏ.",
+    "english": "I need to understand more about a small research project.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2985",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về quy tắc đạo đức số.",
+    "english": "I need to understand more about digital ethics rules.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2986",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về cách chuẩn bị hồ sơ.",
+    "english": "I need to understand more about how to prepare an application.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2987",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về một sáng kiến xanh.",
+    "english": "I need to understand more about a green initiative.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2988",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình cần hiểu rõ hơn về mục tiêu sau tốt nghiệp.",
+    "english": "I need to understand more about goals after graduation.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2989",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về một kế hoạch nghề nghiệp.",
+    "english": "I want to do an exercise about a career plan.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2990",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về cách làm việc với dữ liệu.",
+    "english": "I want to do an exercise about how to work with data.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2991",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về một bài thuyết trình thuyết phục.",
+    "english": "I want to do an exercise about a persuasive presentation.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2992",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về các lựa chọn tài chính cơ bản.",
+    "english": "I want to do an exercise about basic financial choices.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2993",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về cách viết email trang trọng.",
+    "english": "I want to do an exercise about how to write a formal email.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2994",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về một vấn đề toàn cầu.",
+    "english": "I want to do an exercise about a global issue.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2995",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về cách tổ chức sự kiện.",
+    "english": "I want to do an exercise about how to organize an event.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2996",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về một bài nghiên cứu nhỏ.",
+    "english": "I want to do an exercise about a small research project.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2997",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về quy tắc đạo đức số.",
+    "english": "I want to do an exercise about digital ethics rules.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2998",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về cách chuẩn bị hồ sơ.",
+    "english": "I want to do an exercise about how to prepare an application.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-2999",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về một sáng kiến xanh.",
+    "english": "I want to do an exercise about a green initiative.",
+    "aliases": []
+  },
+  {
+    "id": "AIV0-3000",
+    "ageGroup": "14–15",
+    "schoolLevel": "THCS 9 / THPT 10",
+    "context": "Trường học",
+    "topic": "Mở rộng chủ đề tham chiếu chương trình",
+    "vietnamese": "Mình muốn làm bài về mục tiêu sau tốt nghiệp.",
+    "english": "I want to do an exercise about goals after graduation.",
+    "aliases": []
+  }
+]

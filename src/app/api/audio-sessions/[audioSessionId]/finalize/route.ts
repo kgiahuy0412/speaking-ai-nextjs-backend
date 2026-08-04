@@ -10,7 +10,12 @@ import {
   releaseAudioSessionFinalize,
   type Pcm16WavMetadata,
 } from "@/lib/storage/audioSessions";
+import {
+  authorizeAudioSessionRequest,
+  consumeAudioUploadRateLimit,
+} from "@/lib/storage/audioSessionSecurity";
 import type {
+  ApiErrorCode,
   AsrMode,
   BenchmarkMetadata,
   PracticeContext,
@@ -45,6 +50,24 @@ const validContexts = new Set<PracticeContext>([
   "outside",
 ]);
 
+function publicAudioUploadError(error: AudioUploadError) {
+  const code: ApiErrorCode =
+    error.code === "MISSING_CHUNKS"
+      ? "AUDIO_CHUNKS_MISSING"
+      : error.code === "CHUNK_CONFLICT"
+        ? "AUDIO_CHUNK_CONFLICT"
+        : error.code === "CHUNK_CHECKSUM_MISMATCH"
+          ? "AUDIO_CHUNK_CHECKSUM_MISMATCH"
+          : error.code === "SESSION_EXPIRED"
+            ? "AUDIO_SESSION_EXPIRED"
+            : error.code === "CHUNK_TOO_LARGE" ||
+                error.code === "SESSION_TOO_LARGE" ||
+                error.code === "TOO_MANY_CHUNKS"
+              ? "AUDIO_UPLOAD_LIMIT"
+              : "AUDIO_SESSION_INVALID";
+  return new AppError(code, error.message, error.status, error.details);
+}
+
 export async function POST(request: Request, context: RouteContext) {
   const requestId = getRequestId(request);
   const startedAt = performance.now();
@@ -57,9 +80,66 @@ export async function POST(request: Request, context: RouteContext) {
   let completeMs = 0;
 
   try {
+    const uploadClaims = authorizeAudioSessionRequest(request, audioSessionId);
+    const retryAfter = consumeAudioUploadRateLimit(
+      request,
+      "session",
+      audioSessionId,
+    );
+    if (retryAfter !== null) {
+      return withRequestId(
+        Response.json(
+          {
+            error: {
+              code: "RATE_LIMITED",
+              message:
+                "Audio session gửi quá nhiều yêu cầu. Vui lòng thử lại sau.",
+              requestId,
+            },
+          },
+          { status: 429, headers: { "Retry-After": String(retryAfter) } },
+        ),
+        requestId,
+      );
+    }
     const rawBody = await request.text();
     requestHash = createHash("sha256").update(rawBody).digest("hex");
     const body = JSON.parse(rawBody) as FinalizeRequest;
+    if (
+      uploadClaims &&
+      ((uploadClaims.encoding === "pcm_s16le" && !body.pcm16Wav) ||
+        (uploadClaims.encoding === "encoded_audio" && body.pcm16Wav))
+    ) {
+      throw new AppError(
+        "AUDIO_SESSION_INVALID",
+        "Kiểu finalize không khớp cấu hình audio session.",
+        400,
+      );
+    }
+    if (uploadClaims && body.pcm16Wav) {
+      const pcm = body.pcm16Wav;
+      const durationMs =
+        (pcm.pcmByteLength /
+          (pcm.sampleRate * pcm.channelCount * (pcm.bitsPerSample / 8))) *
+        1_000;
+      if (
+        pcm.channelCount !== uploadClaims.channelCount ||
+        pcm.bitsPerSample !== uploadClaims.bitsPerSample ||
+        !Number.isFinite(durationMs) ||
+        durationMs >
+          uploadClaims.maxDurationMs + uploadClaims.sourceChunkDurationMs ||
+        (pcm.chunkCount !== undefined &&
+          (!Number.isInteger(pcm.chunkCount) ||
+            pcm.chunkCount <= 0 ||
+            pcm.chunkCount > uploadClaims.maxChunks))
+      ) {
+        throw new AppError(
+          "AUDIO_SESSION_INVALID",
+          "Metadata PCM không khớp upload token của audio session.",
+          400,
+        );
+      }
+    }
 
     const claimStartedAt = performance.now();
     const claim = await claimAudioSessionFinalize(audioSessionId, requestHash);
@@ -166,7 +246,7 @@ export async function POST(request: Request, context: RouteContext) {
     });
     const responseError =
       error instanceof AudioUploadError
-        ? new AppError("BAD_REQUEST", error.message, error.status)
+        ? publicAudioUploadError(error)
         : error;
     return withRequestId(toErrorResponse(responseError, requestId), requestId);
   }

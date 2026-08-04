@@ -21,13 +21,46 @@ export type BenchmarkMetadata = {
   audioInputLabel?: string;
   bluetoothAudioInput?: boolean;
   initialNoiseRms?: number;
+  /** True when the client already confirmed speech and controls end-of-turn. */
+  clientVadApplied?: boolean;
+  clientAudioTrimmed?: boolean;
+  clientAudioTrimReason?: string;
+  clientAudioOriginalDurationMs?: number;
+  clientAudioRetainedDurationMs?: number;
+  clientAudioTrimThreshold?: number;
+  originalRecordedAudioBytes?: number;
+  cloudflareVadFilter?: boolean;
+  cloudflareVadMode?: "client" | "cloudflare";
+  cloudflareVadReason?:
+    | "client_vad_confirmed"
+    | "cloudflare_vad_required";
   asrConfidence?: number;
   asrFirstDeltaMs?: number;
   asrFinalAfterStopMs?: number;
   batchTransport?: string;
+  batchFallbackReason?: string;
   chunkIntervalMs?: number;
+  sourceChunkIntervalMs?: number;
   audioChunkCount?: number;
+  transportChunkCount?: number;
+  maxConcurrentChunkUploads?: number;
   uploadedAudioBytes?: number;
+  retainedAudioBytes?: number;
+  recoveryBufferTruncated?: boolean;
+  chunkChecksumSha256?: boolean;
+  missingChunkRecovery?: boolean;
+  uploadProtocolVersion?: number;
+  scopedUploadToken?: boolean;
+  firstChunkAckMs?: number;
+  chunkUploadP50Ms?: number;
+  chunkUploadP95Ms?: number;
+  chunkRetryCount?: number;
+  missingChunkCount?: number;
+  recoveryUploadCount?: number;
+  lastFailedSequence?: number;
+  lastUploadErrorCode?: string;
+  batchUploadSessionMs?: number;
+  retryStrategy?: string;
   recordingSampleRate?: number;
   sessionCreateMs?: number;
   uploadDrainAfterStopMs?: number;
@@ -277,6 +310,15 @@ export type LatencyReport = {
 
 export type ApiErrorCode =
   | "BAD_REQUEST"
+  | "AUDIO_SESSION_UNAUTHORIZED"
+  | "AUDIO_SESSION_EXPIRED"
+  | "AUDIO_CHUNK_IDEMPOTENCY_INVALID"
+  | "AUDIO_CHUNK_CHECKSUM_INVALID"
+  | "AUDIO_CHUNK_CHECKSUM_MISMATCH"
+  | "AUDIO_CHUNKS_MISSING"
+  | "AUDIO_CHUNK_CONFLICT"
+  | "AUDIO_SESSION_INVALID"
+  | "AUDIO_UPLOAD_LIMIT"
   | "AUDIO_TOO_SHORT"
   | "AUDIO_TOO_LONG"
   | "ASR_FAILED"

@@ -14,35 +14,67 @@ import { getAudioUploadLimits } from "@/lib/storage/config";
 
 const sessionIdPattern = /^audio_[a-z0-9-]+$/;
 const metadataFileName = "session.json";
+export const postgresAudioChunkUpsertQuery = `WITH target AS (
+         SELECT session_id, status, expires_at, total_bytes, chunk_count
+           FROM audio_upload_sessions
+          WHERE session_id = $1
+          FOR UPDATE
+       ), upserted AS (
+         INSERT INTO audio_upload_chunks
+           (session_id, sequence, sha256, size_bytes, content_base64)
+         SELECT session_id, $2, $3, $4::integer, $7
+           FROM target
+          WHERE status = 'uploading'
+            AND expires_at > NOW()
+            AND (
+              EXISTS (
+                SELECT 1
+                  FROM audio_upload_chunks
+                 WHERE session_id = $1 AND sequence = $2
+              )
+              OR (
+                total_bytes + $4::integer <= $5
+                AND chunk_count < $6
+              )
+            )
+         ON CONFLICT (session_id, sequence) DO UPDATE
+           SET sha256 = audio_upload_chunks.sha256
+         RETURNING session_id, sha256, (xmax = 0) AS inserted
+       ), updated AS (
+         UPDATE audio_upload_sessions AS sessions
+            SET total_bytes = sessions.total_bytes + $4::integer,
+                chunk_count = sessions.chunk_count + 1,
+                updated_at = NOW()
+           FROM upserted
+          WHERE sessions.session_id = upserted.session_id
+            AND upserted.inserted
+         RETURNING sessions.total_bytes, sessions.chunk_count
+       )
+       SELECT target.status,
+              target.expires_at,
+              COALESCE(
+                (SELECT total_bytes FROM updated),
+                target.total_bytes
+              ) AS total_bytes,
+              COALESCE(
+                (SELECT chunk_count FROM updated),
+                target.chunk_count
+              ) AS chunk_count,
+              COALESCE(
+                (SELECT inserted FROM upserted),
+                FALSE
+              ) AS inserted,
+              (SELECT sha256 FROM upserted) AS existing_sha256
+         FROM target`;
 const allowedMimeTypes = new Map([
-  ["audio/aac", "speech.aac"],
-  ["audio/aacp", "speech.aac"],
-  ["audio/ac3", "speech.ac3"],
-  ["audio/aiff", "speech.aiff"],
-  ["audio/alac", "speech.alac"],
-  ["audio/amr", "speech.amr"],
-  ["audio/basic", "speech.au"],
-  ["audio/flac", "speech.flac"],
-  ["audio/3gpp", "speech.3gp"],
-  ["audio/3gpp2", "speech.3g2"],
   ["audio/mp4", "speech.m4a"],
   ["audio/m4a", "speech.m4a"],
-  ["audio/x-m4a", "speech.m4a"],
   ["audio/wav", "speech.wav"],
   ["audio/wave", "speech.wav"],
-  ["audio/vnd.wave", "speech.wav"],
   ["audio/x-wav", "speech.wav"],
   ["audio/mpeg", "speech.mp3"],
-  ["audio/mp3", "speech.mp3"],
   ["audio/ogg", "speech.ogg"],
-  ["audio/opus", "speech.opus"],
-  ["audio/vnd.rn-realaudio", "speech.ra"],
   ["audio/webm", "speech.webm"],
-  ["audio/x-aac", "speech.aac"],
-  ["audio/x-caf", "speech.caf"],
-  ["audio/x-flac", "speech.flac"],
-  ["audio/x-ms-wma", "speech.wma"],
-  ["audio/x-pn-realaudio", "speech.ra"],
 ]);
 
 type UploadStatus = "uploading" | "finalizing" | "finalized";
@@ -80,6 +112,7 @@ export type Pcm16WavMetadata = {
   channelCount: number;
   bitsPerSample: 16;
   pcmByteLength: number;
+  chunkCount?: number;
 };
 
 export class AudioUploadError extends Error {
@@ -93,6 +126,7 @@ export class AudioUploadError extends Error {
       | "SESSION_TOO_LARGE"
       | "TOO_MANY_CHUNKS"
       | "CHUNK_CONFLICT"
+      | "CHUNK_CHECKSUM_MISMATCH"
       | "MISSING_CHUNKS"
       | "UNSUPPORTED_AUDIO_TYPE"
       | "INVALID_SEQUENCE"
@@ -147,28 +181,18 @@ function normalizeMimeType(mimeType: string) {
 }
 
 function getAudioFilename(mimeType: string) {
-  const normalizedMimeType = normalizeMimeType(mimeType);
-  const filename = allowedMimeTypes.get(normalizedMimeType);
+  const filename = allowedMimeTypes.get(normalizeMimeType(mimeType));
 
-  if (filename) {
-    return filename;
-  }
-
-  if (!/^audio\/[a-z0-9][a-z0-9.+-]*$/i.test(normalizedMimeType)) {
+  if (!filename) {
     throw new AudioUploadError(
       "UNSUPPORTED_AUDIO_TYPE",
-      "File tải lên không phải định dạng audio.",
+      "Định dạng audio không được hỗ trợ.",
       415,
       { mimeType },
     );
   }
 
-  const fallbackExtension = normalizedMimeType
-    .slice("audio/".length)
-    .replace(/^x-/, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .slice(0, 40);
-  return `speech.${fallbackExtension || "audio"}`;
+  return filename;
 }
 
 function validatePcm16WavMetadata(
@@ -186,12 +210,18 @@ function validatePcm16WavMetadata(
     Number.isInteger(value.pcmByteLength) &&
     value.pcmByteLength > 0 &&
     value.pcmByteLength <= getAudioUploadLimits().maxSessionBytes;
+  const validChunkCount =
+    value.chunkCount === undefined ||
+    (Number.isInteger(value.chunkCount) &&
+      value.chunkCount > 0 &&
+      value.chunkCount <= getAudioUploadLimits().maxChunks);
 
   if (
     !validSampleRate ||
     !validChannelCount ||
     value.bitsPerSample !== 16 ||
     !validPcmLength ||
+    !validChunkCount ||
     value.pcmByteLength % (value.channelCount * 2) !== 0
   ) {
     throw new AudioUploadError(
@@ -386,9 +416,9 @@ export async function cleanupExpiredAudioSessions(force = false) {
   return deleted;
 }
 
-export async function createAudioUploadSession() {
+export async function createAudioUploadSession(options?: { scoped?: boolean }) {
   await cleanupExpiredAudioSessions();
-  const sessionId = `audio_${crypto.randomUUID()}`;
+  const sessionId = `${options?.scoped ? "audio_v2-" : "audio_"}${crypto.randomUUID()}`;
   const now = new Date();
   const expiresAt = new Date(
     now.getTime() + getAudioUploadLimits().sessionTtlSeconds * 1000,
@@ -454,11 +484,20 @@ export async function saveAudioSessionChunk(
   sessionId: string,
   sequence: number,
   chunk: File,
+  expectedSha256?: string,
 ) {
   validateSessionId(sessionId);
   const buffer = Buffer.from(await chunk.arrayBuffer());
   validateChunk(sequence, buffer);
   const sha256 = hashBuffer(buffer);
+  if (expectedSha256 && expectedSha256 !== sha256) {
+    throw new AudioUploadError(
+      "CHUNK_CHECKSUM_MISMATCH",
+      "Checksum SHA-256 của audio chunk không khớp nội dung upload.",
+      400,
+      { sequence, expectedSha256, actualSha256: sha256 },
+    );
+  }
   const limits = getAudioUploadLimits();
 
   if (isPostgresStorageEnabled()) {
@@ -470,58 +509,7 @@ export async function saveAudioSessionChunk(
       inserted: boolean;
       existing_sha256: string | null;
     }>(
-      `WITH target AS (
-         SELECT session_id, status, expires_at, total_bytes, chunk_count
-           FROM audio_upload_sessions
-          WHERE session_id = $1
-          FOR UPDATE
-       ), upserted AS (
-         INSERT INTO audio_upload_chunks
-           (session_id, sequence, sha256, size_bytes, content_base64)
-         SELECT session_id, $2::integer, $3::text, $4::integer, $7::text
-           FROM target
-          WHERE status = 'uploading'
-            AND expires_at > NOW()
-            AND (
-              EXISTS (
-                SELECT 1
-                  FROM audio_upload_chunks
-                 WHERE session_id = $1 AND sequence = $2
-              )
-              OR (
-                total_bytes + $4::bigint <= $5::bigint
-                AND chunk_count < $6::integer
-              )
-            )
-         ON CONFLICT (session_id, sequence) DO UPDATE
-           SET sha256 = audio_upload_chunks.sha256
-         RETURNING session_id, sha256, (xmax = 0) AS inserted
-       ), updated AS (
-         UPDATE audio_upload_sessions AS sessions
-            SET total_bytes = sessions.total_bytes + $4::bigint,
-                chunk_count = sessions.chunk_count + 1,
-                updated_at = NOW()
-           FROM upserted
-          WHERE sessions.session_id = upserted.session_id
-            AND upserted.inserted
-         RETURNING sessions.total_bytes, sessions.chunk_count
-       )
-       SELECT target.status,
-              target.expires_at,
-              COALESCE(
-                (SELECT total_bytes FROM updated),
-                target.total_bytes
-              ) AS total_bytes,
-              COALESCE(
-                (SELECT chunk_count FROM updated),
-                target.chunk_count
-              ) AS chunk_count,
-              COALESCE(
-                (SELECT inserted FROM upserted),
-                FALSE
-              ) AS inserted,
-              (SELECT sha256 FROM upserted) AS existing_sha256
-         FROM target`,
+      postgresAudioChunkUpsertQuery,
       [
         sessionId,
         sequence,
@@ -549,6 +537,7 @@ export async function saveAudioSessionChunk(
     if (session.inserted) {
       return {
         duplicate: false,
+        sha256,
         totalBytes: Number(session.total_bytes),
         chunkCount: session.chunk_count,
       };
@@ -557,6 +546,7 @@ export async function saveAudioSessionChunk(
     if (session.existing_sha256 === sha256) {
       return {
         duplicate: true,
+        sha256,
         totalBytes: Number(session.total_bytes),
         chunkCount: session.chunk_count,
       };
@@ -599,6 +589,7 @@ export async function saveAudioSessionChunk(
       if (hashBuffer(existing) === sha256) {
         return {
           duplicate: true,
+          sha256,
           totalBytes: metadata.totalBytes,
           chunkCount: metadata.chunkCount,
         };
@@ -653,13 +644,14 @@ export async function saveAudioSessionChunk(
     await writeLocalMetadata(nextMetadata);
     return {
       duplicate: false,
+      sha256,
       totalBytes: nextMetadata.totalBytes,
       chunkCount: nextMetadata.chunkCount,
     };
   });
 }
 
-function validateChunkSequence(sequences: number[]) {
+function validateChunkSequence(sequences: number[], expectedChunkCount?: number) {
   if (sequences.length === 0) {
     throw new AudioUploadError(
       "MISSING_CHUNKS",
@@ -668,7 +660,22 @@ function validateChunkSequence(sequences: number[]) {
     );
   }
 
-  const highest = sequences.at(-1) ?? -1;
+  const highest =
+    expectedChunkCount === undefined
+      ? (sequences.at(-1) ?? -1)
+      : expectedChunkCount - 1;
+  const unexpected =
+    expectedChunkCount === undefined
+      ? []
+      : sequences.filter((sequence) => sequence >= expectedChunkCount);
+  if (unexpected.length > 0) {
+    throw new AudioUploadError(
+      "INVALID_PCM_METADATA",
+      "Audio session có sequence vượt ngoài metadata finalize.",
+      409,
+      { unexpectedSequences: unexpected.slice(0, 100) },
+    );
+  }
   const sequenceSet = new Set(sequences);
   const missing: number[] = [];
 
@@ -729,7 +736,10 @@ export async function finalizeAudioUploadSession(
         ORDER BY sequence ASC`,
       [sessionId],
     );
-    validateChunkSequence(rows.map((row) => row.sequence));
+    validateChunkSequence(
+      rows.map((row) => row.sequence),
+      pcmMetadata?.chunkCount,
+    );
     buffers = rows.map((row) => Buffer.from(row.content_base64, "base64"));
   } else {
     const metadata = await readLocalMetadata(sessionId);
@@ -747,7 +757,7 @@ export async function finalizeAudioUploadSession(
       .filter((name) => /^\d{6}\.part$/.test(name))
       .sort();
     const sequences = chunkNames.map((name) => Number(name.slice(0, 6)));
-    validateChunkSequence(sequences);
+    validateChunkSequence(sequences, pcmMetadata?.chunkCount);
     buffers = await Promise.all(
       chunkNames.map((name) => readFile(path.join(sessionDir, name))),
     );
@@ -1005,5 +1015,7 @@ export async function discardAudioUploadSession(sessionId: string) {
     return;
   }
 
-  await rm(getSessionDir(sessionId), { recursive: true, force: true });
+  await enqueueLocalMutation(() =>
+    rm(getSessionDir(sessionId), { recursive: true, force: true }),
+  );
 }

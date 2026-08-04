@@ -6,7 +6,14 @@ export { AppError } from "@/lib/appError";
 export function toErrorResponse(error: unknown, requestId?: string) {
   if (error instanceof AppError) {
     return Response.json(
-      { error: { code: error.code, message: error.message, requestId } },
+      {
+        error: {
+          code: error.code,
+          message: error.message,
+          requestId,
+          ...(error.details ? { details: error.details } : {}),
+        },
+      },
       { status: error.status },
     );
   }
