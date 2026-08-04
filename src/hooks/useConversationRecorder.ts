@@ -51,8 +51,18 @@ type UseConversationRecorderOptions = {
 const chunkIntervalMs = 250;
 const recordingTimeoutMs = 45_000;
 const speechThreshold = 0.025;
+const minimumAdaptiveSpeechThreshold = 0.012;
+const maximumAdaptiveSpeechThreshold = 0.04;
+const noiseToSpeechRatio = 2.5;
 const minimumStreamingConfidence = 0.55;
 const initialNoiseWindowMs = 500;
+const preferredAudioConstraints: MediaTrackConstraints = {
+  channelCount: { ideal: 1 },
+  echoCancellation: { ideal: true },
+  noiseSuppression: { ideal: true },
+  autoGainControl: { ideal: true },
+  sampleRate: { ideal: 48_000 },
+};
 
 function isBluetoothLabel(label: string) {
   return /bluetooth|headset|headphone|earbud|airpod|wireless/i.test(label);
@@ -214,6 +224,7 @@ export function useConversationRecorder({
     let noiseTotal = 0;
     let noiseSamples = 0;
     let noiseReported = false;
+    let adaptiveSpeechThreshold = speechThreshold;
 
     analyser.fftSize = 1024;
     analyser.smoothingTimeConstant = 0.25;
@@ -240,10 +251,17 @@ export function useConversationRecorder({
           noiseSamples > 0 ? noiseTotal / noiseSamples : rms;
         initialNoiseRmsRef.current = measuredNoise;
         setInitialNoiseRms(measuredNoise);
+        adaptiveSpeechThreshold = Math.max(
+          minimumAdaptiveSpeechThreshold,
+          Math.min(
+            maximumAdaptiveSpeechThreshold,
+            measuredNoise * noiseToSpeechRatio,
+          ),
+        );
         noiseReported = true;
       }
 
-      if (rms >= speechThreshold) {
+      if (rms >= adaptiveSpeechThreshold) {
         heardSpeech = true;
         lastSpeechAt = now;
         setSpeechDetected(true);
@@ -432,7 +450,9 @@ export function useConversationRecorder({
       return;
     }
 
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: preferredAudioConstraints,
+    });
     const inputLabel =
       stream.getAudioTracks()[0]?.label ||
       pick("Micro mặc định", "默认麦克风");

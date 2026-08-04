@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import {
@@ -402,6 +403,12 @@ export function AdminDashboard() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href="/admin/audio-check"
+              className="rounded-xl border border-cyan-300/30 bg-cyan-300/10 px-4 py-2.5 text-sm font-semibold text-cyan-100 transition hover:bg-cyan-300/20"
+            >
+              {pick("Kiểm tra audio", "音频检查")}
+            </Link>
             <LanguageToggle tone="dark" />
             <button
               type="button"

@@ -13,6 +13,16 @@ const promptEchoFragments = [
   "translated naturally and faithfully",
 ];
 
+const knownHallucinationPatterns = [
+  /\b(?:subscribe|dang ky)\b.*\bkenh\b/u,
+  /\blala\s*school\b/u,
+  /\bkhong bo lo\b.*\bvideo\b/u,
+  /\bung ho\b.*\bkenh\b/u,
+  /\bcam on cac ban da theo doi\b/u,
+  /\bhen gap lai\b.*\b(?:cac ban|video)\b/u,
+  /\bvideo tiep theo\b/u,
+];
+
 const commonEnglishWords = new Set([
   "a",
   "am",
@@ -51,6 +61,13 @@ function compact(value: string) {
     .trim();
 }
 
+function foldVietnamese(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .replace(/đ/gu, "d");
+}
+
 function finiteNumber(value: unknown) {
   return typeof value === "number" && Number.isFinite(value)
     ? value
@@ -73,6 +90,9 @@ function looksEnglishOnly(value: string, words: string[]) {
 }
 
 function looksRepetitive(words: string[]) {
+  if (words.length >= 2 && new Set(words).size === 1) {
+    return true;
+  }
   if (words.length < 6) {
     return false;
   }
@@ -89,6 +109,7 @@ export function getVietnameseTranscriptQualityIssue(
   segments: unknown[] = [],
 ) {
   const normalized = compact(transcript);
+  const folded = foldVietnamese(normalized);
   const words = normalized ? normalized.split(" ") : [];
 
   if (!normalized) {
@@ -99,6 +120,9 @@ export function getVietnameseTranscriptQualityIssue(
   }
   if (promptEchoFragments.some((fragment) => normalized.includes(fragment))) {
     return "prompt_echo" as const;
+  }
+  if (knownHallucinationPatterns.some((pattern) => pattern.test(folded))) {
+    return "known_hallucination" as const;
   }
   if (looksEnglishOnly(normalized, words)) {
     return "unexpected_english" as const;

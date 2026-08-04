@@ -22,6 +22,32 @@ test("rejects the old Whisper instruction prompt echo", () => {
   );
 });
 
+test("rejects common video-outro hallucinations from quiet child audio", () => {
+  assert.equal(
+    getVietnameseTranscriptQualityIssue(
+      "Hãy subscribe cho kênh La La School để không bỏ lỡ những video hấp dẫn",
+    ),
+    "known_hallucination",
+  );
+  assert.equal(
+    getVietnameseTranscriptQualityIssue(
+      "Cảm ơn các bạn đã theo dõi và hẹn gặp lại trong video tiếp theo.",
+    ),
+    "known_hallucination",
+  );
+});
+
+test("accepts a legitimate short goodbye", () => {
+  assert.equal(getVietnameseTranscriptQualityIssue("Hẹn gặp lại nhé."), null);
+});
+
+test("rejects a short repeated token from a failed decode", () => {
+  assert.equal(
+    getVietnameseTranscriptQualityIssue("cơm cơm"),
+    "repetitive",
+  );
+});
+
 test("rejects an English-only result in the Vietnamese ASR path", () => {
   assert.equal(
     getVietnameseTranscriptQualityIssue("Hello, how are you?"),

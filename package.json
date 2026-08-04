@@ -14,6 +14,7 @@
     "test:transcript": "node --import tsx --test src/lib/ai/transcriptRepair.test.ts",
     "test:storage": "node --import tsx --test --test-concurrency=1 src/lib/storage/audioSessions.test.ts src/lib/storage/audio.test.ts src/lib/storage/config.test.ts src/lib/db/schema.test.ts",
     "test:ai-provider": "node --import tsx --test src/lib/ai/aiProvider.test.ts",
+    "test:cloudflare-only": "node --import tsx --test src/lib/ai/cloudflareOnly.test.ts",
     "test:tts-cache": "node --import tsx --test --test-concurrency=1 src/lib/ai/tts.test.ts",
     "test:admin-auth": "node --import tsx --test src/lib/adminAuthCore.test.ts",
     "test:app-version": "node --import tsx --test src/lib/appVersionPolicy.test.ts",
@@ -29,7 +30,6 @@
     "@neondatabase/serverless": "^1.0.2",
     "@vercel/blob": "^2.6.1",
     "next": "16.2.11",
-    "openai": "^6.48.0",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },

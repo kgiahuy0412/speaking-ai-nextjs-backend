@@ -117,6 +117,43 @@ test("finalize builds a WAV header from PCM metadata without a header chunk", as
   assert.deepEqual([...bytes.subarray(44)], [1, 2, 3, 4]);
 });
 
+test("finalize accepts AAC audio for batch uploads", async () => {
+  const sessionId = await sessions.createAudioUploadSession();
+  await sessions.saveAudioSessionChunk(
+    sessionId,
+    0,
+    new File([Buffer.from("aac-audio")], "speech.aac", {
+      type: "audio/aac",
+    }),
+  );
+
+  const file = await sessions.finalizeAudioUploadSession(
+    sessionId,
+    "audio/aac",
+  );
+
+  assert.equal(file.name, "speech.aac");
+  assert.equal(file.type, "audio/aac");
+  assert.equal(Buffer.from(await file.arrayBuffer()).toString(), "aac-audio");
+});
+
+test("finalize accepts other declared audio MIME types", async () => {
+  const sessionId = await sessions.createAudioUploadSession();
+  await sessions.saveAudioSessionChunk(
+    sessionId,
+    0,
+    new File([Buffer.from("custom-audio")], "speech.custom"),
+  );
+
+  const file = await sessions.finalizeAudioUploadSession(
+    sessionId,
+    "audio/x-custom-codec",
+  );
+
+  assert.equal(file.name, "speech.custom-codec");
+  assert.equal(file.type, "audio/x-custom-codec");
+});
+
 test("finalize rejects PCM metadata with a mismatched byte length", async () => {
   const sessionId = await sessions.createAudioUploadSession();
   await sessions.saveAudioSessionChunk(

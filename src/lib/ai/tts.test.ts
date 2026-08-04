@@ -17,8 +17,8 @@ before(async () => {
   process.chdir(testRoot);
   process.env.AUDIO_STORAGE_BACKEND = "local";
   process.env.PERSISTENCE_BACKEND = "local";
-  process.env.AI_TTS_PRIMARY_PROVIDER = "openai";
-  process.env.OPENAI_API_KEY = "test-key";
+  process.env.CLOUDFLARE_ACCOUNT_ID = "test-account";
+  process.env.CLOUDFLARE_WORKERS_AI_API_TOKEN = "test-token";
   ({ claimEnglishAudioCacheFill } = await import("./tts"));
   ({ readGeneratedAudioFile } = await import("../storage/audio"));
 });
@@ -43,9 +43,9 @@ test("cache fill survives cancellation of the client response branch", async () 
   const completion = owner.cacheResponse(
     {
       response,
-      source: "openai_tts",
+      source: "cloudflare_tts",
       profile: {
-        provider: "openai",
+        provider: "cloudflare",
         model: "test-tts-model",
         voice: "test-voice",
         speed: 1,

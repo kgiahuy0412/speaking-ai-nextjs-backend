@@ -6,7 +6,6 @@ import type {
 import { after } from "next/server";
 import { normalizeVietnamese } from "@/lib/normalize";
 import { logEvent } from "@/lib/observability";
-import { getOpenAIClient } from "./openai";
 import { buildEnglishInstruction } from "./prompts";
 import { getPromotedRule } from "./promotedRules";
 import { getCachedAiEnglishText, saveAiEnglishText } from "./textCache";
@@ -66,31 +65,6 @@ function isUnclearShortInput(normalizedText: string) {
   return unclearInputs.has(normalizedText) || normalizedText.length < 3;
 }
 
-function getPrimaryTextProvider(): TextProvider {
-  return process.env.AI_TEXT_PRIMARY_PROVIDER === "openai"
-    ? "openai"
-    : "cloudflare";
-}
-
-function getOpenAITextModel() {
-  return process.env.OPENAI_FAST_TEXT_MODEL ?? "gpt-4o-mini";
-}
-
-function getOpenAITextTimeoutMs() {
-  const timeoutMs = Number(process.env.OPENAI_TEXT_TIMEOUT_MS ?? 3500);
-  return Number.isFinite(timeoutMs) && timeoutMs > 0 ? timeoutMs : 3500;
-}
-
-class TextModelTimeoutError extends Error {
-  constructor(
-    readonly provider: TextProvider,
-    timeoutMs: number,
-  ) {
-    super(`${provider} text translation timed out after ${timeoutMs}ms`);
-    this.name = "TextModelTimeoutError";
-  }
-}
-
 class InvalidTranslationError extends Error {
   constructor(
     readonly provider: TextProvider,
@@ -98,30 +72,6 @@ class InvalidTranslationError extends Error {
   ) {
     super(`${provider} returned an invalid translation`);
     this.name = "InvalidTranslationError";
-  }
-}
-
-async function withTimeout<T>(
-  provider: TextProvider,
-  operation: (signal: AbortSignal) => Promise<T>,
-  timeoutMs: number,
-) {
-  const controller = new AbortController();
-  let timeoutId: ReturnType<typeof setTimeout> | undefined;
-
-  const timeoutPromise = new Promise<never>((_, reject) => {
-    timeoutId = setTimeout(() => {
-      controller.abort();
-      reject(new TextModelTimeoutError(provider, timeoutMs));
-    }, timeoutMs);
-  });
-
-  try {
-    return await Promise.race([operation(controller.signal), timeoutPromise]);
-  } finally {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
   }
 }
 
@@ -153,9 +103,6 @@ function normalizeTranslationOutput(text: string) {
 function getProviderFailureReason(error: unknown) {
   if (error instanceof CloudflareTextProviderError) {
     return error.reason;
-  }
-  if (error instanceof TextModelTimeoutError) {
-    return "timeout";
   }
   if (error instanceof InvalidTranslationError) {
     return error.details
@@ -211,114 +158,21 @@ async function translateWithCloudflare(
   }
 }
 
-async function translateWithOpenAI(
-  vietnameseText: string,
-  instructions: string,
-  requestId?: string,
-): Promise<ProviderTranslation> {
-  const client = getOpenAIClient();
-  const model = getOpenAITextModel();
-  const timeoutMs = getOpenAITextTimeoutMs();
-  const startedAt = performance.now();
-
-  try {
-    const response = await withTimeout(
-      "openai",
-      (signal) =>
-        client.responses.create(
-          {
-            model,
-            instructions,
-            input: vietnameseText,
-            max_output_tokens: 80,
-          },
-          { signal },
-        ),
-      timeoutMs,
-    );
-    const englishText = normalizeTranslationOutput(response.output_text);
-
-    if (!englishText) {
-      throw new InvalidTranslationError("openai");
-    }
-
-    const missingRequirements = findMissingTranslationRequirements(
-      vietnameseText,
-      englishText,
-    );
-    if (missingRequirements.length > 0) {
-      throw new InvalidTranslationError(
-        "openai",
-        missingRequirements.join(","),
-      );
-    }
-
-    return {
-      englishText,
-      provider: "openai",
-      model,
-    };
-  } finally {
-    logEvent("info", "text_provider_latency", {
-      requestId,
-      provider: "openai",
-      model,
-      latencyMs: Math.round(performance.now() - startedAt),
-    });
-  }
-}
-
 async function generateWithProviders(
   vietnameseText: string,
   instructions: string,
   requestId?: string,
 ) {
-  const primaryProvider = getPrimaryTextProvider();
-
-  if (primaryProvider === "openai") {
-    const translation = await translateWithOpenAI(
-      vietnameseText,
-      instructions,
-      requestId,
-    );
-    return {
-      ...translation,
-      fallbackUsed: false,
-      fallbackReason: undefined,
-    };
-  }
-
-  try {
-    const translation = await translateWithCloudflare(
-      vietnameseText,
-      instructions,
-      requestId,
-    );
-    return {
-      ...translation,
-      fallbackUsed: false,
-      fallbackReason: undefined,
-    };
-  } catch (error) {
-    const fallbackReason = getProviderFailureReason(error);
-    logEvent("warn", "text_provider_fallback", {
-      requestId,
-      primaryProvider: "cloudflare",
-      fallbackProvider: "openai",
-      fallbackReason,
-    });
-
-    const translation = await translateWithOpenAI(
-      vietnameseText,
-      instructions,
-      requestId,
-    );
-    return {
-      ...translation,
-      fallbackUsed: true,
-      fallbackReason,
-    };
-  }
+  const translation = await translateWithCloudflare(
+    vietnameseText,
+    instructions,
+    requestId,
+  );
+  return {
+    ...translation,
+    fallbackUsed: false,
+    fallbackReason: undefined,
+  };
 }
 
 export async function generateEnglishSentence(
@@ -402,10 +256,9 @@ export async function generateEnglishSentence(
     };
   } catch (error) {
     const failureReason = getProviderFailureReason(error);
-    logEvent("error", "text_providers_failed", {
+    logEvent("error", "cloudflare_text_failed", {
       requestId,
-      primaryProvider: getPrimaryTextProvider(),
-      finalProvider: "openai",
+      provider: "cloudflare",
       failureReason,
       error,
     });
@@ -415,7 +268,7 @@ export async function generateEnglishSentence(
       mode: "fallback",
       source: "fallback",
       matchedRule: `providers_failed:${failureReason}`,
-      textFallbackUsed: getPrimaryTextProvider() === "cloudflare",
+      textFallbackUsed: false,
       textFallbackReason: failureReason,
     };
   }

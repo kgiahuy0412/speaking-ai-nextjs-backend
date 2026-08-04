@@ -146,12 +146,12 @@ test("fidelity guard rejects obvious semantic loss before caching", () => {
   );
 });
 
-test("text timeout gives the fast model more room and aborts timed-out work", async () => {
+test("online text generation has no OpenAI client or fallback", async () => {
   const llmSource = await readFile(new URL("./llm.ts", import.meta.url), "utf8");
 
-  assert.match(llmSource, /OPENAI_TEXT_TIMEOUT_MS \?\? 3500/);
-  assert.match(llmSource, /new AbortController\(\)/);
-  assert.match(llmSource, /controller\.abort\(\)/);
+  assert.doesNotMatch(llmSource, /getOpenAIClient/);
+  assert.doesNotMatch(llmSource, /api\.openai\.com/);
+  assert.doesNotMatch(llmSource, /fallbackProvider/);
 });
 
 test("online LLM fast path cannot use legacy keyword or semantic outputs", async () => {
@@ -163,14 +163,13 @@ test("online LLM fast path cannot use legacy keyword or semantic outputs", async
   assert.match(llmSource, /findReviewedExactRule/);
 });
 
-test("Cloudflare is primary and OpenAI remains the text fallback", async () => {
+test("Cloudflare is the only online text provider", async () => {
   const llmSource = await readFile(new URL("./llm.ts", import.meta.url), "utf8");
 
-  assert.match(llmSource, /AI_TEXT_PRIMARY_PROVIDER/);
   assert.match(llmSource, /translateVietnameseWithCloudflare/);
-  assert.match(llmSource, /primaryProvider: "cloudflare"/);
-  assert.match(llmSource, /fallbackProvider: "openai"/);
-  assert.match(llmSource, /text_provider_fallback/);
+  assert.match(llmSource, /provider: "cloudflare"/);
+  assert.doesNotMatch(llmSource, /translateWithOpenAI/);
+  assert.doesNotMatch(llmSource, /fallbackProvider/);
 });
 
 test("prompt, rule and text cache use explicit V1 versions", () => {

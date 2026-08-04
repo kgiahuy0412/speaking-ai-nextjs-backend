@@ -91,11 +91,11 @@ export function LatencyReportPanel({
       `${formatPercent(report.kpi.cachedAudioUnderOneSecondRate)} (${report.kpi.cachedAudioPassed}/${report.kpi.cachedAudioTotal})`,
     ],
     [
-      "OpenAI text",
+      "Legacy OpenAI text (history only)",
       `${formatPercent(report.kpi.openAiTextCallRate)} (${report.kpi.openAiTextCalls})`,
     ],
     [
-      "OpenAI TTS",
+      "Legacy OpenAI TTS (history only)",
       `${formatPercent(report.kpi.openAiTtsCallRate)} (${report.kpi.openAiTtsCalls})`,
     ],
   ];
@@ -115,8 +115,8 @@ export function LatencyReportPanel({
           </p>
           <p className="text-xs text-slate-500">
             {pick(
-              "KPI: câu dễ dưới 1 giây, câu lạ dùng AI dưới 2 giây, giảm tỷ lệ gọi OpenAI bằng rule/cache.",
-              "KPI：简单句低于 1 秒，AI 陌生句低于 2 秒，并通过规则/缓存减少 OpenAI 调用。",
+              "KPI: câu dễ dưới 1 giây, câu lạ dùng Cloudflare dưới 2 giây, tăng tỷ lệ rule/cache.",
+              "KPI：简单句低于 1 秒，陌生句通过 Cloudflare 低于 2 秒，并提高规则/缓存命中率。",
             )}
           </p>
         </div>

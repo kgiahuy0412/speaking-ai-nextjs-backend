@@ -15,14 +15,34 @@ import { getAudioUploadLimits } from "@/lib/storage/config";
 const sessionIdPattern = /^audio_[a-z0-9-]+$/;
 const metadataFileName = "session.json";
 const allowedMimeTypes = new Map([
+  ["audio/aac", "speech.aac"],
+  ["audio/aacp", "speech.aac"],
+  ["audio/ac3", "speech.ac3"],
+  ["audio/aiff", "speech.aiff"],
+  ["audio/alac", "speech.alac"],
+  ["audio/amr", "speech.amr"],
+  ["audio/basic", "speech.au"],
+  ["audio/flac", "speech.flac"],
+  ["audio/3gpp", "speech.3gp"],
+  ["audio/3gpp2", "speech.3g2"],
   ["audio/mp4", "speech.m4a"],
   ["audio/m4a", "speech.m4a"],
+  ["audio/x-m4a", "speech.m4a"],
   ["audio/wav", "speech.wav"],
   ["audio/wave", "speech.wav"],
+  ["audio/vnd.wave", "speech.wav"],
   ["audio/x-wav", "speech.wav"],
   ["audio/mpeg", "speech.mp3"],
+  ["audio/mp3", "speech.mp3"],
   ["audio/ogg", "speech.ogg"],
+  ["audio/opus", "speech.opus"],
+  ["audio/vnd.rn-realaudio", "speech.ra"],
   ["audio/webm", "speech.webm"],
+  ["audio/x-aac", "speech.aac"],
+  ["audio/x-caf", "speech.caf"],
+  ["audio/x-flac", "speech.flac"],
+  ["audio/x-ms-wma", "speech.wma"],
+  ["audio/x-pn-realaudio", "speech.ra"],
 ]);
 
 type UploadStatus = "uploading" | "finalizing" | "finalized";
@@ -127,18 +147,28 @@ function normalizeMimeType(mimeType: string) {
 }
 
 function getAudioFilename(mimeType: string) {
-  const filename = allowedMimeTypes.get(normalizeMimeType(mimeType));
+  const normalizedMimeType = normalizeMimeType(mimeType);
+  const filename = allowedMimeTypes.get(normalizedMimeType);
 
-  if (!filename) {
+  if (filename) {
+    return filename;
+  }
+
+  if (!/^audio\/[a-z0-9][a-z0-9.+-]*$/i.test(normalizedMimeType)) {
     throw new AudioUploadError(
       "UNSUPPORTED_AUDIO_TYPE",
-      "Định dạng audio không được hỗ trợ.",
+      "File tải lên không phải định dạng audio.",
       415,
       { mimeType },
     );
   }
 
-  return filename;
+  const fallbackExtension = normalizedMimeType
+    .slice("audio/".length)
+    .replace(/^x-/, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .slice(0, 40);
+  return `speech.${fallbackExtension || "audio"}`;
 }
 
 function validatePcm16WavMetadata(
@@ -448,7 +478,7 @@ export async function saveAudioSessionChunk(
        ), upserted AS (
          INSERT INTO audio_upload_chunks
            (session_id, sequence, sha256, size_bytes, content_base64)
-         SELECT session_id, $2, $3, $4, $7
+         SELECT session_id, $2::integer, $3::text, $4::integer, $7::text
            FROM target
           WHERE status = 'uploading'
             AND expires_at > NOW()
@@ -459,8 +489,8 @@ export async function saveAudioSessionChunk(
                  WHERE session_id = $1 AND sequence = $2
               )
               OR (
-                total_bytes + $4 <= $5
-                AND chunk_count < $6
+                total_bytes + $4::bigint <= $5::bigint
+                AND chunk_count < $6::integer
               )
             )
          ON CONFLICT (session_id, sequence) DO UPDATE
@@ -468,7 +498,7 @@ export async function saveAudioSessionChunk(
          RETURNING session_id, sha256, (xmax = 0) AS inserted
        ), updated AS (
          UPDATE audio_upload_sessions AS sessions
-            SET total_bytes = sessions.total_bytes + $4,
+            SET total_bytes = sessions.total_bytes + $4::bigint,
                 chunk_count = sessions.chunk_count + 1,
                 updated_at = NOW()
            FROM upserted

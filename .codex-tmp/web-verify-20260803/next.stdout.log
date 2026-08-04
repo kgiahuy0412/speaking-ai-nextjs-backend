@@ -1,0 +1,14 @@
+
+> ai-speaking-device-mvp@0.1.0 dev
+> next dev -p 3100
+
+▲ Next.js 16.2.11 (Turbopack)
+- Local:         http://localhost:3100
+- Network:       http://192.168.1.7:3100
+- Environments: .env.local, .env
+✓ Ready in 543ms
+
+ GET /practice 200 in 406ms (next.js: 168ms, application-code: 237ms)
+ GET /api/history 401 in 456ms (next.js: 375ms, proxy.ts: 64ms, application-code: 17ms)
+ GET /api/reports 401 in 490ms (next.js: 422ms, proxy.ts: 64ms, application-code: 4ms)
+[?25h

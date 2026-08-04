@@ -16,7 +16,7 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Cloudflare-first faithful translation
+## Cloudflare-only voice pipeline
 
 Configure a Cloudflare API token with the `Workers AI Read` and `Workers AI
 Write` permissions in `.env.local`:
@@ -24,18 +24,11 @@ Write` permissions in `.env.local`:
 ```env
 CLOUDFLARE_ACCOUNT_ID=your-cloudflare-account-id
 CLOUDFLARE_WORKERS_AI_API_TOKEN=your-workers-ai-token
-AI_TEXT_PRIMARY_PROVIDER=cloudflare
 CLOUDFLARE_TEXT_MODEL=@cf/meta/llama-4-scout-17b-16e-instruct
 CLOUDFLARE_TEXT_TIMEOUT_MS=2500
-AI_TTS_PRIMARY_PROVIDER=cloudflare
 CLOUDFLARE_TTS_MODEL=@cf/deepgram/aura-1
 CLOUDFLARE_TTS_SPEAKER=luna
 CLOUDFLARE_TTS_TIMEOUT_MS=20000
-
-# Optional fallback when a Cloudflare request fails, and required only for
-# the explicitly selected OpenAI Realtime ASR mode.
-OPENAI_API_KEY=your-openai-api-key
-OPENAI_FAST_TEXT_MODEL=gpt-4o-mini
 ```
 
 The Flutter API contract does not change. `/api/conversation` applies this
@@ -43,10 +36,12 @@ order:
 
 1. reviewed exact rule or V1 text cache;
 2. Cloudflare multilingual text model with the faithful V1 prompt;
-3. OpenAI Responses fallback when Cloudflare fails, times out, is rate-limited,
-   or returns an invalid result;
-4. the audio cache, then Cloudflare Aura TTS;
-5. OpenAI TTS only when the Cloudflare TTS request fails.
+3. the audio cache, then Cloudflare Aura TTS.
+
+ASR, generated text, and TTS never call another AI provider. When Cloudflare
+fails, the request returns the existing safe local fallback or a retryable API
+error. The legacy realtime-session endpoint returns HTTP 410 and cannot create
+an external realtime session.
 
 `POST /api/audio/translate` remains an independent compatibility endpoint for
 direct audio translation. It is not used by the Flutter conversation pipeline

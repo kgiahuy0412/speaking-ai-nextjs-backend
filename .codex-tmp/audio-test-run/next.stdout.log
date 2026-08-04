@@ -198,3 +198,4 @@ audio_cache_warmup_completed {
  POST /api/conversation 200 in 3.6s (next.js: 3ms, proxy.ts: 5ms, application-code: 3.6s)
 {"timestamp":"2026-07-31T02:51:24.725Z","level":"info","event":"playback_latency_recorded","requestId":"eaac8956-cde8-48e0-9f3a-f55d0a4abf96","conversationId":"conv_482ac2d8","audioStartedAfterStopMs":5322,"audioLoadMs":1440,"audioFromDeviceCache":false}
  PATCH /api/history 200 in 844ms (next.js: 3ms, proxy.ts: 4ms, application-code: 838ms)
+✓ Compiled in 429ms

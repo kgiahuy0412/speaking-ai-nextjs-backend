@@ -2,7 +2,6 @@ import { getReusableAudioUrl, saveReusableAudio } from "@/lib/storage/audio";
 import type { AudioSource } from "@/types/conversation";
 import {
   getConfiguredTtsProfile,
-  getTtsFallbackProfile,
   requestEnglishSpeech,
   type EnglishSpeechResult,
   type TtsProfile,
@@ -58,14 +57,7 @@ export async function getEnglishAudioCacheUrl(
     getAudioDescriptor(englishText, targetProfile),
   );
 
-  if (primaryUrl || profile) {
-    return primaryUrl;
-  }
-
-  const fallbackProfile = getTtsFallbackProfile(targetProfile);
-  return fallbackProfile
-    ? getReusableAudioUrl(getAudioDescriptor(englishText, fallbackProfile))
-    : null;
+  return primaryUrl;
 }
 
 export function getEnglishAudioStreamUrl(englishText: string) {
@@ -107,16 +99,7 @@ async function getCachedProfileAudioUrl(
   englishText: string,
   profile: TtsProfile,
 ) {
-  const primaryUrl = await getEnglishAudioCacheUrl(englishText, profile);
-
-  if (primaryUrl) {
-    return primaryUrl;
-  }
-
-  const fallbackProfile = getTtsFallbackProfile(profile);
-  return fallbackProfile
-    ? getEnglishAudioCacheUrl(englishText, fallbackProfile)
-    : null;
+  return getEnglishAudioCacheUrl(englishText, profile);
 }
 
 type EnglishAudioCacheFillClaim =
@@ -226,8 +209,7 @@ export async function prepareEnglishAudio(englishText: string) {
 
   return {
     audioUrl: getKnownMissAudioStreamUrl(englishText),
-    source:
-      profile.provider === "openai" ? "openai_tts" : "cloudflare_tts",
+    source: "cloudflare_tts",
   } satisfies AudioSynthesisResult;
 }
 

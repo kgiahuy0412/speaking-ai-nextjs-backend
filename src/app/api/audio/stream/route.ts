@@ -86,7 +86,7 @@ export async function GET(request: Request) {
   }
 
   let upstream: Response;
-  let audioSource: "openai_tts" | "cloudflare_tts";
+  let audioSource: "cloudflare_tts";
   let speechProfile = profile;
   const upstreamStartedAt = performance.now();
 
