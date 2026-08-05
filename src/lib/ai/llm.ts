@@ -188,13 +188,16 @@ export async function generateEnglishSentence(
   clientId?: string,
   requestId?: string,
   deferCacheWrite = false,
+  skipFastLookup = false,
 ): Promise<EnglishGenerationResult> {
-  const fastSentence = await resolveFastEnglishSentence(
-    vietnameseText,
-    context,
-    childAge,
-    clientId,
-  );
+  const fastSentence = skipFastLookup
+    ? null
+    : await resolveFastEnglishSentence(
+        vietnameseText,
+        context,
+        childAge,
+        clientId,
+      );
 
   if (
     fastSentence &&

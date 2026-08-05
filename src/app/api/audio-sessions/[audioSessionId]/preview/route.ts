@@ -3,7 +3,10 @@ import {
   reserveBatchPrefetchAttempt,
   saveBatchPrefetchCandidate,
 } from "@/lib/ai/batchPrefetch";
-import { resolveFastEnglishSentence } from "@/lib/ai/llm";
+import {
+  generateEnglishSentence,
+  resolveFastEnglishSentence,
+} from "@/lib/ai/llm";
 import { prepareEnglishAudio } from "@/lib/ai/tts";
 import { AppError, toErrorResponse } from "@/lib/errors";
 import {
@@ -12,6 +15,7 @@ import {
   withRequestId,
 } from "@/lib/observability";
 import {
+  type AudioAssemblySource,
   AudioUploadError,
   finalizeAudioUploadSession,
   type Pcm16WavMetadata,
@@ -72,11 +76,17 @@ export async function POST(request: Request, context: RouteContext) {
       );
     }
 
+    let assemblySource: AudioAssemblySource | undefined;
     const audio = await finalizeAudioUploadSession(
       audioSessionId,
       "audio/wav",
       body.pcm16Wav,
-      { allowTrailingChunks: true },
+      {
+        allowTrailingChunks: true,
+        onAssemblySource: (source) => {
+          assemblySource = source;
+        },
+      },
     );
     const asrStartedAt = performance.now();
     const sourceText = await transcribeVietnamese({
@@ -99,25 +109,57 @@ export async function POST(request: Request, context: RouteContext) {
       },
     });
     const asrLatencyMs = Math.round(performance.now() - asrStartedAt);
-    const translation = await resolveFastEnglishSentence(
+    const translationStartedAt = performance.now();
+    let translation = await resolveFastEnglishSentence(
       sourceText,
       body.context,
       body.childAge ?? 6,
       body.clientId?.trim() || undefined,
     );
-    if (!translation || !safeFastSources.has(translation.source)) {
+    const speculativeAi = !translation;
+    if (!translation) {
+      // ASR has already produced a usable transcript while the child is still
+      // speaking. Start the same controlled translation used by finalize now,
+      // skipping the fast lookup we just completed.
+      translation = await generateEnglishSentence(
+        sourceText,
+        body.context,
+        body.childAge ?? 6,
+        body.clientId?.trim() || undefined,
+        requestId,
+        true,
+        true,
+      );
+    }
+    const translationLatencyMs = Math.round(
+      performance.now() - translationStartedAt,
+    );
+    const unsafeTranslation =
+      translation.mode === "fallback" ||
+      (!speculativeAi && !safeFastSources.has(translation.source));
+    if (unsafeTranslation) {
       logEvent("info", "audio_session_prefetch_skipped", {
         requestId,
         audioSessionId,
-        reason: translation ? "unsafe_text_source" : "no_fast_match",
-        textSource: translation?.source,
+        reason:
+          translation.mode === "fallback"
+            ? "speculative_translation_fallback"
+            : "unsafe_text_source",
+        textSource: translation.source,
+        speculativeAi,
         asrLatencyMs,
+        translationLatencyMs,
+        assemblySource,
       });
       return withRequestId(
         Response.json({
           eligible: false,
-          reason: translation ? "unsafe_text_source" : "no_fast_match",
+          reason:
+            translation.mode === "fallback"
+              ? "speculative_translation_fallback"
+              : "unsafe_text_source",
           asrLatencyMs,
+          translationLatencyMs,
         }),
         requestId,
       );
@@ -161,7 +203,10 @@ export async function POST(request: Request, context: RouteContext) {
       stabilityCount: candidate.stabilityCount,
       textSource: candidate.translation.source,
       audioSource: candidate.audioSource,
+      speculativeAi,
+      assemblySource,
       asrLatencyMs,
+      translationLatencyMs,
       previewLatencyMs,
     });
     return withRequestId(
@@ -176,6 +221,7 @@ export async function POST(request: Request, context: RouteContext) {
         audioSource: candidate.audioSource,
         snapshotChunkCount: candidate.snapshot.chunkCount,
         asrLatencyMs,
+        translationLatencyMs,
         previewLatencyMs,
       }),
       requestId,

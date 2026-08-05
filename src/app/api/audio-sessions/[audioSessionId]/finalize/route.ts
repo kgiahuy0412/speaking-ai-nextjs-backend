@@ -10,6 +10,7 @@ import { runConversationPipeline } from "@/lib/ai/pipeline";
 import { scheduleConversationPostResponseTasks } from "@/lib/ai/postResponseTasks";
 import { AppError, toErrorResponse } from "@/lib/errors";
 import {
+  type AudioAssemblySource,
   AudioUploadError,
   claimAudioSessionFinalize,
   completeAudioSessionFinalize,
@@ -186,6 +187,7 @@ export async function POST(request: Request, context: RouteContext) {
         ? "browser_streaming"
         : "batch_chunks";
     let audioFile: File | undefined;
+    let assemblySource: AudioAssemblySource | undefined;
     let prefetchedSourceText: string | undefined;
     let prefetchTail:
       | Awaited<ReturnType<typeof validateAudioSessionPrefetchTail>>
@@ -194,8 +196,10 @@ export async function POST(request: Request, context: RouteContext) {
       body.prefetchId?.trim(),
       audioSessionId,
     );
-    const requiredPrefetchStability =
-      prefetchCandidate?.translation.source === "phrase_rule" ? 1 : 2;
+    // Exact chunk/byte matching plus the final-tail silence check below is the
+    // authoritative guard. Requiring a second preview made short Safari turns
+    // miss prefetch even when the first snapshot already covered the final PCM.
+    const requiredPrefetchStability = 1;
     if (
       asrMode === "batch_chunks" &&
       prefetchCandidate &&
@@ -217,6 +221,7 @@ export async function POST(request: Request, context: RouteContext) {
       if (prefetchTail.eligible) {
         prefetchedSourceText = prefetchCandidate.sourceText;
       }
+      assemblySource = prefetchTail.assemblySource;
       logEvent("info", "audio_session_prefetch_validated", {
         requestId,
         audioSessionId,
@@ -228,6 +233,7 @@ export async function POST(request: Request, context: RouteContext) {
         prefetchValidationMs,
         tailDurationMs: prefetchTail.tailDurationMs,
         tailRms: prefetchTail.tailRms,
+        assemblySource: prefetchTail.assemblySource,
       });
     }
 
@@ -240,6 +246,11 @@ export async function POST(request: Request, context: RouteContext) {
         audioSessionId,
         body.mimeType,
         body.pcm16Wav,
+        {
+          onAssemblySource: (source) => {
+            assemblySource = source;
+          },
+        },
       );
       assembleMs = Math.round(performance.now() - assembleStartedAt);
     }
@@ -397,6 +408,7 @@ export async function POST(request: Request, context: RouteContext) {
         assembleMs,
         pipelineMs,
         prefetchValidationMs,
+        assemblySource,
         batchPrefetchUsed: Boolean(prefetchedSourceText),
         totalMs: responseReadyMs,
       },

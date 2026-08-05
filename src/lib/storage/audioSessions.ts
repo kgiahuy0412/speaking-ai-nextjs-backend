@@ -20,6 +20,13 @@ import {
   putAudioSessionChunkObject,
   readAudioSessionChunkObject,
 } from "@/lib/storage/audioSessionR2";
+import {
+  deleteHotAudioSession,
+  pruneHotAudioSessions,
+  readHotAudioPrefix,
+  readHotAudioTail,
+  rememberHotAudioChunk,
+} from "@/lib/storage/audioSessionHotCache";
 
 const sessionIdPattern = /^audio_[a-z0-9-]+$/;
 const metadataFileName = "session.json";
@@ -131,7 +138,10 @@ export type AudioSessionPrefetchTailResult = {
   extraChunkCount: number;
   tailDurationMs: number;
   tailRms: number;
+  assemblySource?: AudioAssemblySource;
 };
+
+export type AudioAssemblySource = "memory" | "postgres" | "r2" | "local";
 
 export class AudioUploadError extends Error {
   constructor(
@@ -377,6 +387,7 @@ function assertSessionActive(
 
 export async function cleanupExpiredAudioSessions(force = false) {
   const now = Date.now();
+  pruneHotAudioSessions(now);
   const lastCleanup =
     audioSessionGlobal.__aiSpeakingAudioSessionLastCleanupAt ?? 0;
 
@@ -418,7 +429,11 @@ export async function cleanupExpiredAudioSessions(force = false) {
         .filter((row) => row.storage_backend === "r2")
         .map((row) => row.object_key ?? ""),
     );
-    return new Set(rows.map((row) => row.session_id)).size;
+    const deletedSessionIds = new Set(rows.map((row) => row.session_id));
+    for (const sessionId of deletedSessionIds) {
+      deleteHotAudioSession(sessionId);
+    }
+    return deletedSessionIds.size;
   }
 
   const root = getSessionsRoot();
@@ -606,6 +621,13 @@ export async function saveAudioSessionChunk(
       });
 
       if (session.inserted) {
+        rememberHotAudioChunk({
+          sessionId,
+          sequence,
+          sha256,
+          bytes: buffer,
+          expiresAt: new Date(session.expires_at).getTime(),
+        });
         return {
           duplicate: false,
           sha256,
@@ -615,6 +637,13 @@ export async function saveAudioSessionChunk(
       }
 
       if (session.existing_sha256 === sha256) {
+        rememberHotAudioChunk({
+          sessionId,
+          sequence,
+          sha256,
+          bytes: buffer,
+          expiresAt: new Date(session.expires_at).getTime(),
+        });
         return {
           duplicate: true,
           sha256,
@@ -781,7 +810,10 @@ export async function finalizeAudioUploadSession(
   sessionId: string,
   mimeType = "audio/webm",
   pcm16Wav?: Pcm16WavMetadata,
-  options: { allowTrailingChunks?: boolean } = {},
+  options: {
+    allowTrailingChunks?: boolean;
+    onAssemblySource?: (source: AudioAssemblySource) => void;
+  } = {},
 ) {
   validateSessionId(sessionId);
   const filename = getAudioFilename(mimeType);
@@ -800,8 +832,20 @@ export async function finalizeAudioUploadSession(
     ? pcmMetadata?.chunkCount
     : undefined;
   let buffers: Buffer[];
+  const hotPcm =
+    isPostgresStorageEnabled() && pcmMetadata?.chunkCount !== undefined
+      ? readHotAudioPrefix({
+          sessionId,
+          chunkCount: pcmMetadata.chunkCount,
+          pcmByteLength: pcmMetadata.pcmByteLength,
+          allowTrailingChunks: options.allowTrailingChunks,
+        })
+      : null;
 
-  if (isPostgresStorageEnabled()) {
+  if (hotPcm) {
+    buffers = [hotPcm];
+    options.onAssemblySource?.("memory");
+  } else if (isPostgresStorageEnabled()) {
     const rows = await queryDatabase<{
       status: UploadStatus;
       expires_at: string | Date;
@@ -838,6 +882,7 @@ export async function finalizeAudioUploadSession(
         410,
       );
     }
+    options.onAssemblySource?.(session.chunk_storage_backend);
     const allChunkRows = rows.filter(
       (row): row is typeof row & { sequence: number } =>
         row.sequence !== null,
@@ -877,6 +922,7 @@ export async function finalizeAudioUploadSession(
       }),
     );
   } else {
+    options.onAssemblySource?.("local");
     const metadata = await readLocalMetadata(sessionId);
 
     if (Date.parse(metadata.expiresAt) <= Date.now()) {
@@ -995,7 +1041,24 @@ export async function validateAudioSessionPrefetchTail(
   let sessionChunkCount = 0;
   let sessionTotalBytes = 0;
   let tailBuffers: Buffer[] = [];
-  if (isPostgresStorageEnabled()) {
+  let extraChunkCount = 0;
+  let assemblySource: AudioAssemblySource | undefined;
+  const hotTail = isPostgresStorageEnabled()
+    ? readHotAudioTail({
+        sessionId,
+        snapshotChunkCount: snapshot.chunkCount,
+        snapshotPcmByteLength: snapshot.pcmByteLength,
+        finalChunkCount: finalMetadata.chunkCount,
+        finalPcmByteLength: finalMetadata.pcmByteLength,
+      })
+    : null;
+  if (hotTail) {
+    sessionChunkCount = finalMetadata.chunkCount;
+    sessionTotalBytes = finalMetadata.pcmByteLength;
+    tailBuffers = [hotTail.tail];
+    extraChunkCount = hotTail.extraChunkCount;
+    assemblySource = "memory";
+  } else if (isPostgresStorageEnabled()) {
     const rows = await queryDatabase<{
       status: UploadStatus;
       expires_at: string | Date;
@@ -1031,6 +1094,7 @@ export async function validateAudioSessionPrefetchTail(
     }
     sessionChunkCount = session.chunk_count;
     sessionTotalBytes = Number(session.total_bytes);
+    assemblySource = session.chunk_storage_backend;
     const chunks = rows.filter(
       (row): row is typeof row & { sequence: number } => row.sequence !== null,
     );
@@ -1050,6 +1114,7 @@ export async function validateAudioSessionPrefetchTail(
         tailRms: 0,
       };
     }
+    extraChunkCount = chunks.length;
     tailBuffers = await Promise.all(
       chunks.map(async (row) => {
         const backend = row.storage_backend ?? session.chunk_storage_backend;
@@ -1062,9 +1127,11 @@ export async function validateAudioSessionPrefetchTail(
       }),
     );
   } else {
+    assemblySource = "local";
     const metadata = await readLocalMetadata(sessionId);
     sessionChunkCount = metadata.chunkCount;
     sessionTotalBytes = metadata.totalBytes;
+    extraChunkCount = finalMetadata.chunkCount - snapshot.chunkCount;
     tailBuffers = await Promise.all(
       Array.from(
         { length: finalMetadata.chunkCount - snapshot.chunkCount },
@@ -1089,6 +1156,7 @@ export async function validateAudioSessionPrefetchTail(
       extraChunkCount: Math.max(0, sessionChunkCount - snapshot.chunkCount),
       tailDurationMs: 0,
       tailRms: 0,
+      assemblySource,
     };
   }
   const tail = Buffer.concat(tailBuffers);
@@ -1098,9 +1166,10 @@ export async function validateAudioSessionPrefetchTail(
     return {
       eligible: false,
       reason: "session_mismatch",
-      extraChunkCount: tailBuffers.length,
+      extraChunkCount,
       tailDurationMs: 0,
       tailRms: 0,
+      assemblySource,
     };
   }
   const bytesPerSecond =
@@ -1110,9 +1179,10 @@ export async function validateAudioSessionPrefetchTail(
     return {
       eligible: false,
       reason: "tail_too_long",
-      extraChunkCount: tailBuffers.length,
+      extraChunkCount,
       tailDurationMs,
       tailRms: 0,
+      assemblySource,
     };
   }
   if (tail.byteLength === 0) {
@@ -1122,15 +1192,17 @@ export async function validateAudioSessionPrefetchTail(
       extraChunkCount: 0,
       tailDurationMs: 0,
       tailRms: 0,
+      assemblySource,
     };
   }
   const analysis = analyzePcm16Silence(tail, noiseRms);
   return {
     eligible: analysis.silent,
     reason: analysis.silent ? "tail_silent" : "tail_contains_speech",
-    extraChunkCount: tailBuffers.length,
+    extraChunkCount,
     tailDurationMs,
     tailRms: analysis.rms,
+    assemblySource,
   };
 }
 
@@ -1321,6 +1393,7 @@ export async function completeAudioSessionFinalize(
         409,
       );
     }
+    deleteHotAudioSession(sessionId);
     await deleteAudioSessionChunkObjects(
       completion.deleted_chunks
         .filter((chunk) => chunk.storageBackend === "r2")
@@ -1434,6 +1507,7 @@ export async function discardAudioUploadSession(sessionId: string) {
         .filter((chunk) => chunk.storageBackend === "r2")
         .map((chunk) => chunk.objectKey ?? ""),
     );
+    deleteHotAudioSession(sessionId);
     return;
   }
 
