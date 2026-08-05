@@ -16,7 +16,7 @@ import {
   type AudioSynthesisResult,
 } from "./tts";
 
-type ConversationPipelineOptions = {
+export type ConversationPipelineOptions = {
   deferTextCacheWrite?: boolean;
   prefetchedTranscript?: {
     sourceText: string;
@@ -24,19 +24,39 @@ type ConversationPipelineOptions = {
   };
   prefetchedTranslation?: EnglishGenerationResult;
   prefetchedAudio?: AudioSynthesisResult;
+  /**
+   * Return a signed streaming URL on every cache miss. Terminal Web previews
+   * use this so Safari can start the provider stream while finalize reuses the
+   * exact prepared pipeline instead of waiting for durable cache storage.
+   */
+  streamAudioOnCacheMiss?: boolean;
+};
+
+export type PreparedConversationPipeline = {
+  asr: {
+    value: string;
+    latencyMs: number;
+  };
+  llm: {
+    value: EnglishGenerationResult;
+    latencyMs: number;
+  };
+  tts: {
+    value: AudioSynthesisResult;
+    latencyMs: number;
+  };
+  preparationMs: number;
 };
 
 function createId(prefix: string) {
   return `${prefix}_${crypto.randomUUID().slice(0, 8)}`;
 }
 
-export async function runConversationPipeline(
+export async function prepareConversationPipeline(
   input: ConversationRequest,
   options: ConversationPipelineOptions = {},
-): Promise<ConversationResponse> {
+): Promise<PreparedConversationPipeline> {
   const startedAt = nowMs();
-  const conversationId = createId("conv");
-
   const asr = options.prefetchedTranscript
     ? {
         value: options.prefetchedTranscript.sourceText,
@@ -60,7 +80,8 @@ export async function runConversationPipeline(
   // it in `after()` independently from Safari playback. Reviewed rules and
   // known text-cache entries still resolve to durable audio before returning.
   const usesFastStreamingTts =
-    !options.prefetchedAudio && llm.value.source === "cloudflare";
+    !options.prefetchedAudio &&
+    (options.streamAudioOnCacheMiss || llm.value.source === "cloudflare");
   const tts = options.prefetchedAudio
     ? { value: options.prefetchedAudio, latencyMs: 0 }
     : await measureStep<AudioSynthesisResult>(() =>
@@ -68,6 +89,21 @@ export async function runConversationPipeline(
           ? prepareEnglishAudio(llm.value.englishText)
           : synthesizeEnglishAudio(llm.value.englishText),
       );
+
+  return {
+    asr,
+    llm,
+    tts,
+    preparationMs: Math.round(nowMs() - startedAt),
+  };
+}
+
+export function completePreparedConversationPipeline(
+  input: ConversationRequest,
+  prepared: PreparedConversationPipeline,
+): ConversationResponse {
+  const conversationId = createId("conv");
+  const { asr, llm, tts } = prepared;
 
   const result = {
     requestId: input.requestId,
@@ -93,7 +129,7 @@ export async function runConversationPipeline(
       asrMs: asr.latencyMs,
       llmMs: llm.latencyMs,
       ttsMs: tts.latencyMs,
-      timeToFirstAudioMs: Math.round(nowMs() - startedAt),
+      timeToFirstAudioMs: prepared.preparationMs,
     },
   } satisfies ConversationResponse;
 
@@ -118,4 +154,12 @@ export async function runConversationPipeline(
   });
 
   return result;
+}
+
+export async function runConversationPipeline(
+  input: ConversationRequest,
+  options: ConversationPipelineOptions = {},
+): Promise<ConversationResponse> {
+  const prepared = await prepareConversationPipeline(input, options);
+  return completePreparedConversationPipeline(input, prepared);
 }

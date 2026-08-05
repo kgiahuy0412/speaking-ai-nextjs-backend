@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { after } from "next/server";
 import { transcribeVietnamese } from "@/lib/ai/asr";
 import { transcribeAudioSessionOnce } from "@/lib/ai/audioSessionAsr";
+import { prepareAudioSessionPipelineOnce } from "@/lib/ai/audioSessionPipeline";
 import {
   type BatchPrefetchCandidate,
   getBatchPrefetchCandidate,
@@ -10,7 +11,10 @@ import {
   waitForNextBatchPrefetchCandidate,
 } from "@/lib/ai/batchPrefetch";
 import { normalizeVietnameseForExactMatch } from "@/lib/ai/exactRules";
-import { runConversationPipeline } from "@/lib/ai/pipeline";
+import {
+  completePreparedConversationPipeline,
+  runConversationPipeline,
+} from "@/lib/ai/pipeline";
 import { scheduleConversationPostResponseTasks } from "@/lib/ai/postResponseTasks";
 import { AppError, toErrorResponse } from "@/lib/errors";
 import {
@@ -226,8 +230,10 @@ export async function POST(request: Request, context: RouteContext) {
     let hedgedAsrWaitMs: number | undefined;
     let hedgedAsrSharedFlightJoined: boolean | undefined;
     let hedgedAsrUsed = false;
-    let supersededPipelinePromise:
-      | ReturnType<typeof runConversationPipeline>
+    let preparedPipelineSharedFlightJoined: boolean | undefined;
+    let supersededPipelinePromise: Promise<unknown> | undefined;
+    let preparedPipelinePromise:
+      | ReturnType<typeof prepareAudioSessionPipelineOnce>
       | undefined;
     let hedgedAsrPromise:
       | Promise<
@@ -300,6 +306,25 @@ export async function POST(request: Request, context: RouteContext) {
           joined: false,
         }),
       );
+      preparedPipelinePromise = prepareAudioSessionPipelineOnce({
+        audioSessionId,
+        snapshot: body.pcm16Wav,
+        request: {
+          requestId,
+          clientId: body.clientId?.trim() || undefined,
+          context: practiceContext,
+          childAge: body.childAge ?? 6,
+          targetLanguage: "en",
+          sessionId: body.sessionId,
+          audioFile,
+          asrMode: "batch_chunks",
+          benchmark: { ...body.benchmark },
+        },
+      });
+      // A validated older prefetch may win first. Keep a rejection observer on
+      // the exact-snapshot preparation until it is either used or awaited in
+      // the post-response task.
+      void preparedPipelinePromise.catch(() => undefined);
     }
 
     const requiredPrefetchStability = 1;
@@ -514,15 +539,22 @@ export async function POST(request: Request, context: RouteContext) {
     const pipelineStartedAt = performance.now();
     let result: ConversationResponse;
     if (prefetchedSourceText && prefetchCandidate) {
+      supersededPipelinePromise = preparedPipelinePromise;
       result = await runPrefetchedPipeline();
     } else {
-      const authoritativePipelinePromise = runConversationPipeline(
-        pipelineInput(false),
-        {
-          deferTextCacheWrite: true,
-          prefetchedTranscript: hedgedTranscript,
-        },
-      );
+      const authoritativePipelinePromise = preparedPipelinePromise
+        ? preparedPipelinePromise.then((prepared) => {
+            preparedPipelineSharedFlightJoined =
+              prepared.pipelineSharedFlightJoined;
+            return completePreparedConversationPipeline(
+              pipelineInput(false),
+              prepared.pipeline,
+            );
+          })
+        : runConversationPipeline(pipelineInput(false), {
+            deferTextCacheWrite: true,
+            prefetchedTranscript: hedgedTranscript,
+          });
       if (candidateMonitorPromise) {
         const processingWinner = await Promise.race([
           authoritativePipelinePromise.then((pipelineResult) => ({
@@ -677,6 +709,7 @@ export async function POST(request: Request, context: RouteContext) {
         hedgedAsrWaitMs,
         hedgedAsrSharedFlightJoined,
         hedgedAsrUsed,
+        preparedPipelineSharedFlightJoined,
         assemblySource,
         batchPrefetchUsed,
         totalMs: responseReadyMs,

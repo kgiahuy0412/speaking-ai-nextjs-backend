@@ -8,6 +8,9 @@ let testRoot = "";
 let originalWorkingDirectory = "";
 let claimEnglishAudioCacheFill:
   typeof import("./tts").claimEnglishAudioCacheFill;
+let startEnglishAudioStream: typeof import("./tts").startEnglishAudioStream;
+let subscribeEnglishAudioStream:
+  typeof import("./tts").subscribeEnglishAudioStream;
 let readGeneratedAudioFile:
   typeof import("../storage/audio").readGeneratedAudioFile;
 
@@ -19,7 +22,11 @@ before(async () => {
   process.env.PERSISTENCE_BACKEND = "local";
   process.env.CLOUDFLARE_ACCOUNT_ID = "test-account";
   process.env.CLOUDFLARE_WORKERS_AI_API_TOKEN = "test-token";
-  ({ claimEnglishAudioCacheFill } = await import("./tts"));
+  ({
+    claimEnglishAudioCacheFill,
+    startEnglishAudioStream,
+    subscribeEnglishAudioStream,
+  } = await import("./tts"));
   ({ readGeneratedAudioFile } = await import("../storage/audio"));
 });
 
@@ -99,4 +106,38 @@ test("equivalent whitespace joins one TTS cache fill", async () => {
     joined.completion,
   ]);
   assert.equal(ownerResult.audioUrl, joinedResult.audioUrl);
+});
+
+test("a listener joining during cache fill reuses the active provider stream", async () => {
+  const text = "Reuse this active audio stream.";
+  const owner = claimEnglishAudioCacheFill(text);
+  assert.equal(owner.owner, true);
+  assert.ok(owner.owner);
+
+  const speech = {
+    response: new Response(Buffer.from("shared streaming mp3 bytes"), {
+      headers: { "content-type": "audio/mpeg" },
+    }),
+    source: "cloudflare_tts" as const,
+    profile: {
+      provider: "cloudflare" as const,
+      model: "test-tts-model",
+      voice: "test-voice",
+      speed: 1,
+      extension: "mp3",
+    },
+  };
+  const completion = owner.cacheResponse(speech, true);
+  const firstResponse = startEnglishAudioStream(text, speech);
+  const joinedResponse = subscribeEnglishAudioStream(text);
+
+  assert.ok(joinedResponse);
+  const [firstAudio, joinedAudio] = await Promise.all([
+    firstResponse.arrayBuffer(),
+    joinedResponse.arrayBuffer(),
+  ]);
+  assert.equal(Buffer.from(firstAudio).toString(), "shared streaming mp3 bytes");
+  assert.equal(Buffer.from(joinedAudio).toString(), "shared streaming mp3 bytes");
+  assert.equal(joinedResponse.headers.get("X-Audio-Stream-Reused"), "1");
+  await completion;
 });

@@ -25,6 +25,7 @@ const ttsGlobal = globalThis as typeof globalThis & {
     string,
     { normalizedText: string; expiresAt: number }
   >;
+  __aiSpeakingActiveAudioStreams?: Map<string, ActiveEnglishAudioStream>;
 };
 const inFlightSynthesis =
   ttsGlobal.__aiSpeakingInFlightSynthesis ??=
@@ -32,6 +33,14 @@ const inFlightSynthesis =
 const audioMissTokens =
   ttsGlobal.__aiSpeakingAudioMissTokens ??=
     new Map<string, { normalizedText: string; expiresAt: number }>();
+const activeAudioStreams =
+  ttsGlobal.__aiSpeakingActiveAudioStreams ??=
+    new Map<string, ActiveEnglishAudioStream>();
+
+type ActiveEnglishAudioStream = {
+  expiresAt: number;
+  subscribe: (reused?: boolean) => Response;
+};
 
 export function getTtsProfile() {
   return getConfiguredTtsProfile();
@@ -53,6 +62,121 @@ function getAudioDescriptor(englishText: string, profile = getTtsProfile()) {
 
 function getSynthesisKey(englishText: string) {
   return JSON.stringify(getAudioDescriptor(englishText));
+}
+
+function pruneActiveAudioStreams(now = Date.now()) {
+  for (const [key, stream] of activeAudioStreams) {
+    if (stream.expiresAt <= now) activeAudioStreams.delete(key);
+  }
+  while (activeAudioStreams.size > 128) {
+    const oldestKey = activeAudioStreams.keys().next().value;
+    if (oldestKey === undefined) break;
+    activeAudioStreams.delete(oldestKey);
+  }
+}
+
+/**
+ * Fans one provider response out to the currently preloading Safari element
+ * and any duplicate listener that arrives while durable cache storage is in
+ * progress. Buffered chunks are replayed to late subscribers, so nobody waits
+ * for cache completion and then performs an extra redirect/request.
+ */
+export function startEnglishAudioStream(
+  englishText: string,
+  speech: EnglishSpeechResult,
+  options: { onFirstChunk?: () => void } = {},
+) {
+  pruneActiveAudioStreams();
+  const key = getSynthesisKey(englishText);
+  const existing = activeAudioStreams.get(key);
+  if (existing) return existing.subscribe(true);
+
+  const body = speech.response.body;
+  if (!body) {
+    throw new Error("TTS provider returned an empty audio stream.");
+  }
+
+  const bufferedChunks: Uint8Array[] = [];
+  const subscribers = new Set<ReadableStreamDefaultController<Uint8Array>>();
+  let completed = false;
+  let streamError: unknown;
+  let firstChunkSeen = false;
+  const contentType =
+    speech.response.headers.get("content-type") ?? "audio/mpeg";
+  const active: ActiveEnglishAudioStream = {
+    expiresAt: Date.now() + 15_000,
+    subscribe: (reused = false) => {
+      let subscriber:
+        | ReadableStreamDefaultController<Uint8Array>
+        | undefined;
+      const stream = new ReadableStream<Uint8Array>({
+        start(controller) {
+          subscriber = controller;
+          for (const chunk of bufferedChunks) controller.enqueue(chunk);
+          if (streamError !== undefined) {
+            controller.error(streamError);
+          } else if (completed) {
+            controller.close();
+          } else {
+            subscribers.add(controller);
+          }
+        },
+        cancel() {
+          if (subscriber) subscribers.delete(subscriber);
+        },
+      });
+      return new Response(stream, {
+        headers: {
+          "Content-Type": contentType,
+          "Cache-Control": "no-store",
+          "X-Audio-Source": speech.source,
+          "X-Audio-Stream-Reused": reused ? "1" : "0",
+        },
+      });
+    },
+  };
+  activeAudioStreams.set(key, active);
+
+  const reader = body.getReader();
+  void (async () => {
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = value.slice();
+        bufferedChunks.push(chunk);
+        if (!firstChunkSeen) {
+          firstChunkSeen = true;
+          options.onFirstChunk?.();
+        }
+        for (const controller of subscribers) {
+          try {
+            controller.enqueue(chunk);
+          } catch {
+            subscribers.delete(controller);
+          }
+        }
+      }
+      completed = true;
+      active.expiresAt = Date.now() + 15_000;
+      for (const controller of subscribers) controller.close();
+      subscribers.clear();
+    } catch (error) {
+      streamError = error;
+      active.expiresAt = Date.now() + 1_000;
+      for (const controller of subscribers) controller.error(error);
+      subscribers.clear();
+    }
+  })();
+
+  return active.subscribe();
+}
+
+export function subscribeEnglishAudioStream(englishText: string) {
+  pruneActiveAudioStreams();
+  return (
+    activeAudioStreams.get(getSynthesisKey(englishText))?.subscribe(true) ?? null
+  );
 }
 
 export async function getEnglishAudioCacheUrl(

@@ -1,15 +1,9 @@
-import { transcribeVietnamese } from "@/lib/ai/asr";
-import { transcribeAudioSessionOnce } from "@/lib/ai/audioSessionAsr";
+import { prepareAudioSessionPipelineOnce } from "@/lib/ai/audioSessionPipeline";
 import {
   beginBatchPrefetchOperation,
   reserveBatchPrefetchAttempt,
   saveBatchPrefetchCandidate,
 } from "@/lib/ai/batchPrefetch";
-import {
-  generateEnglishSentence,
-  resolveFastEnglishSentence,
-} from "@/lib/ai/llm";
-import { prepareEnglishAudio } from "@/lib/ai/tts";
 import { AppError, toErrorResponse } from "@/lib/errors";
 import {
   getRequestId,
@@ -96,57 +90,36 @@ export async function POST(request: Request, context: RouteContext) {
         },
       },
     );
-    const sharedAsr = await transcribeAudioSessionOnce({
+    const utteranceDurationMs = Math.round(
+      (body.pcm16Wav.pcmByteLength /
+        (body.pcm16Wav.sampleRate *
+          body.pcm16Wav.channelCount *
+          (body.pcm16Wav.bitsPerSample / 8))) *
+        1_000,
+    );
+    const prepared = await prepareAudioSessionPipelineOnce({
       audioSessionId,
       snapshot: body.pcm16Wav,
-      transcribe: () =>
-        transcribeVietnamese({
-          requestId,
-          clientId: body.clientId?.trim() || undefined,
-          context: body.context!,
-          childAge: body.childAge ?? 6,
-          targetLanguage: "en",
-          audioFile: audio,
-          asrMode: "batch_chunks",
-          benchmark: {
-            utteranceDurationMs: Math.round(
-              (body.pcm16Wav!.pcmByteLength /
-                (body.pcm16Wav!.sampleRate *
-                  body.pcm16Wav!.channelCount *
-                  (body.pcm16Wav!.bitsPerSample / 8))) *
-                1_000,
-            ),
-            clientVadApplied: false,
-          },
-        }),
-    });
-    const sourceText = sharedAsr.sourceText;
-    const asrLatencyMs = sharedAsr.asrLatencyMs;
-    const translationStartedAt = performance.now();
-    let translation = await resolveFastEnglishSentence(
-      sourceText,
-      body.context,
-      body.childAge ?? 6,
-      body.clientId?.trim() || undefined,
-    );
-    const speculativeAi = !translation;
-    if (!translation) {
-      // ASR has already produced a usable transcript while the child is still
-      // speaking. Start the same controlled translation used by finalize now,
-      // skipping the fast lookup we just completed.
-      translation = await generateEnglishSentence(
-        sourceText,
-        body.context,
-        body.childAge ?? 6,
-        body.clientId?.trim() || undefined,
+      request: {
         requestId,
-        true,
-        true,
-      );
-    }
-    const translationLatencyMs = Math.round(
-      performance.now() - translationStartedAt,
-    );
+        clientId: body.clientId?.trim() || undefined,
+        context: body.context,
+        childAge: body.childAge ?? 6,
+        targetLanguage: "en",
+        audioFile: audio,
+        asrMode: "batch_chunks",
+        benchmark: {
+          utteranceDurationMs,
+          clientVadApplied: body.terminal === true,
+        },
+      },
+    });
+    const sourceText = prepared.pipeline.asr.value;
+    const asrLatencyMs = prepared.pipeline.asr.latencyMs;
+    const translation = prepared.pipeline.llm.value;
+    const translationLatencyMs = prepared.pipeline.llm.latencyMs;
+    const speculativeAi =
+      translation.source === "cloudflare" || translation.source === "openai";
     const unsafeTranslation =
       translation.mode === "fallback" ||
       (!speculativeAi && !safeFastSources.has(translation.source));
@@ -178,10 +151,9 @@ export async function POST(request: Request, context: RouteContext) {
       );
     }
 
-    // Return a cached URL or a signed streaming miss URL immediately. Safari
-    // preloads this URL while recording is still active, so an uncached TTS
-    // request runs speculatively instead of blocking this preview response.
-    const audioResult = await prepareEnglishAudio(translation.englishText);
+    // This is the exact audio result retained by the full snapshot pipeline.
+    // Finalize joins it and returns the same URL, so Safari keeps one source.
+    const audioResult = prepared.pipeline.tts.value;
     if (
       audioResult.source !== "cache" &&
       audioResult.source !== "cloudflare_tts"
@@ -222,8 +194,10 @@ export async function POST(request: Request, context: RouteContext) {
       speculativeAi,
       assemblySource,
       asrLatencyMs,
-      asrSharedFlightJoined: sharedAsr.joined,
-      asrWaitLatencyMs: sharedAsr.waitLatencyMs,
+      asrSharedFlightJoined: prepared.asrSharedFlightJoined,
+      asrWaitLatencyMs: prepared.asrWaitLatencyMs,
+      pipelineSharedFlightJoined: prepared.pipelineSharedFlightJoined,
+      sharedPipelinePreparationMs: prepared.pipeline.preparationMs,
       translationLatencyMs,
       previewLatencyMs,
     });
