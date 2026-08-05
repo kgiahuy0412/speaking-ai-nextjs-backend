@@ -194,10 +194,12 @@ export async function POST(request: Request, context: RouteContext) {
       body.prefetchId?.trim(),
       audioSessionId,
     );
+    const requiredPrefetchStability =
+      prefetchCandidate?.translation.source === "phrase_rule" ? 1 : 2;
     if (
       asrMode === "batch_chunks" &&
       prefetchCandidate &&
-      prefetchCandidate.stabilityCount >= 2 &&
+      prefetchCandidate.stabilityCount >= requiredPrefetchStability &&
       prefetchCandidate.context === body.context &&
       prefetchCandidate.childAge === (body.childAge ?? 6) &&
       body.pcm16Wav?.chunkCount !== undefined
@@ -221,6 +223,7 @@ export async function POST(request: Request, context: RouteContext) {
         eligible: prefetchTail.eligible,
         reason: prefetchTail.reason,
         stabilityCount: prefetchCandidate.stabilityCount,
+        requiredStability: requiredPrefetchStability,
         prefetchAgeMs: Date.now() - prefetchCandidate.createdAt,
         prefetchValidationMs,
         tailDurationMs: prefetchTail.tailDurationMs,
@@ -267,7 +270,18 @@ export async function POST(request: Request, context: RouteContext) {
           batchPrefetchAsrMs: prefetchCandidate?.asrLatencyMs,
         },
       },
-      { deferTextCacheWrite: true },
+      {
+        deferTextCacheWrite: true,
+        ...(prefetchedSourceText && prefetchCandidate
+          ? {
+              prefetchedTranslation: prefetchCandidate.translation,
+              prefetchedAudio: {
+                audioUrl: prefetchCandidate.audioUrl,
+                source: prefetchCandidate.audioSource,
+              },
+            }
+          : {}),
+      },
     );
     pipelineMs = Math.round(performance.now() - pipelineStartedAt);
 

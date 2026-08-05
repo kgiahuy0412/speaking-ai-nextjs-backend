@@ -5,9 +5,21 @@ import type {
 import { measureStep, nowMs } from "@/lib/latency";
 import { logEvent } from "@/lib/observability";
 import { transcribeVietnamese } from "./asr";
-import { generateEnglishSentence } from "./llm";
+import {
+  generateEnglishSentence,
+  type EnglishGenerationResult,
+} from "./llm";
 import { PROMPT_VERSION } from "./prompts";
-import { prepareEnglishAudio } from "./tts";
+import {
+  prepareEnglishAudio,
+  type AudioSynthesisResult,
+} from "./tts";
+
+type ConversationPipelineOptions = {
+  deferTextCacheWrite?: boolean;
+  prefetchedTranslation?: EnglishGenerationResult;
+  prefetchedAudio?: AudioSynthesisResult;
+};
 
 function createId(prefix: string) {
   return `${prefix}_${crypto.randomUUID().slice(0, 8)}`;
@@ -15,25 +27,27 @@ function createId(prefix: string) {
 
 export async function runConversationPipeline(
   input: ConversationRequest,
-  options: { deferTextCacheWrite?: boolean } = {},
+  options: ConversationPipelineOptions = {},
 ): Promise<ConversationResponse> {
   const startedAt = nowMs();
   const conversationId = createId("conv");
 
   const asr = await measureStep(() => transcribeVietnamese(input));
-  const llm = await measureStep(() =>
-    generateEnglishSentence(
-      asr.value,
-      input.context,
-      input.childAge,
-      input.clientId,
-      input.requestId,
-      options.deferTextCacheWrite,
-    ),
-  );
-  const tts = await measureStep(() =>
-    prepareEnglishAudio(llm.value.englishText),
-  );
+  const llm = options.prefetchedTranslation
+    ? { value: options.prefetchedTranslation, latencyMs: 0 }
+    : await measureStep(() =>
+        generateEnglishSentence(
+          asr.value,
+          input.context,
+          input.childAge,
+          input.clientId,
+          input.requestId,
+          options.deferTextCacheWrite,
+        ),
+      );
+  const tts = options.prefetchedAudio
+    ? { value: options.prefetchedAudio, latencyMs: 0 }
+    : await measureStep(() => prepareEnglishAudio(llm.value.englishText));
 
   const result = {
     requestId: input.requestId,

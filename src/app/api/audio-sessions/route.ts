@@ -100,6 +100,7 @@ export async function POST(request: Request) {
           pcm16WavFinalize: true,
           chunkChecksumSha256: true,
           missingChunkRecovery: true,
+          batchPrefetch: true,
           scopedUploadToken: scoped,
           uploadProtocolVersion: scoped ? 2 : 1,
           chunkStorageBackend,

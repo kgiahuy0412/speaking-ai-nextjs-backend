@@ -17,8 +17,8 @@ export type BatchPrefetchCandidate = {
   childAge: number;
   sourceText: string;
   translation: EnglishGenerationResult;
-  audioUrl: string | null;
-  audioSource: "cache" | "cloudflare_tts" | null;
+  audioUrl: string;
+  audioSource: "cache" | "cloudflare_tts";
   snapshot: BatchPrefetchPcmSnapshot;
   stabilityCount: number;
   createdAt: number;
@@ -98,6 +98,9 @@ export function saveBatchPrefetchCandidate(input: Omit<
       previous.audioSessionId === input.audioSessionId &&
       previous.context === input.context &&
       previous.childAge === input.childAge &&
+      previous.snapshot.chunkCount < candidateInput.snapshot.chunkCount &&
+      previous.snapshot.pcmByteLength <
+        candidateInput.snapshot.pcmByteLength &&
       previous.translation.source === candidateInput.translation.source &&
       previous.translation.englishText ===
         candidateInput.translation.englishText &&
