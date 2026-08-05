@@ -1,4 +1,5 @@
 import { transcribeVietnamese } from "@/lib/ai/asr";
+import { transcribeAudioSessionOnce } from "@/lib/ai/audioSessionAsr";
 import {
   beginBatchPrefetchOperation,
   reserveBatchPrefetchAttempt,
@@ -95,27 +96,32 @@ export async function POST(request: Request, context: RouteContext) {
         },
       },
     );
-    const asrStartedAt = performance.now();
-    const sourceText = await transcribeVietnamese({
-      requestId,
-      clientId: body.clientId?.trim() || undefined,
-      context: body.context,
-      childAge: body.childAge ?? 6,
-      targetLanguage: "en",
-      audioFile: audio,
-      asrMode: "batch_chunks",
-      benchmark: {
-        utteranceDurationMs: Math.round(
-          (body.pcm16Wav.pcmByteLength /
-            (body.pcm16Wav.sampleRate *
-              body.pcm16Wav.channelCount *
-              (body.pcm16Wav.bitsPerSample / 8))) *
-            1_000,
-        ),
-        clientVadApplied: false,
-      },
+    const sharedAsr = await transcribeAudioSessionOnce({
+      audioSessionId,
+      snapshot: body.pcm16Wav,
+      transcribe: () =>
+        transcribeVietnamese({
+          requestId,
+          clientId: body.clientId?.trim() || undefined,
+          context: body.context!,
+          childAge: body.childAge ?? 6,
+          targetLanguage: "en",
+          audioFile: audio,
+          asrMode: "batch_chunks",
+          benchmark: {
+            utteranceDurationMs: Math.round(
+              (body.pcm16Wav!.pcmByteLength /
+                (body.pcm16Wav!.sampleRate *
+                  body.pcm16Wav!.channelCount *
+                  (body.pcm16Wav!.bitsPerSample / 8))) *
+                1_000,
+            ),
+            clientVadApplied: false,
+          },
+        }),
     });
-    const asrLatencyMs = Math.round(performance.now() - asrStartedAt);
+    const sourceText = sharedAsr.sourceText;
+    const asrLatencyMs = sharedAsr.asrLatencyMs;
     const translationStartedAt = performance.now();
     let translation = await resolveFastEnglishSentence(
       sourceText,
@@ -216,6 +222,8 @@ export async function POST(request: Request, context: RouteContext) {
       speculativeAi,
       assemblySource,
       asrLatencyMs,
+      asrSharedFlightJoined: sharedAsr.joined,
+      asrWaitLatencyMs: sharedAsr.waitLatencyMs,
       translationLatencyMs,
       previewLatencyMs,
     });

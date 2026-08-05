@@ -1,10 +1,13 @@
 import { createHash } from "node:crypto";
 import { after } from "next/server";
 import { transcribeVietnamese } from "@/lib/ai/asr";
+import { transcribeAudioSessionOnce } from "@/lib/ai/audioSessionAsr";
 import {
+  type BatchPrefetchCandidate,
   getBatchPrefetchCandidate,
+  getLatestBatchPrefetchCandidate,
   removeBatchPrefetchCandidate,
-  waitForBatchPrefetchCandidate,
+  waitForNextBatchPrefetchCandidate,
 } from "@/lib/ai/batchPrefetch";
 import { normalizeVietnameseForExactMatch } from "@/lib/ai/exactRules";
 import { runConversationPipeline } from "@/lib/ai/pipeline";
@@ -28,6 +31,8 @@ import type {
   ApiErrorCode,
   AsrMode,
   BenchmarkMetadata,
+  ConversationRequest,
+  ConversationResponse,
   PracticeContext,
 } from "@/types/conversation";
 import {
@@ -61,14 +66,6 @@ const validContexts = new Set<PracticeContext>([
   "outside",
 ]);
 
-const configuredPrefetchJoinMs = Number.parseInt(
-  process.env.AUDIO_SESSION_PREFETCH_JOIN_MS ?? "",
-  10,
-);
-const prefetchJoinTimeoutMs = Number.isFinite(configuredPrefetchJoinMs)
-  ? Math.max(0, Math.min(2_500, configuredPrefetchJoinMs))
-  : 2_100;
-
 function publicAudioUploadError(error: AudioUploadError) {
   const code: ApiErrorCode =
     error.code === "MISSING_CHUNKS"
@@ -97,6 +94,11 @@ export async function POST(request: Request, context: RouteContext) {
   let assembleMs = 0;
   let pipelineMs = 0;
   let prefetchValidationMs = 0;
+  let cancelCandidateWait: (() => void) | undefined;
+  let candidateMonitorCancelled = false;
+  let activeCandidateMonitorPromise:
+    | Promise<BatchPrefetchCandidate | undefined>
+    | undefined;
 
   try {
     const uploadClaims = authorizeAudioSessionRequest(request, audioSessionId);
@@ -198,6 +200,7 @@ export async function POST(request: Request, context: RouteContext) {
     let audioFile: File | undefined;
     let assemblySource: AudioAssemblySource | undefined;
     let prefetchedSourceText: string | undefined;
+    let batchPrefetchUsed = false;
     let prefetchTail:
       | Awaited<ReturnType<typeof validateAudioSessionPrefetchTail>>
       | undefined;
@@ -211,14 +214,37 @@ export async function POST(request: Request, context: RouteContext) {
       | "joined"
       | undefined = prefetchCandidate ? "explicit" : undefined;
     let prefetchJoinMs = 0;
-    let prefetchJoinState: "latest" | "joined" | "none" | "timeout" =
-      "none";
+    let prefetchJoinState: "latest" | "joined" | "none" = "none";
+    let prefetchRaceWinner:
+      | "prefetch"
+      | "asr"
+      | "late_prefetch"
+      | "pipeline"
+      | "browser_streaming" = "browser_streaming";
+    let prefetchRaceMs = 0;
     let hedgedAsrLatencyMs: number | undefined;
+    let hedgedAsrWaitMs: number | undefined;
+    let hedgedAsrSharedFlightJoined: boolean | undefined;
     let hedgedAsrUsed = false;
+    let supersededPipelinePromise:
+      | ReturnType<typeof runConversationPipeline>
+      | undefined;
     let hedgedAsrPromise:
       | Promise<
-          | { ok: true; sourceText: string; latencyMs: number }
-          | { ok: false; error: unknown; latencyMs: number }
+          | {
+              ok: true;
+              sourceText: string;
+              latencyMs: number;
+              waitLatencyMs: number;
+              joined: boolean;
+            }
+          | {
+              ok: false;
+              error: unknown;
+              latencyMs: number;
+              waitLatencyMs: number;
+              joined: boolean;
+            }
         >
       | undefined;
 
@@ -236,42 +262,61 @@ export async function POST(request: Request, context: RouteContext) {
       );
       assembleMs = Math.round(performance.now() - assembleStartedAt);
 
-      const hedgedAsrStartedAt = performance.now();
-      hedgedAsrPromise = transcribeVietnamese({
-        requestId,
-        clientId: body.clientId?.trim() || undefined,
-        context: practiceContext,
-        childAge: body.childAge ?? 6,
-        targetLanguage: "en",
-        sessionId: body.sessionId,
-        audioFile,
-        asrMode: "batch_chunks",
-        benchmark: { ...body.benchmark },
+      if (!body.pcm16Wav) {
+        throw new AppError(
+          "AUDIO_SESSION_INVALID",
+          "Thiếu metadata PCM khi finalize Batch Chunks.",
+          400,
+        );
+      }
+      hedgedAsrPromise = transcribeAudioSessionOnce({
+        audioSessionId,
+        snapshot: body.pcm16Wav,
+        transcribe: () =>
+          transcribeVietnamese({
+            requestId,
+            clientId: body.clientId?.trim() || undefined,
+            context: practiceContext,
+            childAge: body.childAge ?? 6,
+            targetLanguage: "en",
+            sessionId: body.sessionId,
+            audioFile,
+            asrMode: "batch_chunks",
+            benchmark: { ...body.benchmark },
+          }),
       }).then(
-        (sourceText) => ({
+        (shared) => ({
           ok: true as const,
-          sourceText,
-          latencyMs: Math.round(performance.now() - hedgedAsrStartedAt),
+          sourceText: shared.sourceText,
+          latencyMs: shared.asrLatencyMs,
+          waitLatencyMs: shared.waitLatencyMs,
+          joined: shared.joined,
         }),
         (error: unknown) => ({
           ok: false as const,
           error,
-          latencyMs: Math.round(performance.now() - hedgedAsrStartedAt),
+          latencyMs: 0,
+          waitLatencyMs: 0,
+          joined: false,
         }),
       );
     }
-    // Exact chunk/byte matching plus the final-tail silence check below is the
-    // authoritative guard. Requiring a second preview made short Safari turns
-    // miss prefetch even when the first snapshot already covered the final PCM.
-    const requiredPrefetchStability = 1;
 
-    const validatePrefetchCandidate = async () => {
+    const requiredPrefetchStability = 1;
+    const excludedCandidateIds = new Set<string>();
+
+    const validatePrefetchCandidate = async (
+      candidate: BatchPrefetchCandidate,
+      origin: "explicit" | "latest" | "joined",
+    ) => {
+      prefetchCandidate = candidate;
+      prefetchCandidateOrigin = origin;
+      excludedCandidateIds.add(candidate.id);
       if (
         asrMode !== "batch_chunks" ||
-        !prefetchCandidate ||
-        prefetchCandidate.stabilityCount < requiredPrefetchStability ||
-        prefetchCandidate.context !== body.context ||
-        prefetchCandidate.childAge !== (body.childAge ?? 6) ||
+        candidate.stabilityCount < requiredPrefetchStability ||
+        candidate.context !== body.context ||
+        candidate.childAge !== (body.childAge ?? 6) ||
         body.pcm16Wav?.chunkCount === undefined
       ) {
         return false;
@@ -279,7 +324,7 @@ export async function POST(request: Request, context: RouteContext) {
       const validationStartedAt = performance.now();
       prefetchTail = await validateAudioSessionPrefetchTail(
         audioSessionId,
-        prefetchCandidate.snapshot,
+        candidate.snapshot,
         body.pcm16Wav as Pcm16WavMetadata & { chunkCount: number },
         body.benchmark?.initialNoiseRms,
       );
@@ -287,19 +332,19 @@ export async function POST(request: Request, context: RouteContext) {
         performance.now() - validationStartedAt,
       );
       if (prefetchTail.eligible) {
-        prefetchedSourceText = prefetchCandidate.sourceText;
+        prefetchedSourceText = candidate.sourceText;
       }
       assemblySource = prefetchTail.assemblySource;
       logEvent("info", "audio_session_prefetch_validated", {
         requestId,
         audioSessionId,
-        candidateOrigin: prefetchCandidateOrigin,
-        terminalSnapshot: prefetchCandidate.terminalSnapshot,
+        candidateOrigin: origin,
+        terminalSnapshot: candidate.terminalSnapshot,
         eligible: prefetchTail.eligible,
         reason: prefetchTail.reason,
-        stabilityCount: prefetchCandidate.stabilityCount,
+        stabilityCount: candidate.stabilityCount,
         requiredStability: requiredPrefetchStability,
-        prefetchAgeMs: Date.now() - prefetchCandidate.createdAt,
+        prefetchAgeMs: Date.now() - candidate.createdAt,
         prefetchValidationMs,
         tailDurationMs: prefetchTail.tailDurationMs,
         tailRms: prefetchTail.tailRms,
@@ -313,139 +358,201 @@ export async function POST(request: Request, context: RouteContext) {
     };
 
     if (!prefetchCandidate && asrMode === "batch_chunks") {
-      const latest = await waitForBatchPrefetchCandidate(audioSessionId, 0);
-      prefetchJoinState = latest.state;
-      if (latest.candidate) {
-        prefetchCandidate = latest.candidate;
-        prefetchCandidateOrigin = "latest";
-      }
+      prefetchCandidate = getLatestBatchPrefetchCandidate(audioSessionId);
+      if (prefetchCandidate) prefetchCandidateOrigin = "latest";
     }
-    await validatePrefetchCandidate();
+    if (prefetchCandidate && prefetchCandidateOrigin) {
+      await validatePrefetchCandidate(
+        prefetchCandidate,
+        prefetchCandidateOrigin,
+      );
+    }
 
-    if (
-      !prefetchedSourceText &&
-      asrMode === "batch_chunks" &&
-      body.pcm16Wav?.chunkCount !== undefined
-    ) {
-      const joinDeadline = performance.now() + prefetchJoinTimeoutMs;
-      for (let joinAttempt = 1; joinAttempt <= 2; joinAttempt += 1) {
-        const remainingMs = Math.max(
-          0,
-          Math.round(joinDeadline - performance.now()),
-        );
-        if (remainingMs <= 0 || prefetchedSourceText) break;
-        const joined = await waitForBatchPrefetchCandidate(
+    const waitForValidPrefetchCandidate = async () => {
+      const joinStartedAt = performance.now();
+      while (!prefetchedSourceText && !candidateMonitorCancelled) {
+        const waiter = waitForNextBatchPrefetchCandidate(
           audioSessionId,
-          remainingMs,
-          prefetchCandidate?.id,
+          excludedCandidateIds,
         );
-        prefetchJoinMs += joined.waitedMs;
-        prefetchJoinState = joined.state;
-        if (joined.candidate) {
-          prefetchCandidate = joined.candidate;
-          prefetchCandidateOrigin =
-            joined.state === "latest" ? "latest" : "joined";
-          await validatePrefetchCandidate();
-        }
+        cancelCandidateWait = waiter.cancel;
+        const update = await waiter.promise;
+        cancelCandidateWait = undefined;
+        if (!update || candidateMonitorCancelled) return undefined;
+        prefetchJoinState = update.state;
+        const eligible = await validatePrefetchCandidate(
+          update.candidate,
+          update.state === "latest" ? "latest" : "joined",
+        );
+        if (candidateMonitorCancelled) return undefined;
+        prefetchJoinMs = Math.round(performance.now() - joinStartedAt);
         logEvent("info", "audio_session_prefetch_joined", {
           requestId,
           audioSessionId,
-          joinAttempt,
-          state: joined.state,
-          waitedMs: joined.waitedMs,
-          candidateFound: Boolean(joined.candidate),
-          terminalSnapshot: joined.candidate?.terminalSnapshot,
+          state: update.state,
+          waitedMs: prefetchJoinMs,
+          candidateFound: true,
+          candidateEligible: eligible,
+          terminalSnapshot: update.candidate.terminalSnapshot,
           candidateOrigin: prefetchCandidateOrigin,
         });
-        if (
-          prefetchedSourceText ||
-          !joined.candidate ||
-          joined.candidate.terminalSnapshot
-        ) {
-          break;
-        }
-        // The Web client queues its terminal snapshot when an older preview
-        // completes. Give that successor request a very small registration
-        // window, while the authoritative ASR hedge continues in parallel.
-        const successorGraceMs = Math.min(
-          120,
-          Math.max(0, Math.round(joinDeadline - performance.now())),
-        );
-        if (successorGraceMs > 0) {
-          await new Promise((resolve) => setTimeout(resolve, successorGraceMs));
-        }
+        if (eligible) return update.candidate;
       }
-    }
+      return prefetchCandidate;
+    };
 
+    let candidateMonitorPromise:
+      | ReturnType<typeof waitForValidPrefetchCandidate>
+      | undefined;
     let hedgedTranscript:
       | {
           sourceText: string;
           latencyMs: number;
         }
       | undefined;
+
     if (!prefetchedSourceText && asrMode === "batch_chunks") {
-      const hedgedAsr = await hedgedAsrPromise!;
-      hedgedAsrLatencyMs = hedgedAsr.latencyMs;
-      if (!hedgedAsr.ok) {
-        throw hedgedAsr.error;
+      const raceStartedAt = performance.now();
+      candidateMonitorPromise = waitForValidPrefetchCandidate();
+      activeCandidateMonitorPromise = candidateMonitorPromise;
+      const firstWinner = await Promise.race([
+        hedgedAsrPromise!.then((asr) => ({ kind: "asr" as const, asr })),
+        candidateMonitorPromise.then((candidate) => ({
+          kind: "prefetch" as const,
+          candidate,
+        })),
+      ]);
+      prefetchRaceMs = Math.round(performance.now() - raceStartedAt);
+
+      if (firstWinner.kind === "prefetch" && firstWinner.candidate) {
+        prefetchRaceWinner = "prefetch";
+        batchPrefetchUsed = true;
+      } else {
+        const hedgedAsr =
+          firstWinner.kind === "asr"
+            ? firstWinner.asr
+            : await hedgedAsrPromise!;
+        hedgedAsrLatencyMs = hedgedAsr.latencyMs;
+        hedgedAsrWaitMs = hedgedAsr.waitLatencyMs;
+        hedgedAsrSharedFlightJoined = hedgedAsr.joined;
+        if (!hedgedAsr.ok) {
+          cancelCandidateWait?.();
+          throw hedgedAsr.error;
+        }
+        prefetchRaceWinner = "asr";
+        hedgedAsrUsed = true;
+        hedgedTranscript = {
+          sourceText: hedgedAsr.sourceText,
+          latencyMs: hedgedAsr.latencyMs,
+        };
       }
-      hedgedAsrUsed = true;
-      hedgedTranscript = {
-        sourceText: hedgedAsr.sourceText,
-        latencyMs: hedgedAsr.latencyMs,
-      };
+    } else if (prefetchedSourceText) {
+      prefetchRaceWinner = "prefetch";
+      batchPrefetchUsed = true;
     }
 
-    const pipelineStartedAt = performance.now();
-    const result = await runConversationPipeline(
-      {
-        requestId,
-        clientId: body.clientId?.trim() || undefined,
-        context: body.context,
-        childAge: body.childAge ?? 6,
-        targetLanguage: "en",
-        sessionId: body.sessionId,
-        sourceText: prefetchedSourceText ?? body.sourceText?.trim(),
-        audioFile,
-        asrMode,
-        benchmark: {
-          ...body.benchmark,
-          batchPrefetchAttempted: Boolean(
-            body.prefetchId ||
-              prefetchCandidate ||
-              body.benchmark?.batchPrefetchAttempted,
-          ),
-          batchPrefetchUsed: Boolean(prefetchedSourceText),
-          batchPrefetchStability: prefetchCandidate?.stabilityCount,
-          batchPrefetchAgeMs: prefetchCandidate
-            ? Date.now() - prefetchCandidate.createdAt
-            : undefined,
-          batchPrefetchValidationMs: prefetchValidationMs || undefined,
-          batchPrefetchTailMs: prefetchTail?.tailDurationMs,
-          batchPrefetchPreviewMs: prefetchCandidate?.previewLatencyMs,
-          batchPrefetchAsrMs: prefetchCandidate?.asrLatencyMs,
-          batchPrefetchJoinMs: prefetchJoinMs || undefined,
-          batchPrefetchJoinState: prefetchJoinState,
-          batchPrefetchCandidateOrigin: prefetchCandidateOrigin,
-          batchFinalizeHedgedAsrMs: hedgedAsrLatencyMs,
-          batchFinalizeHedgedAsrUsed: hedgedAsrUsed,
-        },
+    const pipelineInput = (usingPrefetch: boolean): ConversationRequest => ({
+      requestId,
+      clientId: body.clientId?.trim() || undefined,
+      context: body.context!,
+      childAge: body.childAge ?? 6,
+      targetLanguage: "en" as const,
+      sessionId: body.sessionId,
+      sourceText: usingPrefetch
+        ? prefetchedSourceText
+        : body.sourceText?.trim(),
+      audioFile,
+      asrMode,
+      benchmark: {
+        ...body.benchmark,
+        batchPrefetchAttempted: Boolean(
+          body.prefetchId ||
+            prefetchCandidate ||
+            body.benchmark?.batchPrefetchAttempted,
+        ),
+        batchPrefetchUsed: usingPrefetch,
+        batchPrefetchStability: prefetchCandidate?.stabilityCount,
+        batchPrefetchAgeMs: prefetchCandidate
+          ? Date.now() - prefetchCandidate.createdAt
+          : undefined,
+        batchPrefetchValidationMs: prefetchValidationMs || undefined,
+        batchPrefetchTailMs: prefetchTail?.tailDurationMs,
+        batchPrefetchPreviewMs: prefetchCandidate?.previewLatencyMs,
+        batchPrefetchAsrMs: prefetchCandidate?.asrLatencyMs,
+        batchPrefetchJoinMs: prefetchJoinMs || undefined,
+        batchPrefetchJoinState: prefetchJoinState,
+        batchPrefetchCandidateOrigin: prefetchCandidateOrigin,
+        batchPrefetchRaceWinner: prefetchRaceWinner,
+        batchPrefetchRaceMs: prefetchRaceMs || undefined,
+        batchFinalizeHedgedAsrMs: hedgedAsrLatencyMs,
+        batchFinalizeHedgedAsrWaitMs: hedgedAsrWaitMs,
+        batchFinalizeHedgedAsrSharedFlightJoined:
+          hedgedAsrSharedFlightJoined,
+        batchFinalizeHedgedAsrUsed: hedgedAsrUsed,
       },
-      {
+    });
+
+    const runPrefetchedPipeline = () =>
+      runConversationPipeline(pipelineInput(true), {
         deferTextCacheWrite: true,
-        prefetchedTranscript: hedgedTranscript,
-        ...(prefetchedSourceText && prefetchCandidate
+        prefetchedTranscript: prefetchedSourceText
           ? {
-              prefetchedTranslation: prefetchCandidate.translation,
-              prefetchedAudio: {
-                audioUrl: prefetchCandidate.audioUrl,
-                source: prefetchCandidate.audioSource,
-                cacheReady: prefetchCandidate.audioSource === "cache",
-              },
+              sourceText: prefetchedSourceText,
+              latencyMs: prefetchCandidate?.asrLatencyMs ?? 0,
             }
-          : {}),
-      },
-    );
+          : undefined,
+        prefetchedTranslation: prefetchCandidate?.translation,
+        prefetchedAudio: prefetchCandidate
+          ? {
+              audioUrl: prefetchCandidate.audioUrl,
+              source: prefetchCandidate.audioSource,
+              cacheReady: prefetchCandidate.audioSource === "cache",
+            }
+          : undefined,
+      });
+
+    const pipelineStartedAt = performance.now();
+    let result: ConversationResponse;
+    if (prefetchedSourceText && prefetchCandidate) {
+      result = await runPrefetchedPipeline();
+    } else {
+      const authoritativePipelinePromise = runConversationPipeline(
+        pipelineInput(false),
+        {
+          deferTextCacheWrite: true,
+          prefetchedTranscript: hedgedTranscript,
+        },
+      );
+      if (candidateMonitorPromise) {
+        const processingWinner = await Promise.race([
+          authoritativePipelinePromise.then((pipelineResult) => ({
+            kind: "pipeline" as const,
+            result: pipelineResult,
+          })),
+          candidateMonitorPromise.then((candidate) => ({
+            kind: "prefetch" as const,
+            candidate,
+          })),
+        ]);
+        if (processingWinner.kind === "prefetch" && processingWinner.candidate) {
+          prefetchRaceWinner = "late_prefetch";
+          batchPrefetchUsed = true;
+          supersededPipelinePromise = authoritativePipelinePromise;
+          result = await runPrefetchedPipeline();
+        } else {
+          prefetchRaceWinner = "pipeline";
+          candidateMonitorCancelled = true;
+          cancelCandidateWait?.();
+          result =
+            processingWinner.kind === "pipeline"
+              ? processingWinner.result
+              : await authoritativePipelinePromise;
+        }
+      } else {
+        prefetchRaceWinner = "pipeline";
+        result = await authoritativePipelinePromise;
+      }
+    }
     pipelineMs = Math.round(performance.now() - pipelineStartedAt);
 
     const responsePayload = { ...result, learning: null };
@@ -499,7 +606,7 @@ export async function POST(request: Request, context: RouteContext) {
         return;
       }
 
-      if (hedgedAsrPromise && prefetchedSourceText) {
+      if (hedgedAsrPromise && batchPrefetchUsed && prefetchedSourceText) {
         const verified = await hedgedAsrPromise;
         if (verified.ok) {
           logEvent("info", "audio_session_prefetch_verified", {
@@ -510,6 +617,7 @@ export async function POST(request: Request, context: RouteContext) {
               normalizeVietnameseForExactMatch(prefetchedSourceText),
             verificationMs: verified.latencyMs,
             reusedHedgedAsr: true,
+            sharedFlightJoined: verified.joined,
           });
         } else {
           logEvent("warn", "audio_session_prefetch_verification_failed", {
@@ -517,7 +625,37 @@ export async function POST(request: Request, context: RouteContext) {
             audioSessionId,
             verificationMs: verified.latencyMs,
             reusedHedgedAsr: true,
+            sharedFlightJoined: verified.joined,
             error: verified.error,
+          });
+        }
+      }
+
+      if (activeCandidateMonitorPromise) {
+        try {
+          await activeCandidateMonitorPromise;
+        } catch (error) {
+          logEvent("warn", "audio_session_candidate_monitor_failed", {
+            requestId,
+            audioSessionId,
+            error,
+          });
+        }
+      }
+
+      if (supersededPipelinePromise) {
+        try {
+          await supersededPipelinePromise;
+          logEvent("info", "audio_session_pipeline_superseded", {
+            requestId,
+            audioSessionId,
+            winner: "late_prefetch",
+          });
+        } catch (error) {
+          logEvent("warn", "audio_session_superseded_pipeline_failed", {
+            requestId,
+            audioSessionId,
+            error,
           });
         }
       }
@@ -533,16 +671,23 @@ export async function POST(request: Request, context: RouteContext) {
         prefetchJoinMs,
         prefetchJoinState,
         prefetchCandidateOrigin,
+        prefetchRaceWinner,
+        prefetchRaceMs,
         hedgedAsrLatencyMs,
+        hedgedAsrWaitMs,
+        hedgedAsrSharedFlightJoined,
         hedgedAsrUsed,
         assemblySource,
-        batchPrefetchUsed: Boolean(prefetchedSourceText),
+        batchPrefetchUsed,
         totalMs: responseReadyMs,
       },
     });
     scheduleConversationPostResponseTasks(result, "audio");
     return withRequestId(Response.json(responsePayload), requestId);
   } catch (error) {
+    candidateMonitorCancelled = true;
+    cancelCandidateWait?.();
+    await activeCandidateMonitorPromise?.catch(() => undefined);
     if (finalizeClaimed && requestHash) {
       await releaseAudioSessionFinalize(audioSessionId, requestHash).catch(
         (releaseError) => {

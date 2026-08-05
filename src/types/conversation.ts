@@ -77,7 +77,16 @@ export type BenchmarkMetadata = {
   batchPrefetchJoinMs?: number;
   batchPrefetchJoinState?: "latest" | "joined" | "none" | "timeout";
   batchPrefetchCandidateOrigin?: "explicit" | "latest" | "joined";
+  batchPrefetchRaceWinner?:
+    | "prefetch"
+    | "asr"
+    | "late_prefetch"
+    | "pipeline"
+    | "browser_streaming";
+  batchPrefetchRaceMs?: number;
   batchFinalizeHedgedAsrMs?: number;
+  batchFinalizeHedgedAsrWaitMs?: number;
+  batchFinalizeHedgedAsrSharedFlightJoined?: boolean;
   batchFinalizeHedgedAsrUsed?: boolean;
 };
 

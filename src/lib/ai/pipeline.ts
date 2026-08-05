@@ -11,6 +11,7 @@ import {
 } from "./llm";
 import { PROMPT_VERSION } from "./prompts";
 import {
+  prepareEnglishAudio,
   synthesizeEnglishAudio,
   type AudioSynthesisResult,
 } from "./tts";
@@ -54,9 +55,19 @@ export async function runConversationPipeline(
           options.deferTextCacheWrite,
         ),
       );
+  // A brand-new AI sentence cannot be a cache hit. Return its streaming URL
+  // immediately; /api/audio/stream clones the provider response and persists
+  // it in `after()` independently from Safari playback. Reviewed rules and
+  // known text-cache entries still resolve to durable audio before returning.
+  const usesFastStreamingTts =
+    !options.prefetchedAudio && llm.value.source === "cloudflare";
   const tts = options.prefetchedAudio
     ? { value: options.prefetchedAudio, latencyMs: 0 }
-    : await measureStep(() => synthesizeEnglishAudio(llm.value.englishText));
+    : await measureStep<AudioSynthesisResult>(() =>
+        usesFastStreamingTts
+          ? prepareEnglishAudio(llm.value.englishText)
+          : synthesizeEnglishAudio(llm.value.englishText),
+      );
 
   const result = {
     requestId: input.requestId,
@@ -101,6 +112,7 @@ export async function runConversationPipeline(
     audioSource: result.audioSource,
     audioCacheHit: result.audioSource === "cache",
     audioCacheReady: tts.value.cacheReady,
+    audioDeliveryMode: tts.value.cacheReady ? "cache" : "stream_and_cache",
     audioCacheHitTarget: 0.85,
     latency: result.latency,
   });

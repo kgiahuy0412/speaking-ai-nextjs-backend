@@ -8,6 +8,7 @@ import {
   reserveBatchPrefetchAttempt,
   saveBatchPrefetchCandidate,
   waitForBatchPrefetchCandidate,
+  waitForNextBatchPrefetchCandidate,
 } from "./batchPrefetch";
 
 function candidateInput(
@@ -131,4 +132,29 @@ test("finalize bounds the wait for a stalled preview", async () => {
   assert.equal(result.candidate, null);
   assert.ok(result.waitedMs >= 10);
   operation.finish(null);
+});
+
+test("candidate signal observes a terminal preview registered later", async () => {
+  resetBatchPrefetchForTesting();
+  const audioSessionId = `audio_v2-${crypto.randomUUID()}`;
+  const waiter = waitForNextBatchPrefetchCandidate(audioSessionId);
+  const terminal = saveBatchPrefetchCandidate({
+    ...candidateInput(audioSessionId, "Con muá»‘n uá»‘ng nÆ°á»›c", 8),
+    terminalSnapshot: true,
+  });
+
+  const update = await waiter.promise;
+  assert.equal(update?.state, "joined");
+  assert.equal(update?.candidate.id, terminal.id);
+  assert.equal(update?.candidate.terminalSnapshot, true);
+});
+
+test("candidate signal is cancellable when ASR wins", async () => {
+  resetBatchPrefetchForTesting();
+  const waiter = waitForNextBatchPrefetchCandidate(
+    `audio_v2-${crypto.randomUUID()}`,
+  );
+
+  waiter.cancel();
+  assert.equal(await waiter.promise, null);
 });

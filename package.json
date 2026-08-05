@@ -10,7 +10,7 @@
     "test:cloudflare": "node --import tsx --test src/lib/ai/cloudflareWorkersAi.test.ts",
     "test:cloudflare-text": "node --import tsx --test src/lib/ai/cloudflareText.test.ts",
     "benchmark:cloudflare-text": "node --env-file=.env.local --import tsx scripts/benchmark-cloudflare-text.ts",
-    "test:translation": "node --import tsx --test --test-concurrency=1 src/lib/ai/faithfulTranslation.test.ts src/lib/ai/corpusRules.test.ts src/lib/ai/phraseSupplementRules.test.ts src/lib/ai/textCache.test.ts src/lib/ai/singleFlight.test.ts src/lib/ai/batchPrefetch.test.ts",
+    "test:translation": "node --import tsx --test --test-concurrency=1 src/lib/ai/faithfulTranslation.test.ts src/lib/ai/corpusRules.test.ts src/lib/ai/phraseSupplementRules.test.ts src/lib/ai/textCache.test.ts src/lib/ai/singleFlight.test.ts src/lib/ai/audioSessionAsr.test.ts src/lib/ai/batchPrefetch.test.ts",
     "test:transcript": "node --import tsx --test src/lib/audio/trimRecordedAudio.test.ts src/lib/ai/transcriptRepair.test.ts src/lib/ai/transcriptCorpusRepair.test.ts src/lib/ai/regionalVocabularyNormalizer.test.ts src/lib/ai/transcriptQuality.test.ts",
     "test:storage": "node --import tsx --test --test-concurrency=1 src/lib/client/audioSessionUploader.test.ts src/lib/storage/audioSessionSecurity.test.ts src/lib/storage/audioSessionR2.test.ts src/lib/storage/audioSessionHotCache.test.ts src/lib/storage/audioSessions.test.ts src/lib/storage/audio.test.ts src/lib/storage/config.test.ts src/lib/db/schema.test.ts",
     "test:ai-provider": "node --import tsx --test src/lib/ai/aiProvider.test.ts",

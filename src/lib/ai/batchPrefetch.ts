@@ -42,6 +42,19 @@ type BatchPrefetchInFlight = {
   resolve: (candidate: BatchPrefetchCandidate | null) => void;
 };
 
+type BatchPrefetchCandidateWaiter = {
+  token: string;
+  excludedIds: Set<string>;
+  settled: boolean;
+  expiresAt: number;
+  resolve: (update: BatchPrefetchCandidateUpdate | null) => void;
+};
+
+export type BatchPrefetchCandidateUpdate = {
+  candidate: BatchPrefetchCandidate;
+  state: "latest" | "joined";
+};
+
 export type BatchPrefetchWaitResult = {
   candidate: BatchPrefetchCandidate | null;
   state: "latest" | "joined" | "none" | "timeout";
@@ -53,6 +66,10 @@ type BatchPrefetchGlobalState = typeof globalThis & {
   __aiSpeakingBatchPrefetchAttempts?: Map<string, BatchPrefetchAttempt>;
   __aiSpeakingBatchPrefetchLatestBySession?: Map<string, string>;
   __aiSpeakingBatchPrefetchInFlight?: Map<string, BatchPrefetchInFlight>;
+  __aiSpeakingBatchPrefetchCandidateWaiters?: Map<
+    string,
+    Set<BatchPrefetchCandidateWaiter>
+  >;
 };
 
 const state = globalThis as BatchPrefetchGlobalState;
@@ -61,6 +78,8 @@ const attempts = state.__aiSpeakingBatchPrefetchAttempts ??= new Map();
 const latestCandidateBySession =
   state.__aiSpeakingBatchPrefetchLatestBySession ??= new Map();
 const inFlight = state.__aiSpeakingBatchPrefetchInFlight ??= new Map();
+const candidateWaiters =
+  state.__aiSpeakingBatchPrefetchCandidateWaiters ??= new Map();
 const candidateTtlMs = 20_000;
 const attemptTtlMs = 60_000;
 const inFlightTtlMs = 35_000;
@@ -88,6 +107,16 @@ function prune(now = Date.now()) {
       operation.resolve(null);
       inFlight.delete(sessionId);
     }
+  }
+  for (const [sessionId, waiters] of candidateWaiters) {
+    for (const waiter of waiters) {
+      if (waiter.expiresAt <= now) {
+        waiter.settled = true;
+        waiter.resolve(null);
+        waiters.delete(waiter);
+      }
+    }
+    if (waiters.size === 0) candidateWaiters.delete(sessionId);
   }
   while (candidates.size > maxCandidates) {
     const oldest = candidates.keys().next().value;
@@ -195,6 +224,19 @@ export function saveBatchPrefetchCandidate(input: Omit<
   };
   candidates.set(candidate.id, candidate);
   latestCandidateBySession.set(candidate.audioSessionId, candidate.id);
+  const waiters = candidateWaiters.get(candidate.audioSessionId);
+  if (waiters) {
+    for (const waiter of waiters) {
+      if (!waiter.settled && !waiter.excludedIds.has(candidate.id)) {
+        waiter.settled = true;
+        waiter.resolve({ candidate, state: "joined" });
+        waiters.delete(waiter);
+      }
+    }
+    if (waiters.size === 0) {
+      candidateWaiters.delete(candidate.audioSessionId);
+    }
+  }
   prune(now);
   return candidate;
 }
@@ -219,6 +261,57 @@ export function getLatestBatchPrefetchCandidate(audioSessionId: string) {
     return null;
   }
   return candidate;
+}
+
+/**
+ * Waits for the next candidate without imposing a latency timeout. The caller
+ * owns cancellation, normally when authoritative ASR or the main pipeline
+ * wins the race. This also observes terminal previews that are registered
+ * after an older preview finishes.
+ */
+export function waitForNextBatchPrefetchCandidate(
+  audioSessionId: string,
+  excludedCandidateIds: Iterable<string> = [],
+) {
+  const excludedIds = new Set(excludedCandidateIds);
+  const latest = getLatestBatchPrefetchCandidate(audioSessionId);
+  if (latest && !excludedIds.has(latest.id)) {
+    return {
+      promise: Promise.resolve<BatchPrefetchCandidateUpdate | null>({
+        candidate: latest,
+        state: "latest",
+      }),
+      cancel() {},
+    };
+  }
+
+  const token = crypto.randomUUID();
+  let resolve!: (update: BatchPrefetchCandidateUpdate | null) => void;
+  const promise = new Promise<BatchPrefetchCandidateUpdate | null>((settle) => {
+    resolve = settle;
+  });
+  const waiter: BatchPrefetchCandidateWaiter = {
+    token,
+    excludedIds,
+    settled: false,
+    expiresAt: Date.now() + inFlightTtlMs,
+    resolve,
+  };
+  const waiters = candidateWaiters.get(audioSessionId) ?? new Set();
+  waiters.add(waiter);
+  candidateWaiters.set(audioSessionId, waiters);
+
+  return {
+    promise,
+    cancel() {
+      if (waiter.settled) return;
+      waiter.settled = true;
+      waiter.resolve(null);
+      const current = candidateWaiters.get(audioSessionId);
+      current?.delete(waiter);
+      if (current?.size === 0) candidateWaiters.delete(audioSessionId);
+    },
+  };
 }
 
 export async function waitForBatchPrefetchCandidate(
@@ -282,8 +375,17 @@ export function resetBatchPrefetchForTesting() {
       operation.resolve(null);
     }
   }
+  for (const waiters of candidateWaiters.values()) {
+    for (const waiter of waiters) {
+      if (!waiter.settled) {
+        waiter.settled = true;
+        waiter.resolve(null);
+      }
+    }
+  }
   candidates.clear();
   attempts.clear();
   latestCandidateBySession.clear();
   inFlight.clear();
+  candidateWaiters.clear();
 }
