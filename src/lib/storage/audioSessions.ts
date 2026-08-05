@@ -138,6 +138,10 @@ export type AudioSessionPrefetchTailResult = {
   extraChunkCount: number;
   tailDurationMs: number;
   tailRms: number;
+  activeFrameRatio?: number;
+  longestSpeechRunMs?: number;
+  noiseFloorRms?: number;
+  speechThresholdRms?: number;
   assemblySource?: AudioAssemblySource;
 };
 
@@ -987,29 +991,108 @@ export async function finalizeAudioUploadSession(
 export function analyzePcm16Silence(
   pcm: Buffer,
   noiseRms?: number,
+  sampleRate = 16_000,
+  channelCount = 1,
 ) {
   if (pcm.byteLength === 0 || pcm.byteLength % 2 !== 0) {
-    return { silent: false, rms: 1, activeSampleRatio: 1 };
+    return {
+      silent: false,
+      rms: 1,
+      activeSampleRatio: 1,
+      activeFrameRatio: 1,
+      longestSpeechRunMs: 0,
+      noiseFloorRms: 0,
+      speechThresholdRms: 0,
+    };
   }
+
   const sampleCount = pcm.byteLength / 2;
-  const threshold = Math.min(
-    0.04,
-    Math.max(0.018, Number.isFinite(noiseRms) ? (noiseRms ?? 0) * 2.8 : 0.024),
-  );
-  const activeThreshold = Math.max(0.07, threshold * 2.5);
   let squaredTotal = 0;
-  let activeSamples = 0;
   for (let offset = 0; offset < pcm.byteLength; offset += 2) {
     const value = pcm.readInt16LE(offset) / 32_768;
     squaredTotal += value * value;
-    if (Math.abs(value) >= activeThreshold) activeSamples += 1;
   }
   const rms = Math.sqrt(squaredTotal / sampleCount);
-  const activeSampleRatio = activeSamples / sampleCount;
+
+  // A whole-buffer RMS gate rejects valid previews in a noisy room because a
+  // fan or road noise can keep the complete tail above a fixed threshold. Use
+  // 20 ms frames instead and look for a sustained speech-shaped energy burst.
+  const safeSampleRate = Math.max(8_000, Math.min(96_000, sampleRate));
+  const safeChannelCount = Math.max(1, Math.min(2, channelCount));
+  const frameDurationMs = 20;
+  const frameSampleCount = Math.max(
+    safeChannelCount,
+    Math.round((safeSampleRate * safeChannelCount * frameDurationMs) / 1_000),
+  );
+  const frames: Array<{ rms: number; peak: number }> = [];
+  for (let startSample = 0; startSample < sampleCount; startSample += frameSampleCount) {
+    const endSample = Math.min(sampleCount, startSample + frameSampleCount);
+    let frameSquaredTotal = 0;
+    let peak = 0;
+    for (let index = startSample; index < endSample; index += 1) {
+      const value = pcm.readInt16LE(index * 2) / 32_768;
+      frameSquaredTotal += value * value;
+      peak = Math.max(peak, Math.abs(value));
+    }
+    frames.push({
+      rms: Math.sqrt(frameSquaredTotal / Math.max(1, endSample - startSample)),
+      peak,
+    });
+  }
+
+  const sortedFrameRms = frames.map((frame) => frame.rms).sort((a, b) => a - b);
+  const lowerQuartileIndex = Math.min(
+    sortedFrameRms.length - 1,
+    Math.floor(sortedFrameRms.length * 0.25),
+  );
+  const observedNoiseFloor = sortedFrameRms[Math.max(0, lowerQuartileIndex)] ?? 0;
+  const suppliedNoiseFloor =
+    Number.isFinite(noiseRms) && (noiseRms ?? 0) > 0 ? noiseRms! : undefined;
+  // The first client amplitude can already contain speech, so never let it
+  // raise the adaptive floor above what the quiet tail frames demonstrate.
+  const noiseFloorRms = Math.max(
+    0.003,
+    Math.min(
+      0.08,
+      suppliedNoiseFloor === undefined
+        ? observedNoiseFloor
+        : Math.min(suppliedNoiseFloor, observedNoiseFloor || suppliedNoiseFloor),
+    ),
+  );
+  const speechThresholdRms = Math.max(
+    0.022,
+    Math.min(0.12, noiseFloorRms * 1.75 + 0.008),
+  );
+  const peakThreshold = Math.max(0.07, speechThresholdRms * 1.45);
+
+  let activeFrames = 0;
+  let currentSpeechRun = 0;
+  let longestSpeechRun = 0;
+  for (const frame of frames) {
+    const active =
+      frame.rms >= speechThresholdRms && frame.peak >= peakThreshold;
+    if (active) {
+      activeFrames += 1;
+      currentSpeechRun += 1;
+      longestSpeechRun = Math.max(longestSpeechRun, currentSpeechRun);
+    } else {
+      currentSpeechRun = 0;
+    }
+  }
+  const activeFrameRatio = activeFrames / Math.max(1, frames.length);
+  const longestSpeechRunMs = longestSpeechRun * frameDurationMs;
+  const containsSpeech =
+    longestSpeechRunMs >= 80 ||
+    (activeFrameRatio >= 0.18 && longestSpeechRunMs >= 40);
+
   return {
-    silent: rms <= threshold && activeSampleRatio <= 0.025,
+    silent: !containsSpeech,
     rms,
-    activeSampleRatio,
+    activeSampleRatio: activeFrameRatio,
+    activeFrameRatio,
+    longestSpeechRunMs,
+    noiseFloorRms,
+    speechThresholdRms,
   };
 }
 
@@ -1195,13 +1278,22 @@ export async function validateAudioSessionPrefetchTail(
       assemblySource,
     };
   }
-  const analysis = analyzePcm16Silence(tail, noiseRms);
+  const analysis = analyzePcm16Silence(
+    tail,
+    noiseRms,
+    finalMetadata.sampleRate,
+    finalMetadata.channelCount,
+  );
   return {
     eligible: analysis.silent,
     reason: analysis.silent ? "tail_silent" : "tail_contains_speech",
     extraChunkCount,
     tailDurationMs,
     tailRms: analysis.rms,
+    activeFrameRatio: analysis.activeFrameRatio,
+    longestSpeechRunMs: analysis.longestSpeechRunMs,
+    noiseFloorRms: analysis.noiseFloorRms,
+    speechThresholdRms: analysis.speechThresholdRms,
     assemblySource,
   };
 }

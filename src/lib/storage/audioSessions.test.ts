@@ -219,6 +219,55 @@ test("prefetch tail silence analysis rejects active speech", () => {
   assert.equal(sessions.analyzePcm16Silence(speech).silent, false);
 });
 
+test("prefetch tail frame VAD accepts steady background noise", () => {
+  const sampleRate = 16_000;
+  const sampleCount = Math.round(sampleRate * 1.2);
+  const backgroundNoise = Buffer.alloc(sampleCount * 2);
+  for (let index = 0; index < sampleCount; index += 1) {
+    const value = Math.round(
+      3_200 * Math.sin((2 * Math.PI * 210 * index) / sampleRate),
+    );
+    backgroundNoise.writeInt16LE(value, index * 2);
+  }
+
+  const analysis = sessions.analyzePcm16Silence(
+    backgroundNoise,
+    undefined,
+    sampleRate,
+  );
+  assert.equal(analysis.silent, true);
+  assert.equal(analysis.longestSpeechRunMs, 0);
+  assert.ok(analysis.rms > 0.06);
+});
+
+test("prefetch tail frame VAD rejects a speech burst above background noise", () => {
+  const sampleRate = 16_000;
+  const sampleCount = Math.round(sampleRate * 1.2);
+  const noisySpeech = Buffer.alloc(sampleCount * 2);
+  for (let index = 0; index < sampleCount; index += 1) {
+    const elapsedSeconds = index / sampleRate;
+    const background =
+      2_800 * Math.sin((2 * Math.PI * 210 * index) / sampleRate);
+    const speech =
+      elapsedSeconds >= 0.45 && elapsedSeconds < 0.65
+        ? 12_000 * Math.sin((2 * Math.PI * 440 * index) / sampleRate)
+        : 0;
+    noisySpeech.writeInt16LE(
+      Math.max(-32_768, Math.min(32_767, Math.round(background + speech))),
+      index * 2,
+    );
+  }
+
+  const analysis = sessions.analyzePcm16Silence(
+    noisySpeech,
+    undefined,
+    sampleRate,
+  );
+  assert.equal(analysis.silent, false);
+  assert.ok(analysis.longestSpeechRunMs >= 80);
+  assert.ok(analysis.activeFrameRatio > 0);
+});
+
 test("finalize accepts AAC audio for batch uploads", async () => {
   const sessionId = await sessions.createAudioUploadSession();
   await sessions.saveAudioSessionChunk(

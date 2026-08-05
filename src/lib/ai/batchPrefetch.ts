@@ -20,6 +20,7 @@ export type BatchPrefetchCandidate = {
   audioUrl: string;
   audioSource: "cache" | "cloudflare_tts";
   snapshot: BatchPrefetchPcmSnapshot;
+  terminalSnapshot: boolean;
   stabilityCount: number;
   createdAt: number;
   previewLatencyMs: number;
@@ -138,14 +139,17 @@ export function beginBatchPrefetchOperation(audioSessionId: string) {
   };
 }
 
-export function reserveBatchPrefetchAttempt(audioSessionId: string) {
+export function reserveBatchPrefetchAttempt(
+  audioSessionId: string,
+  terminal = false,
+) {
   const now = Date.now();
   prune(now);
   const current = attempts.get(audioSessionId);
   if (
     current &&
     (current.count >= maxAttemptsPerSession ||
-      now - current.lastStartedAt < minimumAttemptIntervalMs)
+      (!terminal && now - current.lastStartedAt < minimumAttemptIntervalMs))
   ) {
     return false;
   }

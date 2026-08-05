@@ -35,6 +35,7 @@ type PreviewRequest = {
   clientId?: string;
   context?: PracticeContext;
   childAge?: number;
+  terminal?: boolean;
   previousPrefetchId?: string;
   pcm16Wav?: Pcm16WavMetadata;
 };
@@ -56,12 +57,6 @@ export async function POST(request: Request, context: RouteContext) {
 
   try {
     authorizeAudioSessionRequest(request, audioSessionId);
-    if (!reserveBatchPrefetchAttempt(audioSessionId)) {
-      return withRequestId(
-        Response.json({ eligible: false, reason: "prefetch_throttled" }),
-        requestId,
-      );
-    }
     const body = (await request.json().catch(() => null)) as PreviewRequest | null;
     if (!body?.context || !contexts.has(body.context) || !body.pcm16Wav) {
       throw new AppError(
@@ -76,6 +71,12 @@ export async function POST(request: Request, context: RouteContext) {
     ) {
       return withRequestId(
         Response.json({ eligible: false, reason: "audio_too_short" }),
+        requestId,
+      );
+    }
+    if (!reserveBatchPrefetchAttempt(audioSessionId, body.terminal === true)) {
+      return withRequestId(
+        Response.json({ eligible: false, reason: "prefetch_throttled" }),
         requestId,
       );
     }
@@ -199,6 +200,7 @@ export async function POST(request: Request, context: RouteContext) {
         ...body.pcm16Wav,
         chunkCount: body.pcm16Wav.chunkCount,
       } as Pcm16WavMetadata & { chunkCount: number },
+      terminalSnapshot: body.terminal === true,
       previewLatencyMs,
       asrLatencyMs,
     });
@@ -207,6 +209,7 @@ export async function POST(request: Request, context: RouteContext) {
       requestId,
       audioSessionId,
       chunkCount: candidate.snapshot.chunkCount,
+      terminalSnapshot: candidate.terminalSnapshot,
       stabilityCount: candidate.stabilityCount,
       textSource: candidate.translation.source,
       audioSource: candidate.audioSource,
@@ -227,6 +230,7 @@ export async function POST(request: Request, context: RouteContext) {
         audioUrl: candidate.audioUrl,
         audioSource: candidate.audioSource,
         snapshotChunkCount: candidate.snapshot.chunkCount,
+        terminalSnapshot: candidate.terminalSnapshot,
         asrLatencyMs,
         translationLatencyMs,
         previewLatencyMs,

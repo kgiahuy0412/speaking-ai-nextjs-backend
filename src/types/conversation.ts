@@ -77,6 +77,8 @@ export type BenchmarkMetadata = {
   batchPrefetchJoinMs?: number;
   batchPrefetchJoinState?: "latest" | "joined" | "none" | "timeout";
   batchPrefetchCandidateOrigin?: "explicit" | "latest" | "joined";
+  batchFinalizeHedgedAsrMs?: number;
+  batchFinalizeHedgedAsrUsed?: boolean;
 };
 
 export type ConversationRequest = {

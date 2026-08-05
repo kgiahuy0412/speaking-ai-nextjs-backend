@@ -11,12 +11,16 @@ import {
 } from "./llm";
 import { PROMPT_VERSION } from "./prompts";
 import {
-  prepareEnglishAudio,
+  synthesizeEnglishAudio,
   type AudioSynthesisResult,
 } from "./tts";
 
 type ConversationPipelineOptions = {
   deferTextCacheWrite?: boolean;
+  prefetchedTranscript?: {
+    sourceText: string;
+    latencyMs: number;
+  };
   prefetchedTranslation?: EnglishGenerationResult;
   prefetchedAudio?: AudioSynthesisResult;
 };
@@ -32,7 +36,12 @@ export async function runConversationPipeline(
   const startedAt = nowMs();
   const conversationId = createId("conv");
 
-  const asr = await measureStep(() => transcribeVietnamese(input));
+  const asr = options.prefetchedTranscript
+    ? {
+        value: options.prefetchedTranscript.sourceText,
+        latencyMs: options.prefetchedTranscript.latencyMs,
+      }
+    : await measureStep(() => transcribeVietnamese(input));
   const llm = options.prefetchedTranslation
     ? { value: options.prefetchedTranslation, latencyMs: 0 }
     : await measureStep(() =>
@@ -47,7 +56,7 @@ export async function runConversationPipeline(
       );
   const tts = options.prefetchedAudio
     ? { value: options.prefetchedAudio, latencyMs: 0 }
-    : await measureStep(() => prepareEnglishAudio(llm.value.englishText));
+    : await measureStep(() => synthesizeEnglishAudio(llm.value.englishText));
 
   const result = {
     requestId: input.requestId,
@@ -91,6 +100,7 @@ export async function runConversationPipeline(
     matchedRule: result.matchedRule,
     audioSource: result.audioSource,
     audioCacheHit: result.audioSource === "cache",
+    audioCacheReady: tts.value.cacheReady,
     audioCacheHitTarget: 0.85,
     latency: result.latency,
   });

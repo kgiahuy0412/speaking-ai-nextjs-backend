@@ -66,21 +66,23 @@ export function getAudioWarmupRuleLimit(requestedLimit?: number) {
 }
 
 function getWarmupConcurrency() {
-  const configured = Number(process.env.AUDIO_WARMUP_CONCURRENCY ?? 2);
+  const configured = Number(process.env.AUDIO_WARMUP_CONCURRENCY ?? 4);
 
   if (!Number.isFinite(configured)) {
-    return 2;
+    return 4;
   }
 
   return Math.min(4, Math.max(1, Math.round(configured)));
 }
 
 function getWarmupSnapshotTtlMs() {
-  const configured = Number(process.env.AUDIO_WARMUP_SNAPSHOT_TTL_MS ?? 300_000);
+  const configured = Number(
+    process.env.AUDIO_WARMUP_SNAPSHOT_TTL_MS ?? 21_600_000,
+  );
 
   return Number.isFinite(configured) && configured >= 0
     ? configured
-    : 300_000;
+    : 21_600_000;
 }
 
 async function getWarmupTexts(

@@ -10,6 +10,9 @@ import {
 export type AudioSynthesisResult = {
   audioUrl: string;
   source: AudioSource;
+  /// True when audioUrl points at durable reusable storage, including a
+  /// provider miss that has just been synthesized and saved.
+  cacheReady: boolean;
   byteLength?: number;
 };
 
@@ -174,6 +177,7 @@ export function claimEnglishAudioCacheFill(
             audio,
           ),
           source: speech.source,
+          cacheReady: true,
           byteLength: audio.byteLength,
         } satisfies AudioSynthesisResult))
         .then(
@@ -208,12 +212,14 @@ export async function prepareEnglishAudio(englishText: string) {
     return {
       audioUrl: cachedUrl,
       source: "cache",
+      cacheReady: true,
     } satisfies AudioSynthesisResult;
   }
 
   return {
     audioUrl: getKnownMissAudioStreamUrl(englishText),
     source: "cloudflare_tts",
+    cacheReady: false,
   } satisfies AudioSynthesisResult;
 }
 
@@ -227,6 +233,7 @@ export async function synthesizeEnglishAudio(
     return {
       audioUrl: cachedUrl,
       source: "cache",
+      cacheReady: true,
     } satisfies AudioSynthesisResult;
   }
 

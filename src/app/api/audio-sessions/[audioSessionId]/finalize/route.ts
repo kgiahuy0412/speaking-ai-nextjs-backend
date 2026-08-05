@@ -213,6 +213,53 @@ export async function POST(request: Request, context: RouteContext) {
     let prefetchJoinMs = 0;
     let prefetchJoinState: "latest" | "joined" | "none" | "timeout" =
       "none";
+    let hedgedAsrLatencyMs: number | undefined;
+    let hedgedAsrUsed = false;
+    let hedgedAsrPromise:
+      | Promise<
+          | { ok: true; sourceText: string; latencyMs: number }
+          | { ok: false; error: unknown; latencyMs: number }
+        >
+      | undefined;
+
+    if (asrMode === "batch_chunks") {
+      const assembleStartedAt = performance.now();
+      audioFile = await finalizeAudioUploadSession(
+        audioSessionId,
+        body.mimeType,
+        body.pcm16Wav,
+        {
+          onAssemblySource: (source) => {
+            assemblySource = source;
+          },
+        },
+      );
+      assembleMs = Math.round(performance.now() - assembleStartedAt);
+
+      const hedgedAsrStartedAt = performance.now();
+      hedgedAsrPromise = transcribeVietnamese({
+        requestId,
+        clientId: body.clientId?.trim() || undefined,
+        context: practiceContext,
+        childAge: body.childAge ?? 6,
+        targetLanguage: "en",
+        sessionId: body.sessionId,
+        audioFile,
+        asrMode: "batch_chunks",
+        benchmark: { ...body.benchmark },
+      }).then(
+        (sourceText) => ({
+          ok: true as const,
+          sourceText,
+          latencyMs: Math.round(performance.now() - hedgedAsrStartedAt),
+        }),
+        (error: unknown) => ({
+          ok: false as const,
+          error,
+          latencyMs: Math.round(performance.now() - hedgedAsrStartedAt),
+        }),
+      );
+    }
     // Exact chunk/byte matching plus the final-tail silence check below is the
     // authoritative guard. Requiring a second preview made short Safari turns
     // miss prefetch even when the first snapshot already covered the final PCM.
@@ -247,6 +294,7 @@ export async function POST(request: Request, context: RouteContext) {
         requestId,
         audioSessionId,
         candidateOrigin: prefetchCandidateOrigin,
+        terminalSnapshot: prefetchCandidate.terminalSnapshot,
         eligible: prefetchTail.eligible,
         reason: prefetchTail.reason,
         stabilityCount: prefetchCandidate.stabilityCount,
@@ -255,6 +303,10 @@ export async function POST(request: Request, context: RouteContext) {
         prefetchValidationMs,
         tailDurationMs: prefetchTail.tailDurationMs,
         tailRms: prefetchTail.tailRms,
+        activeFrameRatio: prefetchTail.activeFrameRatio,
+        longestSpeechRunMs: prefetchTail.longestSpeechRunMs,
+        noiseFloorRms: prefetchTail.noiseFloorRms,
+        speechThresholdRms: prefetchTail.speechThresholdRms,
         assemblySource: prefetchTail.assemblySource,
       });
       return prefetchTail.eligible;
@@ -275,45 +327,73 @@ export async function POST(request: Request, context: RouteContext) {
       asrMode === "batch_chunks" &&
       body.pcm16Wav?.chunkCount !== undefined
     ) {
-      const joined = await waitForBatchPrefetchCandidate(
-        audioSessionId,
-        prefetchJoinTimeoutMs,
-        prefetchCandidate?.id,
-      );
-      prefetchJoinMs += joined.waitedMs;
-      prefetchJoinState = joined.state;
-      if (joined.candidate) {
-        prefetchCandidate = joined.candidate;
-        prefetchCandidateOrigin =
-          joined.state === "latest" ? "latest" : "joined";
-        await validatePrefetchCandidate();
+      const joinDeadline = performance.now() + prefetchJoinTimeoutMs;
+      for (let joinAttempt = 1; joinAttempt <= 2; joinAttempt += 1) {
+        const remainingMs = Math.max(
+          0,
+          Math.round(joinDeadline - performance.now()),
+        );
+        if (remainingMs <= 0 || prefetchedSourceText) break;
+        const joined = await waitForBatchPrefetchCandidate(
+          audioSessionId,
+          remainingMs,
+          prefetchCandidate?.id,
+        );
+        prefetchJoinMs += joined.waitedMs;
+        prefetchJoinState = joined.state;
+        if (joined.candidate) {
+          prefetchCandidate = joined.candidate;
+          prefetchCandidateOrigin =
+            joined.state === "latest" ? "latest" : "joined";
+          await validatePrefetchCandidate();
+        }
+        logEvent("info", "audio_session_prefetch_joined", {
+          requestId,
+          audioSessionId,
+          joinAttempt,
+          state: joined.state,
+          waitedMs: joined.waitedMs,
+          candidateFound: Boolean(joined.candidate),
+          terminalSnapshot: joined.candidate?.terminalSnapshot,
+          candidateOrigin: prefetchCandidateOrigin,
+        });
+        if (
+          prefetchedSourceText ||
+          !joined.candidate ||
+          joined.candidate.terminalSnapshot
+        ) {
+          break;
+        }
+        // The Web client queues its terminal snapshot when an older preview
+        // completes. Give that successor request a very small registration
+        // window, while the authoritative ASR hedge continues in parallel.
+        const successorGraceMs = Math.min(
+          120,
+          Math.max(0, Math.round(joinDeadline - performance.now())),
+        );
+        if (successorGraceMs > 0) {
+          await new Promise((resolve) => setTimeout(resolve, successorGraceMs));
+        }
       }
-      logEvent("info", "audio_session_prefetch_joined", {
-        requestId,
-        audioSessionId,
-        state: joined.state,
-        waitedMs: joined.waitedMs,
-        candidateFound: Boolean(joined.candidate),
-        candidateOrigin: prefetchCandidateOrigin,
-      });
     }
 
-    if (
-      !prefetchedSourceText &&
-      !(asrMode === "browser_streaming" && body.sourceText?.trim())
-    ) {
-      const assembleStartedAt = performance.now();
-      audioFile = await finalizeAudioUploadSession(
-        audioSessionId,
-        body.mimeType,
-        body.pcm16Wav,
-        {
-          onAssemblySource: (source) => {
-            assemblySource = source;
-          },
-        },
-      );
-      assembleMs = Math.round(performance.now() - assembleStartedAt);
+    let hedgedTranscript:
+      | {
+          sourceText: string;
+          latencyMs: number;
+        }
+      | undefined;
+    if (!prefetchedSourceText && asrMode === "batch_chunks") {
+      const hedgedAsr = await hedgedAsrPromise!;
+      hedgedAsrLatencyMs = hedgedAsr.latencyMs;
+      if (!hedgedAsr.ok) {
+        throw hedgedAsr.error;
+      }
+      hedgedAsrUsed = true;
+      hedgedTranscript = {
+        sourceText: hedgedAsr.sourceText,
+        latencyMs: hedgedAsr.latencyMs,
+      };
     }
 
     const pipelineStartedAt = performance.now();
@@ -347,16 +427,20 @@ export async function POST(request: Request, context: RouteContext) {
           batchPrefetchJoinMs: prefetchJoinMs || undefined,
           batchPrefetchJoinState: prefetchJoinState,
           batchPrefetchCandidateOrigin: prefetchCandidateOrigin,
+          batchFinalizeHedgedAsrMs: hedgedAsrLatencyMs,
+          batchFinalizeHedgedAsrUsed: hedgedAsrUsed,
         },
       },
       {
         deferTextCacheWrite: true,
+        prefetchedTranscript: hedgedTranscript,
         ...(prefetchedSourceText && prefetchCandidate
           ? {
               prefetchedTranslation: prefetchCandidate.translation,
               prefetchedAudio: {
                 audioUrl: prefetchCandidate.audioUrl,
                 source: prefetchCandidate.audioSource,
+                cacheReady: prefetchCandidate.audioSource === "cache",
               },
             }
           : {}),
@@ -369,25 +453,6 @@ export async function POST(request: Request, context: RouteContext) {
     after(async () => {
       const completeStartedAt = performance.now();
       let lastError: unknown;
-      let verificationAudio: File | undefined;
-
-      if (prefetchedSourceText && body.pcm16Wav?.chunkCount !== undefined) {
-        const assemblyStartedAt = performance.now();
-        try {
-          verificationAudio = await finalizeAudioUploadSession(
-            audioSessionId,
-            body.mimeType,
-            body.pcm16Wav,
-          );
-        } catch (error) {
-          logEvent("warn", "audio_session_prefetch_verification_assembly_failed", {
-            requestId,
-            audioSessionId,
-            assemblyMs: Math.round(performance.now() - assemblyStartedAt),
-            error,
-          });
-        }
-      }
 
       let completed = false;
       for (let attempt = 1; attempt <= 3; attempt += 1) {
@@ -434,38 +499,25 @@ export async function POST(request: Request, context: RouteContext) {
         return;
       }
 
-      if (verificationAudio && prefetchedSourceText) {
-        const verificationStartedAt = performance.now();
-        try {
-          const verifiedText = await transcribeVietnamese({
-            requestId,
-            clientId: body.clientId?.trim() || undefined,
-            context: practiceContext,
-            childAge: body.childAge ?? 6,
-            targetLanguage: "en",
-            sessionId: body.sessionId,
-            audioFile: verificationAudio,
-            asrMode: "batch_chunks",
-            benchmark: body.benchmark,
-          });
+      if (hedgedAsrPromise && prefetchedSourceText) {
+        const verified = await hedgedAsrPromise;
+        if (verified.ok) {
           logEvent("info", "audio_session_prefetch_verified", {
             requestId,
             audioSessionId,
             matched:
-              normalizeVietnameseForExactMatch(verifiedText) ===
+              normalizeVietnameseForExactMatch(verified.sourceText) ===
               normalizeVietnameseForExactMatch(prefetchedSourceText),
-            verificationMs: Math.round(
-              performance.now() - verificationStartedAt,
-            ),
+            verificationMs: verified.latencyMs,
+            reusedHedgedAsr: true,
           });
-        } catch (error) {
+        } else {
           logEvent("warn", "audio_session_prefetch_verification_failed", {
             requestId,
             audioSessionId,
-            verificationMs: Math.round(
-              performance.now() - verificationStartedAt,
-            ),
-            error,
+            verificationMs: verified.latencyMs,
+            reusedHedgedAsr: true,
+            error: verified.error,
           });
         }
       }
@@ -481,6 +533,8 @@ export async function POST(request: Request, context: RouteContext) {
         prefetchJoinMs,
         prefetchJoinState,
         prefetchCandidateOrigin,
+        hedgedAsrLatencyMs,
+        hedgedAsrUsed,
         assemblySource,
         batchPrefetchUsed: Boolean(prefetchedSourceText),
         totalMs: responseReadyMs,

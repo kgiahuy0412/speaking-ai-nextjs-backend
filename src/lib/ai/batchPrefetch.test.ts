@@ -27,6 +27,7 @@ function candidateInput(
     },
     audioUrl: "/generated-audio/water.mp3",
     audioSource: "cache" as const,
+    terminalSnapshot: false,
     snapshot: {
       sampleRate: 24_000,
       channelCount: 1,
@@ -73,6 +74,7 @@ test("prefetch attempts are throttled per audio session", () => {
 
   assert.equal(reserveBatchPrefetchAttempt(audioSessionId), true);
   assert.equal(reserveBatchPrefetchAttempt(audioSessionId), false);
+  assert.equal(reserveBatchPrefetchAttempt(audioSessionId, true), true);
 });
 
 test("finalize joins a preview already running for the audio session", async () => {
