@@ -61,3 +61,22 @@ test("prefetch attempts are throttled per audio session", () => {
   assert.equal(reserveBatchPrefetchAttempt(audioSessionId), true);
   assert.equal(reserveBatchPrefetchAttempt(audioSessionId), false);
 });
+
+test("prefetch stability does not depend on deferred audio", () => {
+  const audioSessionId = `audio_v2-${crypto.randomUUID()}`;
+  const first = saveBatchPrefetchCandidate({
+    ...candidateInput(audioSessionId, "Con muốn uống nước."),
+    audioUrl: null,
+    audioSource: null,
+  });
+  const second = saveBatchPrefetchCandidate({
+    ...candidateInput(audioSessionId, "Con muốn uống nước"),
+    audioUrl: null,
+    audioSource: null,
+    previousPrefetchId: first.id,
+  });
+
+  assert.equal(second.stabilityCount, 2);
+  assert.equal(second.audioUrl, null);
+  assert.equal(second.audioSource, null);
+});

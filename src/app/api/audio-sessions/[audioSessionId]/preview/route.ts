@@ -1,3 +1,4 @@
+import { after } from "next/server";
 import { transcribeVietnamese } from "@/lib/ai/asr";
 import {
   reserveBatchPrefetchAttempt,
@@ -123,17 +124,6 @@ export async function POST(request: Request, context: RouteContext) {
       );
     }
 
-    const audioResult = await synthesizeEnglishAudio(translation.englishText);
-    if (
-      audioResult.source !== "cache" &&
-      audioResult.source !== "cloudflare_tts"
-    ) {
-      throw new AppError(
-        "TTS_FAILED",
-        "Batch prefetch chỉ chấp nhận Cloudflare TTS hoặc audio cache.",
-        503,
-      );
-    }
     const previewLatencyMs = Math.round(performance.now() - startedAt);
     const candidate = saveBatchPrefetchCandidate({
       previousPrefetchId: body.previousPrefetchId,
@@ -142,8 +132,10 @@ export async function POST(request: Request, context: RouteContext) {
       childAge: body.childAge ?? 6,
       sourceText,
       translation,
-      audioUrl: audioResult.audioUrl,
-      audioSource: audioResult.source,
+      // The platform voice can speak this safe, stable translation
+      // immediately. Keep TTS and remote-cache latency off the preview path.
+      audioUrl: null,
+      audioSource: null,
       snapshot: {
         ...body.pcm16Wav,
         chunkCount: body.pcm16Wav.chunkCount,
@@ -151,6 +143,32 @@ export async function POST(request: Request, context: RouteContext) {
       previewLatencyMs,
       asrLatencyMs,
     });
+    if (candidate.stabilityCount >= 2) {
+      after(async () => {
+        const warmStartedAt = performance.now();
+        try {
+          const audioResult = await synthesizeEnglishAudio(
+            translation.englishText,
+          );
+          logEvent("info", "audio_session_prefetch_audio_warmed", {
+            requestId,
+            audioSessionId,
+            prefetchId: candidate.id,
+            audioSource: audioResult.source,
+            latencyMs: Math.round(performance.now() - warmStartedAt),
+          });
+        } catch (error) {
+          // This is only a warm-up. Finalization can still return the normal
+          // streaming TTS URL when the background fill fails.
+          logEvent("warn", "audio_session_prefetch_audio_warm_failed", {
+            requestId,
+            audioSessionId,
+            prefetchId: candidate.id,
+            error,
+          });
+        }
+      });
+    }
     logEvent("info", "audio_session_prefetch_ready", {
       requestId,
       audioSessionId,
@@ -158,6 +176,7 @@ export async function POST(request: Request, context: RouteContext) {
       stabilityCount: candidate.stabilityCount,
       textSource: candidate.translation.source,
       audioSource: candidate.audioSource,
+      audioDeferred: true,
       asrLatencyMs,
       previewLatencyMs,
     });
@@ -171,6 +190,7 @@ export async function POST(request: Request, context: RouteContext) {
         textSource: candidate.translation.source,
         audioUrl: candidate.audioUrl,
         audioSource: candidate.audioSource,
+        audioDeferred: true,
         snapshotChunkCount: candidate.snapshot.chunkCount,
         asrLatencyMs,
         previewLatencyMs,

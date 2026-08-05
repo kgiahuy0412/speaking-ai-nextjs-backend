@@ -17,8 +17,8 @@ export type BatchPrefetchCandidate = {
   childAge: number;
   sourceText: string;
   translation: EnglishGenerationResult;
-  audioUrl: string;
-  audioSource: "cache" | "cloudflare_tts";
+  audioUrl: string | null;
+  audioSource: "cache" | "cloudflare_tts" | null;
   snapshot: BatchPrefetchPcmSnapshot;
   stabilityCount: number;
   createdAt: number;
