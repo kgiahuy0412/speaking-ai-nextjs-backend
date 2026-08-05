@@ -66,6 +66,14 @@ export type BenchmarkMetadata = {
   sessionCreateMs?: number;
   uploadDrainAfterStopMs?: number;
   wavHeaderStrategy?: "uploaded_chunk" | "finalize_metadata";
+  batchPrefetchAttempted?: boolean;
+  batchPrefetchUsed?: boolean;
+  batchPrefetchStability?: number;
+  batchPrefetchAgeMs?: number;
+  batchPrefetchValidationMs?: number;
+  batchPrefetchTailMs?: number;
+  batchPrefetchPreviewMs?: number;
+  batchPrefetchAsrMs?: number;
 };
 
 export type ConversationRequest = {

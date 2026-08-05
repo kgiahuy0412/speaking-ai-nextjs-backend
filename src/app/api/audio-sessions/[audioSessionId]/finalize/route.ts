@@ -1,5 +1,11 @@
 import { createHash } from "node:crypto";
 import { after } from "next/server";
+import { transcribeVietnamese } from "@/lib/ai/asr";
+import {
+  getBatchPrefetchCandidate,
+  removeBatchPrefetchCandidate,
+} from "@/lib/ai/batchPrefetch";
+import { normalizeVietnameseForExactMatch } from "@/lib/ai/exactRules";
 import { runConversationPipeline } from "@/lib/ai/pipeline";
 import { scheduleConversationPostResponseTasks } from "@/lib/ai/postResponseTasks";
 import { AppError, toErrorResponse } from "@/lib/errors";
@@ -9,6 +15,7 @@ import {
   completeAudioSessionFinalize,
   finalizeAudioUploadSession,
   releaseAudioSessionFinalize,
+  validateAudioSessionPrefetchTail,
   type Pcm16WavMetadata,
 } from "@/lib/storage/audioSessions";
 import {
@@ -42,6 +49,7 @@ type FinalizeRequest = {
   asrMode?: AsrMode;
   mimeType?: string;
   pcm16Wav?: Pcm16WavMetadata;
+  prefetchId?: string;
   benchmark?: BenchmarkMetadata;
 };
 
@@ -78,6 +86,7 @@ export async function POST(request: Request, context: RouteContext) {
   let claimMs = 0;
   let assembleMs = 0;
   let pipelineMs = 0;
+  let prefetchValidationMs = 0;
 
   try {
     const uploadClaims = authorizeAudioSessionRequest(request, audioSessionId);
@@ -167,6 +176,7 @@ export async function POST(request: Request, context: RouteContext) {
       throw new AppError("BAD_REQUEST", "Vui lòng chọn ngữ cảnh hợp lệ.");
     }
 
+    const practiceContext = body.context;
     const requestedAsrMode =
       body.asrMode === "browser_streaming"
         ? "browser_streaming"
@@ -176,8 +186,52 @@ export async function POST(request: Request, context: RouteContext) {
         ? "browser_streaming"
         : "batch_chunks";
     let audioFile: File | undefined;
+    let prefetchedSourceText: string | undefined;
+    let prefetchTail:
+      | Awaited<ReturnType<typeof validateAudioSessionPrefetchTail>>
+      | undefined;
+    const prefetchCandidate = getBatchPrefetchCandidate(
+      body.prefetchId?.trim(),
+      audioSessionId,
+    );
+    if (
+      asrMode === "batch_chunks" &&
+      prefetchCandidate &&
+      prefetchCandidate.stabilityCount >= 2 &&
+      prefetchCandidate.context === body.context &&
+      prefetchCandidate.childAge === (body.childAge ?? 6) &&
+      body.pcm16Wav?.chunkCount !== undefined
+    ) {
+      const validationStartedAt = performance.now();
+      prefetchTail = await validateAudioSessionPrefetchTail(
+        audioSessionId,
+        prefetchCandidate.snapshot,
+        body.pcm16Wav as Pcm16WavMetadata & { chunkCount: number },
+        body.benchmark?.initialNoiseRms,
+      );
+      prefetchValidationMs = Math.round(
+        performance.now() - validationStartedAt,
+      );
+      if (prefetchTail.eligible) {
+        prefetchedSourceText = prefetchCandidate.sourceText;
+      }
+      logEvent("info", "audio_session_prefetch_validated", {
+        requestId,
+        audioSessionId,
+        eligible: prefetchTail.eligible,
+        reason: prefetchTail.reason,
+        stabilityCount: prefetchCandidate.stabilityCount,
+        prefetchAgeMs: Date.now() - prefetchCandidate.createdAt,
+        prefetchValidationMs,
+        tailDurationMs: prefetchTail.tailDurationMs,
+        tailRms: prefetchTail.tailRms,
+      });
+    }
 
-    if (!(asrMode === "browser_streaming" && body.sourceText?.trim())) {
+    if (
+      !prefetchedSourceText &&
+      !(asrMode === "browser_streaming" && body.sourceText?.trim())
+    ) {
       const assembleStartedAt = performance.now();
       audioFile = await finalizeAudioUploadSession(
         audioSessionId,
@@ -196,10 +250,22 @@ export async function POST(request: Request, context: RouteContext) {
         childAge: body.childAge ?? 6,
         targetLanguage: "en",
         sessionId: body.sessionId,
-        sourceText: body.sourceText?.trim(),
+        sourceText: prefetchedSourceText ?? body.sourceText?.trim(),
         audioFile,
         asrMode,
-        benchmark: body.benchmark,
+        benchmark: {
+          ...body.benchmark,
+          batchPrefetchAttempted: Boolean(body.prefetchId),
+          batchPrefetchUsed: Boolean(prefetchedSourceText),
+          batchPrefetchStability: prefetchCandidate?.stabilityCount,
+          batchPrefetchAgeMs: prefetchCandidate
+            ? Date.now() - prefetchCandidate.createdAt
+            : undefined,
+          batchPrefetchValidationMs: prefetchValidationMs || undefined,
+          batchPrefetchTailMs: prefetchTail?.tailDurationMs,
+          batchPrefetchPreviewMs: prefetchCandidate?.previewLatencyMs,
+          batchPrefetchAsrMs: prefetchCandidate?.asrLatencyMs,
+        },
       },
       { deferTextCacheWrite: true },
     );
@@ -210,7 +276,27 @@ export async function POST(request: Request, context: RouteContext) {
     after(async () => {
       const completeStartedAt = performance.now();
       let lastError: unknown;
+      let verificationAudio: File | undefined;
 
+      if (prefetchedSourceText && body.pcm16Wav?.chunkCount !== undefined) {
+        const assemblyStartedAt = performance.now();
+        try {
+          verificationAudio = await finalizeAudioUploadSession(
+            audioSessionId,
+            body.mimeType,
+            body.pcm16Wav,
+          );
+        } catch (error) {
+          logEvent("warn", "audio_session_prefetch_verification_assembly_failed", {
+            requestId,
+            audioSessionId,
+            assemblyMs: Math.round(performance.now() - assemblyStartedAt),
+            error,
+          });
+        }
+      }
+
+      let completed = false;
       for (let attempt = 1; attempt <= 3; attempt += 1) {
         try {
           await completeAudioSessionFinalize(
@@ -228,7 +314,9 @@ export async function POST(request: Request, context: RouteContext) {
               responseReadyMs,
             },
           });
-          return;
+          removeBatchPrefetchCandidate(body.prefetchId);
+          completed = true;
+          break;
         } catch (error) {
           lastError = error;
           if (attempt < 3) {
@@ -239,14 +327,53 @@ export async function POST(request: Request, context: RouteContext) {
         }
       }
 
-      logEvent("error", "audio_session_finalize_completion_failed", {
-        requestId,
-        audioSessionId,
-        background: true,
-        attempts: 3,
-        completeMs: Math.round(performance.now() - completeStartedAt),
-        error: lastError,
-      });
+      if (!completed) {
+        logEvent("error", "audio_session_finalize_completion_failed", {
+          requestId,
+          audioSessionId,
+          background: true,
+          attempts: 3,
+          completeMs: Math.round(performance.now() - completeStartedAt),
+          error: lastError,
+        });
+        return;
+      }
+
+      if (verificationAudio && prefetchedSourceText) {
+        const verificationStartedAt = performance.now();
+        try {
+          const verifiedText = await transcribeVietnamese({
+            requestId,
+            clientId: body.clientId?.trim() || undefined,
+            context: practiceContext,
+            childAge: body.childAge ?? 6,
+            targetLanguage: "en",
+            sessionId: body.sessionId,
+            audioFile: verificationAudio,
+            asrMode: "batch_chunks",
+            benchmark: body.benchmark,
+          });
+          logEvent("info", "audio_session_prefetch_verified", {
+            requestId,
+            audioSessionId,
+            matched:
+              normalizeVietnameseForExactMatch(verifiedText) ===
+              normalizeVietnameseForExactMatch(prefetchedSourceText),
+            verificationMs: Math.round(
+              performance.now() - verificationStartedAt,
+            ),
+          });
+        } catch (error) {
+          logEvent("warn", "audio_session_prefetch_verification_failed", {
+            requestId,
+            audioSessionId,
+            verificationMs: Math.round(
+              performance.now() - verificationStartedAt,
+            ),
+            error,
+          });
+        }
+      }
     });
     logEvent("info", "audio_session_finalize_response_ready", {
       requestId,
@@ -255,6 +382,8 @@ export async function POST(request: Request, context: RouteContext) {
         claimMs,
         assembleMs,
         pipelineMs,
+        prefetchValidationMs,
+        batchPrefetchUsed: Boolean(prefetchedSourceText),
         totalMs: responseReadyMs,
       },
     });

@@ -172,6 +172,53 @@ test("finalize builds a WAV header from PCM metadata without a header chunk", as
   assert.deepEqual([...bytes.subarray(44)], [1, 2, 3, 4]);
 });
 
+test("preview snapshot ignores chunks uploaded after its PCM metadata", async () => {
+  const sessionId = await sessions.createAudioUploadSession();
+  await sessions.saveAudioSessionChunk(
+    sessionId,
+    0,
+    new File([Buffer.from([1, 2])], "chunk-0.pcm"),
+  );
+  await sessions.saveAudioSessionChunk(
+    sessionId,
+    1,
+    new File([Buffer.from([3, 4])], "chunk-1.pcm"),
+  );
+  await sessions.saveAudioSessionChunk(
+    sessionId,
+    2,
+    new File([Buffer.from([5, 6])], "chunk-2.pcm"),
+  );
+
+  const file = await sessions.finalizeAudioUploadSession(
+    sessionId,
+    "audio/wav",
+    {
+      sampleRate: 24_000,
+      channelCount: 1,
+      bitsPerSample: 16,
+      pcmByteLength: 4,
+      chunkCount: 2,
+    },
+    { allowTrailingChunks: true },
+  );
+  const bytes = Buffer.from(await file.arrayBuffer());
+
+  assert.equal(bytes.readUInt32LE(40), 4);
+  assert.deepEqual([...bytes.subarray(44)], [1, 2, 3, 4]);
+});
+
+test("prefetch tail silence analysis rejects active speech", () => {
+  const silence = Buffer.alloc(48_000);
+  const speech = Buffer.alloc(48_000);
+  for (let offset = 0; offset < speech.byteLength; offset += 2) {
+    speech.writeInt16LE(offset % 8 === 0 ? 12_000 : -12_000, offset);
+  }
+
+  assert.equal(sessions.analyzePcm16Silence(silence).silent, true);
+  assert.equal(sessions.analyzePcm16Silence(speech).silent, false);
+});
+
 test("finalize accepts AAC audio for batch uploads", async () => {
   const sessionId = await sessions.createAudioUploadSession();
   await sessions.saveAudioSessionChunk(

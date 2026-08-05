@@ -120,6 +120,19 @@ export type Pcm16WavMetadata = {
   chunkCount?: number;
 };
 
+export type AudioSessionPrefetchTailResult = {
+  eligible: boolean;
+  reason:
+    | "tail_silent"
+    | "snapshot_mismatch"
+    | "session_mismatch"
+    | "tail_too_long"
+    | "tail_contains_speech";
+  extraChunkCount: number;
+  tailDurationMs: number;
+  tailRms: number;
+};
+
 export class AudioUploadError extends Error {
   constructor(
     public readonly code:
@@ -768,6 +781,7 @@ export async function finalizeAudioUploadSession(
   sessionId: string,
   mimeType = "audio/webm",
   pcm16Wav?: Pcm16WavMetadata,
+  options: { allowTrailingChunks?: boolean } = {},
 ) {
   validateSessionId(sessionId);
   const filename = getAudioFilename(mimeType);
@@ -782,6 +796,9 @@ export async function finalizeAudioUploadSession(
       400,
     );
   }
+  const snapshotChunkCount = options.allowTrailingChunks
+    ? pcmMetadata?.chunkCount
+    : undefined;
   let buffers: Buffer[];
 
   if (isPostgresStorageEnabled()) {
@@ -821,10 +838,14 @@ export async function finalizeAudioUploadSession(
         410,
       );
     }
-    const chunkRows = rows.filter(
+    const allChunkRows = rows.filter(
       (row): row is typeof row & { sequence: number } =>
         row.sequence !== null,
     );
+    const chunkRows =
+      snapshotChunkCount !== undefined
+        ? allChunkRows.filter((row) => row.sequence < snapshotChunkCount)
+        : allChunkRows;
     validateChunkSequence(
       chunkRows.map((row) => row.sequence),
       pcmMetadata?.chunkCount,
@@ -867,9 +888,15 @@ export async function finalizeAudioUploadSession(
     }
 
     const sessionDir = getSessionDir(sessionId);
-    const chunkNames = (await readdir(sessionDir))
+    const allChunkNames = (await readdir(sessionDir))
       .filter((name) => /^\d{6}\.part$/.test(name))
       .sort();
+    const chunkNames =
+      snapshotChunkCount !== undefined
+        ? allChunkNames.filter(
+            (name) => Number(name.slice(0, 6)) < snapshotChunkCount,
+          )
+        : allChunkNames;
     const sequences = chunkNames.map((name) => Number(name.slice(0, 6)));
     validateChunkSequence(sequences, pcmMetadata?.chunkCount);
     buffers = await Promise.all(
@@ -909,6 +936,202 @@ export async function finalizeAudioUploadSession(
   return new File([audio], filename, {
     type: normalizedMimeType,
   });
+}
+
+export function analyzePcm16Silence(
+  pcm: Buffer,
+  noiseRms?: number,
+) {
+  if (pcm.byteLength === 0 || pcm.byteLength % 2 !== 0) {
+    return { silent: false, rms: 1, activeSampleRatio: 1 };
+  }
+  const sampleCount = pcm.byteLength / 2;
+  const threshold = Math.min(
+    0.04,
+    Math.max(0.018, Number.isFinite(noiseRms) ? (noiseRms ?? 0) * 2.8 : 0.024),
+  );
+  const activeThreshold = Math.max(0.07, threshold * 2.5);
+  let squaredTotal = 0;
+  let activeSamples = 0;
+  for (let offset = 0; offset < pcm.byteLength; offset += 2) {
+    const value = pcm.readInt16LE(offset) / 32_768;
+    squaredTotal += value * value;
+    if (Math.abs(value) >= activeThreshold) activeSamples += 1;
+  }
+  const rms = Math.sqrt(squaredTotal / sampleCount);
+  const activeSampleRatio = activeSamples / sampleCount;
+  return {
+    silent: rms <= threshold && activeSampleRatio <= 0.025,
+    rms,
+    activeSampleRatio,
+  };
+}
+
+export async function validateAudioSessionPrefetchTail(
+  sessionId: string,
+  snapshot: Pcm16WavMetadata & { chunkCount: number },
+  finalMetadata: Pcm16WavMetadata & { chunkCount: number },
+  noiseRms?: number,
+): Promise<AudioSessionPrefetchTailResult> {
+  validateSessionId(sessionId);
+  validatePcm16WavMetadata(snapshot);
+  validatePcm16WavMetadata(finalMetadata);
+  const configsMatch =
+    snapshot.sampleRate === finalMetadata.sampleRate &&
+    snapshot.channelCount === finalMetadata.channelCount &&
+    snapshot.bitsPerSample === finalMetadata.bitsPerSample &&
+    snapshot.chunkCount <= finalMetadata.chunkCount &&
+    snapshot.pcmByteLength <= finalMetadata.pcmByteLength;
+  if (!configsMatch) {
+    return {
+      eligible: false,
+      reason: "snapshot_mismatch",
+      extraChunkCount: 0,
+      tailDurationMs: 0,
+      tailRms: 0,
+    };
+  }
+
+  let sessionChunkCount = 0;
+  let sessionTotalBytes = 0;
+  let tailBuffers: Buffer[] = [];
+  if (isPostgresStorageEnabled()) {
+    const rows = await queryDatabase<{
+      status: UploadStatus;
+      expires_at: string | Date;
+      total_bytes: string | number;
+      chunk_count: number;
+      chunk_storage_backend: AudioSessionChunkStorageBackend;
+      sequence: number | null;
+      content_base64: string | null;
+      object_key: string | null;
+      storage_backend: AudioSessionChunkStorageBackend | null;
+    }>(
+      `SELECT sessions.status, sessions.expires_at, sessions.total_bytes,
+              sessions.chunk_count, sessions.chunk_storage_backend,
+              chunks.sequence, chunks.content_base64,
+              chunks.object_key, chunks.storage_backend
+         FROM audio_upload_sessions AS sessions
+         LEFT JOIN audio_upload_chunks AS chunks
+           ON chunks.session_id = sessions.session_id
+          AND chunks.sequence >= $2
+        WHERE sessions.session_id = $1
+        ORDER BY chunks.sequence ASC`,
+      [sessionId, snapshot.chunkCount],
+    );
+    const session = rows[0];
+    if (!session || new Date(session.expires_at).getTime() <= Date.now()) {
+      return {
+        eligible: false,
+        reason: "session_mismatch",
+        extraChunkCount: 0,
+        tailDurationMs: 0,
+        tailRms: 0,
+      };
+    }
+    sessionChunkCount = session.chunk_count;
+    sessionTotalBytes = Number(session.total_bytes);
+    const chunks = rows.filter(
+      (row): row is typeof row & { sequence: number } => row.sequence !== null,
+    );
+    const expectedTailSequences = Array.from(
+      { length: finalMetadata.chunkCount - snapshot.chunkCount },
+      (_, index) => snapshot.chunkCount + index,
+    );
+    if (
+      chunks.length !== expectedTailSequences.length ||
+      chunks.some((row, index) => row.sequence !== expectedTailSequences[index])
+    ) {
+      return {
+        eligible: false,
+        reason: "session_mismatch",
+        extraChunkCount: chunks.length,
+        tailDurationMs: 0,
+        tailRms: 0,
+      };
+    }
+    tailBuffers = await Promise.all(
+      chunks.map(async (row) => {
+        const backend = row.storage_backend ?? session.chunk_storage_backend;
+        if (backend === "r2" && row.object_key) {
+          return readAudioSessionChunkObject(row.object_key);
+        }
+        return row.content_base64
+          ? Buffer.from(row.content_base64, "base64")
+          : Buffer.alloc(0);
+      }),
+    );
+  } else {
+    const metadata = await readLocalMetadata(sessionId);
+    sessionChunkCount = metadata.chunkCount;
+    sessionTotalBytes = metadata.totalBytes;
+    tailBuffers = await Promise.all(
+      Array.from(
+        { length: finalMetadata.chunkCount - snapshot.chunkCount },
+        (_, index) =>
+          readFile(
+            path.join(
+              getSessionDir(sessionId),
+              chunkFileName(snapshot.chunkCount + index),
+            ),
+          ),
+      ),
+    );
+  }
+
+  if (
+    sessionChunkCount !== finalMetadata.chunkCount ||
+    sessionTotalBytes !== finalMetadata.pcmByteLength
+  ) {
+    return {
+      eligible: false,
+      reason: "session_mismatch",
+      extraChunkCount: Math.max(0, sessionChunkCount - snapshot.chunkCount),
+      tailDurationMs: 0,
+      tailRms: 0,
+    };
+  }
+  const tail = Buffer.concat(tailBuffers);
+  const expectedTailBytes =
+    finalMetadata.pcmByteLength - snapshot.pcmByteLength;
+  if (tail.byteLength !== expectedTailBytes) {
+    return {
+      eligible: false,
+      reason: "session_mismatch",
+      extraChunkCount: tailBuffers.length,
+      tailDurationMs: 0,
+      tailRms: 0,
+    };
+  }
+  const bytesPerSecond =
+    finalMetadata.sampleRate * finalMetadata.channelCount * 2;
+  const tailDurationMs = Math.round((tail.byteLength / bytesPerSecond) * 1_000);
+  if (tailDurationMs > 1_600) {
+    return {
+      eligible: false,
+      reason: "tail_too_long",
+      extraChunkCount: tailBuffers.length,
+      tailDurationMs,
+      tailRms: 0,
+    };
+  }
+  if (tail.byteLength === 0) {
+    return {
+      eligible: true,
+      reason: "tail_silent",
+      extraChunkCount: 0,
+      tailDurationMs: 0,
+      tailRms: 0,
+    };
+  }
+  const analysis = analyzePcm16Silence(tail, noiseRms);
+  return {
+    eligible: analysis.silent,
+    reason: analysis.silent ? "tail_silent" : "tail_contains_speech",
+    extraChunkCount: tailBuffers.length,
+    tailDurationMs,
+    tailRms: analysis.rms,
+  };
 }
 
 export async function claimAudioSessionFinalize(
