@@ -4,6 +4,7 @@ import { transcribeVietnamese } from "@/lib/ai/asr";
 import {
   getBatchPrefetchCandidate,
   removeBatchPrefetchCandidate,
+  waitForBatchPrefetchCandidate,
 } from "@/lib/ai/batchPrefetch";
 import { normalizeVietnameseForExactMatch } from "@/lib/ai/exactRules";
 import { runConversationPipeline } from "@/lib/ai/pipeline";
@@ -59,6 +60,14 @@ const validContexts = new Set<PracticeContext>([
   "school",
   "outside",
 ]);
+
+const configuredPrefetchJoinMs = Number.parseInt(
+  process.env.AUDIO_SESSION_PREFETCH_JOIN_MS ?? "",
+  10,
+);
+const prefetchJoinTimeoutMs = Number.isFinite(configuredPrefetchJoinMs)
+  ? Math.max(0, Math.min(2_500, configuredPrefetchJoinMs))
+  : 2_100;
 
 function publicAudioUploadError(error: AudioUploadError) {
   const code: ApiErrorCode =
@@ -192,22 +201,34 @@ export async function POST(request: Request, context: RouteContext) {
     let prefetchTail:
       | Awaited<ReturnType<typeof validateAudioSessionPrefetchTail>>
       | undefined;
-    const prefetchCandidate = getBatchPrefetchCandidate(
+    let prefetchCandidate = getBatchPrefetchCandidate(
       body.prefetchId?.trim(),
       audioSessionId,
     );
+    let prefetchCandidateOrigin:
+      | "explicit"
+      | "latest"
+      | "joined"
+      | undefined = prefetchCandidate ? "explicit" : undefined;
+    let prefetchJoinMs = 0;
+    let prefetchJoinState: "latest" | "joined" | "none" | "timeout" =
+      "none";
     // Exact chunk/byte matching plus the final-tail silence check below is the
     // authoritative guard. Requiring a second preview made short Safari turns
     // miss prefetch even when the first snapshot already covered the final PCM.
     const requiredPrefetchStability = 1;
-    if (
-      asrMode === "batch_chunks" &&
-      prefetchCandidate &&
-      prefetchCandidate.stabilityCount >= requiredPrefetchStability &&
-      prefetchCandidate.context === body.context &&
-      prefetchCandidate.childAge === (body.childAge ?? 6) &&
-      body.pcm16Wav?.chunkCount !== undefined
-    ) {
+
+    const validatePrefetchCandidate = async () => {
+      if (
+        asrMode !== "batch_chunks" ||
+        !prefetchCandidate ||
+        prefetchCandidate.stabilityCount < requiredPrefetchStability ||
+        prefetchCandidate.context !== body.context ||
+        prefetchCandidate.childAge !== (body.childAge ?? 6) ||
+        body.pcm16Wav?.chunkCount === undefined
+      ) {
+        return false;
+      }
       const validationStartedAt = performance.now();
       prefetchTail = await validateAudioSessionPrefetchTail(
         audioSessionId,
@@ -215,7 +236,7 @@ export async function POST(request: Request, context: RouteContext) {
         body.pcm16Wav as Pcm16WavMetadata & { chunkCount: number },
         body.benchmark?.initialNoiseRms,
       );
-      prefetchValidationMs = Math.round(
+      prefetchValidationMs += Math.round(
         performance.now() - validationStartedAt,
       );
       if (prefetchTail.eligible) {
@@ -225,6 +246,7 @@ export async function POST(request: Request, context: RouteContext) {
       logEvent("info", "audio_session_prefetch_validated", {
         requestId,
         audioSessionId,
+        candidateOrigin: prefetchCandidateOrigin,
         eligible: prefetchTail.eligible,
         reason: prefetchTail.reason,
         stabilityCount: prefetchCandidate.stabilityCount,
@@ -234,6 +256,45 @@ export async function POST(request: Request, context: RouteContext) {
         tailDurationMs: prefetchTail.tailDurationMs,
         tailRms: prefetchTail.tailRms,
         assemblySource: prefetchTail.assemblySource,
+      });
+      return prefetchTail.eligible;
+    };
+
+    if (!prefetchCandidate && asrMode === "batch_chunks") {
+      const latest = await waitForBatchPrefetchCandidate(audioSessionId, 0);
+      prefetchJoinState = latest.state;
+      if (latest.candidate) {
+        prefetchCandidate = latest.candidate;
+        prefetchCandidateOrigin = "latest";
+      }
+    }
+    await validatePrefetchCandidate();
+
+    if (
+      !prefetchedSourceText &&
+      asrMode === "batch_chunks" &&
+      body.pcm16Wav?.chunkCount !== undefined
+    ) {
+      const joined = await waitForBatchPrefetchCandidate(
+        audioSessionId,
+        prefetchJoinTimeoutMs,
+        prefetchCandidate?.id,
+      );
+      prefetchJoinMs += joined.waitedMs;
+      prefetchJoinState = joined.state;
+      if (joined.candidate) {
+        prefetchCandidate = joined.candidate;
+        prefetchCandidateOrigin =
+          joined.state === "latest" ? "latest" : "joined";
+        await validatePrefetchCandidate();
+      }
+      logEvent("info", "audio_session_prefetch_joined", {
+        requestId,
+        audioSessionId,
+        state: joined.state,
+        waitedMs: joined.waitedMs,
+        candidateFound: Boolean(joined.candidate),
+        candidateOrigin: prefetchCandidateOrigin,
       });
     }
 
@@ -269,7 +330,11 @@ export async function POST(request: Request, context: RouteContext) {
         asrMode,
         benchmark: {
           ...body.benchmark,
-          batchPrefetchAttempted: Boolean(body.prefetchId),
+          batchPrefetchAttempted: Boolean(
+            body.prefetchId ||
+              prefetchCandidate ||
+              body.benchmark?.batchPrefetchAttempted,
+          ),
           batchPrefetchUsed: Boolean(prefetchedSourceText),
           batchPrefetchStability: prefetchCandidate?.stabilityCount,
           batchPrefetchAgeMs: prefetchCandidate
@@ -279,6 +344,9 @@ export async function POST(request: Request, context: RouteContext) {
           batchPrefetchTailMs: prefetchTail?.tailDurationMs,
           batchPrefetchPreviewMs: prefetchCandidate?.previewLatencyMs,
           batchPrefetchAsrMs: prefetchCandidate?.asrLatencyMs,
+          batchPrefetchJoinMs: prefetchJoinMs || undefined,
+          batchPrefetchJoinState: prefetchJoinState,
+          batchPrefetchCandidateOrigin: prefetchCandidateOrigin,
         },
       },
       {
@@ -339,7 +407,9 @@ export async function POST(request: Request, context: RouteContext) {
               responseReadyMs,
             },
           });
-          removeBatchPrefetchCandidate(body.prefetchId);
+          removeBatchPrefetchCandidate(
+            prefetchCandidate?.id ?? body.prefetchId,
+          );
           completed = true;
           break;
         } catch (error) {
@@ -408,6 +478,9 @@ export async function POST(request: Request, context: RouteContext) {
         assembleMs,
         pipelineMs,
         prefetchValidationMs,
+        prefetchJoinMs,
+        prefetchJoinState,
+        prefetchCandidateOrigin,
         assemblySource,
         batchPrefetchUsed: Boolean(prefetchedSourceText),
         totalMs: responseReadyMs,

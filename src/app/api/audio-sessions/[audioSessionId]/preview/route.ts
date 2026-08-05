@@ -1,5 +1,6 @@
 import { transcribeVietnamese } from "@/lib/ai/asr";
 import {
+  beginBatchPrefetchOperation,
   reserveBatchPrefetchAttempt,
   saveBatchPrefetchCandidate,
 } from "@/lib/ai/batchPrefetch";
@@ -49,6 +50,9 @@ export async function POST(request: Request, context: RouteContext) {
   const requestId = getRequestId(request);
   const startedAt = performance.now();
   const { audioSessionId } = await context.params;
+  let prefetchOperation:
+    | ReturnType<typeof beginBatchPrefetchOperation>
+    | undefined;
 
   try {
     authorizeAudioSessionRequest(request, audioSessionId);
@@ -75,6 +79,8 @@ export async function POST(request: Request, context: RouteContext) {
         requestId,
       );
     }
+
+    prefetchOperation = beginBatchPrefetchOperation(audioSessionId);
 
     let assemblySource: AudioAssemblySource | undefined;
     const audio = await finalizeAudioUploadSession(
@@ -196,6 +202,7 @@ export async function POST(request: Request, context: RouteContext) {
       previewLatencyMs,
       asrLatencyMs,
     });
+    prefetchOperation.finish(candidate);
     logEvent("info", "audio_session_prefetch_ready", {
       requestId,
       audioSessionId,
@@ -242,5 +249,7 @@ export async function POST(request: Request, context: RouteContext) {
           )
         : error;
     return withRequestId(toErrorResponse(responseError, requestId), requestId);
+  } finally {
+    prefetchOperation?.finish(null);
   }
 }

@@ -1,9 +1,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
+  beginBatchPrefetchOperation,
   getBatchPrefetchCandidate,
+  getLatestBatchPrefetchCandidate,
+  resetBatchPrefetchForTesting,
   reserveBatchPrefetchAttempt,
   saveBatchPrefetchCandidate,
+  waitForBatchPrefetchCandidate,
 } from "./batchPrefetch";
 
 function candidateInput(
@@ -69,4 +73,60 @@ test("prefetch attempts are throttled per audio session", () => {
 
   assert.equal(reserveBatchPrefetchAttempt(audioSessionId), true);
   assert.equal(reserveBatchPrefetchAttempt(audioSessionId), false);
+});
+
+test("finalize joins a preview already running for the audio session", async () => {
+  resetBatchPrefetchForTesting();
+  const audioSessionId = `audio_v2-${crypto.randomUUID()}`;
+  const operation = beginBatchPrefetchOperation(audioSessionId);
+  const waiting = waitForBatchPrefetchCandidate(audioSessionId, 200);
+  const candidate = saveBatchPrefetchCandidate(
+    candidateInput(audioSessionId, "Con muá»‘n uá»‘ng nÆ°á»›c."),
+  );
+
+  operation.finish(candidate);
+  const result = await waiting;
+
+  assert.equal(result.state, "joined");
+  assert.equal(result.candidate?.id, candidate.id);
+  assert.equal(getLatestBatchPrefetchCandidate(audioSessionId)?.id, candidate.id);
+});
+
+test("finalize falls back immediately when a running preview has no candidate", async () => {
+  resetBatchPrefetchForTesting();
+  const audioSessionId = `audio_v2-${crypto.randomUUID()}`;
+  const operation = beginBatchPrefetchOperation(audioSessionId);
+  const waiting = waitForBatchPrefetchCandidate(audioSessionId, 200);
+
+  operation.finish(null);
+  const result = await waiting;
+
+  assert.equal(result.state, "joined");
+  assert.equal(result.candidate, null);
+  assert.ok(result.waitedMs < 100);
+});
+
+test("finalize does not wait when no preview is running", async () => {
+  resetBatchPrefetchForTesting();
+  const result = await waitForBatchPrefetchCandidate(
+    `audio_v2-${crypto.randomUUID()}`,
+    200,
+  );
+
+  assert.equal(result.state, "none");
+  assert.equal(result.candidate, null);
+  assert.equal(result.waitedMs, 0);
+});
+
+test("finalize bounds the wait for a stalled preview", async () => {
+  resetBatchPrefetchForTesting();
+  const audioSessionId = `audio_v2-${crypto.randomUUID()}`;
+  const operation = beginBatchPrefetchOperation(audioSessionId);
+
+  const result = await waitForBatchPrefetchCandidate(audioSessionId, 20);
+
+  assert.equal(result.state, "timeout");
+  assert.equal(result.candidate, null);
+  assert.ok(result.waitedMs >= 10);
+  operation.finish(null);
 });

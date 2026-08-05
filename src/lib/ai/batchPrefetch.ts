@@ -32,16 +32,37 @@ type BatchPrefetchAttempt = {
   expiresAt: number;
 };
 
+type BatchPrefetchInFlight = {
+  token: string;
+  startedAt: number;
+  expiresAt: number;
+  settled: boolean;
+  promise: Promise<BatchPrefetchCandidate | null>;
+  resolve: (candidate: BatchPrefetchCandidate | null) => void;
+};
+
+export type BatchPrefetchWaitResult = {
+  candidate: BatchPrefetchCandidate | null;
+  state: "latest" | "joined" | "none" | "timeout";
+  waitedMs: number;
+};
+
 type BatchPrefetchGlobalState = typeof globalThis & {
   __aiSpeakingBatchPrefetchCandidates?: Map<string, BatchPrefetchCandidate>;
   __aiSpeakingBatchPrefetchAttempts?: Map<string, BatchPrefetchAttempt>;
+  __aiSpeakingBatchPrefetchLatestBySession?: Map<string, string>;
+  __aiSpeakingBatchPrefetchInFlight?: Map<string, BatchPrefetchInFlight>;
 };
 
 const state = globalThis as BatchPrefetchGlobalState;
 const candidates = state.__aiSpeakingBatchPrefetchCandidates ??= new Map();
 const attempts = state.__aiSpeakingBatchPrefetchAttempts ??= new Map();
+const latestCandidateBySession =
+  state.__aiSpeakingBatchPrefetchLatestBySession ??= new Map();
+const inFlight = state.__aiSpeakingBatchPrefetchInFlight ??= new Map();
 const candidateTtlMs = 20_000;
 const attemptTtlMs = 60_000;
+const inFlightTtlMs = 35_000;
 const maxCandidates = 128;
 const maxAttemptsPerSession = 5;
 const minimumAttemptIntervalMs = 700;
@@ -50,6 +71,9 @@ function prune(now = Date.now()) {
   for (const [id, candidate] of candidates) {
     if (candidate.createdAt + candidateTtlMs <= now) {
       candidates.delete(id);
+      if (latestCandidateBySession.get(candidate.audioSessionId) === id) {
+        latestCandidateBySession.delete(candidate.audioSessionId);
+      }
     }
   }
   for (const [sessionId, attempt] of attempts) {
@@ -57,11 +81,61 @@ function prune(now = Date.now()) {
       attempts.delete(sessionId);
     }
   }
+  for (const [sessionId, operation] of inFlight) {
+    if (operation.expiresAt <= now) {
+      operation.settled = true;
+      operation.resolve(null);
+      inFlight.delete(sessionId);
+    }
+  }
   while (candidates.size > maxCandidates) {
     const oldest = candidates.keys().next().value;
     if (oldest === undefined) break;
+    const candidate = candidates.get(oldest);
     candidates.delete(oldest);
+    if (
+      candidate &&
+      latestCandidateBySession.get(candidate.audioSessionId) === oldest
+    ) {
+      latestCandidateBySession.delete(candidate.audioSessionId);
+    }
   }
+}
+
+/**
+ * Registers work already owned and awaited by the preview route. This is only
+ * an in-process fast path: finalize falls back immediately when it lands on a
+ * different instance or no preview is running.
+ */
+export function beginBatchPrefetchOperation(audioSessionId: string) {
+  const now = Date.now();
+  prune(now);
+  const token = crypto.randomUUID();
+  let resolve!: (candidate: BatchPrefetchCandidate | null) => void;
+  const promise = new Promise<BatchPrefetchCandidate | null>((settle) => {
+    resolve = settle;
+  });
+  const operation: BatchPrefetchInFlight = {
+    token,
+    startedAt: now,
+    expiresAt: now + inFlightTtlMs,
+    settled: false,
+    promise,
+    resolve,
+  };
+  inFlight.set(audioSessionId, operation);
+
+  return {
+    token,
+    finish(candidate: BatchPrefetchCandidate | null = null) {
+      if (operation.settled) return;
+      operation.settled = true;
+      operation.resolve(candidate);
+      if (inFlight.get(audioSessionId)?.token === token) {
+        inFlight.delete(audioSessionId);
+      }
+    },
+  };
 }
 
 export function reserveBatchPrefetchAttempt(audioSessionId: string) {
@@ -116,6 +190,7 @@ export function saveBatchPrefetchCandidate(input: Omit<
       : 1,
   };
   candidates.set(candidate.id, candidate);
+  latestCandidateBySession.set(candidate.audioSessionId, candidate.id);
   prune(now);
   return candidate;
 }
@@ -130,6 +205,81 @@ export function getBatchPrefetchCandidate(
   return candidate?.audioSessionId === audioSessionId ? candidate : null;
 }
 
+export function getLatestBatchPrefetchCandidate(audioSessionId: string) {
+  prune();
+  const id = latestCandidateBySession.get(audioSessionId);
+  if (!id) return null;
+  const candidate = candidates.get(id);
+  if (!candidate || candidate.audioSessionId !== audioSessionId) {
+    latestCandidateBySession.delete(audioSessionId);
+    return null;
+  }
+  return candidate;
+}
+
+export async function waitForBatchPrefetchCandidate(
+  audioSessionId: string,
+  timeoutMs: number,
+  excludeCandidateId?: string,
+): Promise<BatchPrefetchWaitResult> {
+  const startedAt = performance.now();
+  const latest = getLatestBatchPrefetchCandidate(audioSessionId);
+  if (latest && latest.id !== excludeCandidateId) {
+    return { candidate: latest, state: "latest", waitedMs: 0 };
+  }
+
+  const operation = inFlight.get(audioSessionId);
+  if (!operation || timeoutMs <= 0) {
+    return { candidate: null, state: "none", waitedMs: 0 };
+  }
+
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timedOut = Symbol("batch-prefetch-timeout");
+  const outcome = await Promise.race([
+    operation.promise,
+    new Promise<typeof timedOut>((resolveTimeout) => {
+      timer = setTimeout(() => resolveTimeout(timedOut), timeoutMs);
+    }),
+  ]);
+  if (timer) clearTimeout(timer);
+  const waitedMs = Math.round(performance.now() - startedAt);
+  if (outcome === timedOut) {
+    return { candidate: null, state: "timeout", waitedMs };
+  }
+
+  const candidate =
+    outcome && outcome.id !== excludeCandidateId
+      ? outcome
+      : getLatestBatchPrefetchCandidate(audioSessionId);
+  return {
+    candidate:
+      candidate && candidate.id !== excludeCandidateId ? candidate : null,
+    state: "joined",
+    waitedMs,
+  };
+}
+
 export function removeBatchPrefetchCandidate(id: string | undefined) {
-  if (id) candidates.delete(id);
+  if (!id) return;
+  const candidate = candidates.get(id);
+  candidates.delete(id);
+  if (
+    candidate &&
+    latestCandidateBySession.get(candidate.audioSessionId) === id
+  ) {
+    latestCandidateBySession.delete(candidate.audioSessionId);
+  }
+}
+
+export function resetBatchPrefetchForTesting() {
+  for (const operation of inFlight.values()) {
+    if (!operation.settled) {
+      operation.settled = true;
+      operation.resolve(null);
+    }
+  }
+  candidates.clear();
+  attempts.clear();
+  latestCandidateBySession.clear();
+  inFlight.clear();
 }
