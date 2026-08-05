@@ -651,6 +651,31 @@ export function AdminDashboard() {
                       <span>ASR {conversation.latency.asrMs} ms</span>
                       <span>Text {conversation.latency.llmMs} ms</span>
                       <span>Audio {conversation.latency.ttsMs} ms</span>
+                      {conversation.latency.responseToPlaybackMs !== undefined ? (
+                        <span>
+                          Safari sau response {conversation.latency.responseToPlaybackMs} ms
+                        </span>
+                      ) : null}
+                      {conversation.benchmark
+                        ?.batchTerminalPreviewLeadBeforeFinalizeMs !== undefined ? (
+                        <span>
+                          Terminal sớm hơn finalize{" "}
+                          {
+                            conversation.benchmark
+                              .batchTerminalPreviewLeadBeforeFinalizeMs
+                          }{" "}
+                          ms
+                        </span>
+                      ) : null}
+                      {conversation.benchmark
+                        ?.batchPipelineSharedFlightJoined !== undefined ? (
+                        <span>
+                          Shared pipeline{" "}
+                          {conversation.benchmark.batchPipelineSharedFlightJoined
+                            ? "yes"
+                            : "no"}
+                        </span>
+                      ) : null}
                     </div>
                   </div>
 

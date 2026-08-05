@@ -25,13 +25,13 @@ test("rejects common video-outro hallucinations from quiet child audio", () => {
     getVietnameseTranscriptQualityIssue(
       "Hãy subscribe cho kênh La La School để không bỏ lỡ những video hấp dẫn",
     ),
-    "known_hallucination",
+    "common_hallucination",
   );
   assert.equal(
     getVietnameseTranscriptQualityIssue(
       "Cảm ơn các bạn đã theo dõi và hẹn gặp lại trong video tiếp theo.",
     ),
-    "known_hallucination",
+    "common_hallucination",
   );
 });
 
@@ -39,10 +39,10 @@ test("accepts a legitimate short goodbye", () => {
   assert.equal(getVietnameseTranscriptQualityIssue("Hẹn gặp lại nhé."), null);
 });
 
-test("rejects a short repeated token from a failed decode", () => {
+test("keeps a short repeated child phrase when there is too little evidence to reject it", () => {
   assert.equal(
     getVietnameseTranscriptQualityIssue("cơm cơm"),
-    "repetitive",
+    null,
   );
 });
 

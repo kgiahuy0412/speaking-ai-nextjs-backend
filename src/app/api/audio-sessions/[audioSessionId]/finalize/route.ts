@@ -2,7 +2,11 @@ import { createHash } from "node:crypto";
 import { after } from "next/server";
 import { transcribeVietnamese } from "@/lib/ai/asr";
 import { transcribeAudioSessionOnce } from "@/lib/ai/audioSessionAsr";
-import { prepareAudioSessionPipelineOnce } from "@/lib/ai/audioSessionPipeline";
+import {
+  getLatestTerminalAudioSessionPipelineFlight,
+  prepareAudioSessionPipelineOnce,
+  type PreparedAudioSessionPipeline,
+} from "@/lib/ai/audioSessionPipeline";
 import {
   type BatchPrefetchCandidate,
   getBatchPrefetchCandidate,
@@ -223,6 +227,7 @@ export async function POST(request: Request, context: RouteContext) {
       | "prefetch"
       | "asr"
       | "late_prefetch"
+      | "terminal_pipeline"
       | "pipeline"
       | "browser_streaming" = "browser_streaming";
     let prefetchRaceMs = 0;
@@ -231,6 +236,13 @@ export async function POST(request: Request, context: RouteContext) {
     let hedgedAsrSharedFlightJoined: boolean | undefined;
     let hedgedAsrUsed = false;
     let preparedPipelineSharedFlightJoined: boolean | undefined;
+    let terminalPipelineAgeMs: number | undefined;
+    let terminalPipelineTailEligible: boolean | undefined;
+    let terminalPipelineSharedFlightJoined: boolean | undefined;
+    let terminalPreparedPipeline: PreparedAudioSessionPipeline | undefined;
+    let terminalPipelinePromise:
+      | Promise<PreparedAudioSessionPipeline>
+      | undefined;
     let supersededPipelinePromise: Promise<unknown> | undefined;
     let preparedPipelinePromise:
       | ReturnType<typeof prepareAudioSessionPipelineOnce>
@@ -325,6 +337,62 @@ export async function POST(request: Request, context: RouteContext) {
       // the exact-snapshot preparation until it is either used or awaited in
       // the post-response task.
       void preparedPipelinePromise.catch(() => undefined);
+
+      // The terminal preview normally represents the same speech plus only a
+      // short silent tail. Registering happens before preview ASR starts, so
+      // finalize can join the complete in-flight ASR -> text -> audio promise
+      // instead of waiting until the preview route has saved a candidate.
+      const terminalFlight = getLatestTerminalAudioSessionPipelineFlight({
+        audioSessionId,
+        context: practiceContext,
+        childAge: body.childAge ?? 6,
+      });
+      if (
+        terminalFlight &&
+        terminalFlight.snapshot.chunkCount !== undefined &&
+        body.pcm16Wav.chunkCount !== undefined &&
+        terminalFlight.snapshot.chunkCount <= body.pcm16Wav.chunkCount &&
+        terminalFlight.snapshot.pcmByteLength <=
+          body.pcm16Wav.pcmByteLength
+      ) {
+        terminalPipelineAgeMs = Math.max(
+          0,
+          Date.now() - terminalFlight.startedAt,
+        );
+        const validationStartedAt = performance.now();
+        const terminalTail = await validateAudioSessionPrefetchTail(
+          audioSessionId,
+          terminalFlight.snapshot as Pcm16WavMetadata & {
+            chunkCount: number;
+          },
+          body.pcm16Wav as Pcm16WavMetadata & { chunkCount: number },
+          body.benchmark?.initialNoiseRms,
+        );
+        const terminalValidationMs = Math.round(
+          performance.now() - validationStartedAt,
+        );
+        prefetchValidationMs += terminalValidationMs;
+        terminalPipelineTailEligible = terminalTail.eligible;
+        assemblySource = terminalTail.assemblySource;
+        if (terminalTail.eligible) {
+          terminalPipelinePromise = terminalFlight.promise;
+          void terminalPipelinePromise.catch(() => undefined);
+        }
+        logEvent("info", "audio_session_terminal_pipeline_validated", {
+          requestId,
+          audioSessionId,
+          eligible: terminalTail.eligible,
+          reason: terminalTail.reason,
+          terminalPipelineAgeMs,
+          terminalValidationMs,
+          tailDurationMs: terminalTail.tailDurationMs,
+          activeFrameRatio: terminalTail.activeFrameRatio,
+          longestSpeechRunMs: terminalTail.longestSpeechRunMs,
+          snapshotChunkCount: terminalFlight.snapshot.chunkCount,
+          finalChunkCount: body.pcm16Wav.chunkCount,
+          assemblySource: terminalTail.assemblySource,
+        });
+      }
     }
 
     const requiredPrefetchStability = 1;
@@ -440,16 +508,60 @@ export async function POST(request: Request, context: RouteContext) {
       const raceStartedAt = performance.now();
       candidateMonitorPromise = waitForValidPrefetchCandidate();
       activeCandidateMonitorPromise = candidateMonitorPromise;
-      const firstWinner = await Promise.race([
+      type InitialRaceWinner =
+        | {
+            kind: "asr";
+            asr: Awaited<NonNullable<typeof hedgedAsrPromise>>;
+          }
+        | { kind: "prefetch"; candidate: BatchPrefetchCandidate | undefined }
+        | { kind: "terminal_pipeline"; prepared: PreparedAudioSessionPipeline }
+        | { kind: "terminal_pipeline_error"; error: unknown };
+      const baseInitialContenders: Promise<InitialRaceWinner>[] = [
         hedgedAsrPromise!.then((asr) => ({ kind: "asr" as const, asr })),
         candidateMonitorPromise.then((candidate) => ({
           kind: "prefetch" as const,
           candidate,
         })),
-      ]);
+      ];
+      const initialContenders = [...baseInitialContenders];
+      if (terminalPipelinePromise) {
+        initialContenders.push(
+          terminalPipelinePromise.then(
+            (prepared) => ({
+              kind: "terminal_pipeline" as const,
+              prepared,
+            }),
+            (error: unknown) => ({
+              kind: "terminal_pipeline_error" as const,
+              error,
+            }),
+          ),
+        );
+      }
+      let firstWinner = await Promise.race(initialContenders);
+      if (firstWinner.kind === "terminal_pipeline_error") {
+        logEvent("warn", "audio_session_terminal_pipeline_join_failed", {
+          requestId,
+          audioSessionId,
+          error: firstWinner.error,
+        });
+        terminalPipelinePromise = undefined;
+        firstWinner = await Promise.race(baseInitialContenders);
+      }
       prefetchRaceMs = Math.round(performance.now() - raceStartedAt);
 
-      if (firstWinner.kind === "prefetch" && firstWinner.candidate) {
+      if (firstWinner.kind === "terminal_pipeline") {
+        prefetchRaceWinner = "terminal_pipeline";
+        batchPrefetchUsed = true;
+        terminalPipelineSharedFlightJoined =
+          firstWinner.prepared.pipelineSharedFlightJoined;
+        preparedPipelineSharedFlightJoined =
+          firstWinner.prepared.pipelineSharedFlightJoined;
+        terminalPreparedPipeline = firstWinner.prepared;
+        prefetchedSourceText = firstWinner.prepared.pipeline.asr.value;
+        candidateMonitorCancelled = true;
+        cancelCandidateWait?.();
+      } else if (firstWinner.kind === "prefetch" && firstWinner.candidate) {
         prefetchRaceWinner = "prefetch";
         batchPrefetchUsed = true;
       } else {
@@ -493,6 +605,7 @@ export async function POST(request: Request, context: RouteContext) {
         batchPrefetchAttempted: Boolean(
           body.prefetchId ||
             prefetchCandidate ||
+            terminalPipelineAgeMs !== undefined ||
             body.benchmark?.batchPrefetchAttempted,
         ),
         batchPrefetchUsed: usingPrefetch,
@@ -509,6 +622,12 @@ export async function POST(request: Request, context: RouteContext) {
         batchPrefetchCandidateOrigin: prefetchCandidateOrigin,
         batchPrefetchRaceWinner: prefetchRaceWinner,
         batchPrefetchRaceMs: prefetchRaceMs || undefined,
+        batchPipelineSharedFlightJoined:
+          preparedPipelineSharedFlightJoined,
+        batchTerminalPipelineAgeMs: terminalPipelineAgeMs,
+        batchTerminalPipelineTailEligible: terminalPipelineTailEligible,
+        batchTerminalPipelineSharedFlightJoined:
+          terminalPipelineSharedFlightJoined,
         batchFinalizeHedgedAsrMs: hedgedAsrLatencyMs,
         batchFinalizeHedgedAsrWaitMs: hedgedAsrWaitMs,
         batchFinalizeHedgedAsrSharedFlightJoined:
@@ -538,7 +657,13 @@ export async function POST(request: Request, context: RouteContext) {
 
     const pipelineStartedAt = performance.now();
     let result: ConversationResponse;
-    if (prefetchedSourceText && prefetchCandidate) {
+    if (terminalPreparedPipeline) {
+      supersededPipelinePromise = preparedPipelinePromise;
+      result = completePreparedConversationPipeline(
+        pipelineInput(true),
+        terminalPreparedPipeline.pipeline,
+      );
+    } else if (prefetchedSourceText && prefetchCandidate) {
       supersededPipelinePromise = preparedPipelinePromise;
       result = await runPrefetchedPipeline();
     } else {
@@ -556,7 +681,18 @@ export async function POST(request: Request, context: RouteContext) {
             prefetchedTranscript: hedgedTranscript,
           });
       if (candidateMonitorPromise) {
-        const processingWinner = await Promise.race([
+        type ProcessingRaceWinner =
+          | { kind: "pipeline"; result: ConversationResponse }
+          | {
+              kind: "prefetch";
+              candidate: BatchPrefetchCandidate | undefined;
+            }
+          | {
+              kind: "terminal_pipeline";
+              prepared: PreparedAudioSessionPipeline;
+            }
+          | { kind: "terminal_pipeline_error"; error: unknown };
+        const baseProcessingContenders: Promise<ProcessingRaceWinner>[] = [
           authoritativePipelinePromise.then((pipelineResult) => ({
             kind: "pipeline" as const,
             result: pipelineResult,
@@ -565,8 +701,51 @@ export async function POST(request: Request, context: RouteContext) {
             kind: "prefetch" as const,
             candidate,
           })),
-        ]);
-        if (processingWinner.kind === "prefetch" && processingWinner.candidate) {
+        ];
+        const processingContenders = [...baseProcessingContenders];
+        if (terminalPipelinePromise) {
+          processingContenders.push(
+            terminalPipelinePromise.then(
+              (prepared) => ({
+                kind: "terminal_pipeline" as const,
+                prepared,
+              }),
+              (error: unknown) => ({
+                kind: "terminal_pipeline_error" as const,
+                error,
+              }),
+            ),
+          );
+        }
+        let processingWinner = await Promise.race(processingContenders);
+        if (processingWinner.kind === "terminal_pipeline_error") {
+          logEvent("warn", "audio_session_terminal_pipeline_join_failed", {
+            requestId,
+            audioSessionId,
+            error: processingWinner.error,
+          });
+          terminalPipelinePromise = undefined;
+          processingWinner = await Promise.race(baseProcessingContenders);
+        }
+        if (processingWinner.kind === "terminal_pipeline") {
+          prefetchRaceWinner = "terminal_pipeline";
+          batchPrefetchUsed = true;
+          terminalPipelineSharedFlightJoined =
+            processingWinner.prepared.pipelineSharedFlightJoined;
+          preparedPipelineSharedFlightJoined =
+            processingWinner.prepared.pipelineSharedFlightJoined;
+          prefetchedSourceText = processingWinner.prepared.pipeline.asr.value;
+          candidateMonitorCancelled = true;
+          cancelCandidateWait?.();
+          supersededPipelinePromise = authoritativePipelinePromise;
+          result = completePreparedConversationPipeline(
+            pipelineInput(true),
+            processingWinner.prepared.pipeline,
+          );
+        } else if (
+          processingWinner.kind === "prefetch" &&
+          processingWinner.candidate
+        ) {
           prefetchRaceWinner = "late_prefetch";
           batchPrefetchUsed = true;
           supersededPipelinePromise = authoritativePipelinePromise;
@@ -710,6 +889,13 @@ export async function POST(request: Request, context: RouteContext) {
         hedgedAsrSharedFlightJoined,
         hedgedAsrUsed,
         preparedPipelineSharedFlightJoined,
+        terminalPipelineAgeMs,
+        terminalPipelineTailEligible,
+        terminalPipelineSharedFlightJoined,
+        terminalPreviewStartedAfterSilenceMs:
+          body.benchmark?.batchTerminalPreviewStartedAfterSilenceMs,
+        terminalPreviewLeadBeforeFinalizeMs:
+          body.benchmark?.batchTerminalPreviewLeadBeforeFinalizeMs,
         assemblySource,
         batchPrefetchUsed,
         totalMs: responseReadyMs,

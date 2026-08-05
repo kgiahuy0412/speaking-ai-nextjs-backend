@@ -81,9 +81,16 @@ export type BenchmarkMetadata = {
     | "prefetch"
     | "asr"
     | "late_prefetch"
+    | "terminal_pipeline"
     | "pipeline"
     | "browser_streaming";
   batchPrefetchRaceMs?: number;
+  batchPipelineSharedFlightJoined?: boolean;
+  batchTerminalPipelineAgeMs?: number;
+  batchTerminalPipelineTailEligible?: boolean;
+  batchTerminalPipelineSharedFlightJoined?: boolean;
+  batchTerminalPreviewStartedAfterSilenceMs?: number;
+  batchTerminalPreviewLeadBeforeFinalizeMs?: number;
   batchFinalizeHedgedAsrMs?: number;
   batchFinalizeHedgedAsrWaitMs?: number;
   batchFinalizeHedgedAsrSharedFlightJoined?: boolean;
@@ -117,6 +124,7 @@ export type ConversationLatency = {
   ttsFirstByteMs?: number;
   browserAudioStartedMs?: number;
   audioStartedAfterStopMs?: number;
+  responseToPlaybackMs?: number;
 };
 
 export type ProcessingMode = "rule" | "ai" | "fallback";

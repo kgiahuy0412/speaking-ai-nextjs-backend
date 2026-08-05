@@ -182,6 +182,7 @@ export async function PATCH(request: Request) {
       audioStartedAfterStopMs: body.latency.audioStartedAfterStopMs,
       audioLoadMs: body.latency.audioLoadMs,
       audioFromDeviceCache: body.latency.audioFromDeviceCache,
+      responseToPlaybackMs: body.latency.responseToPlaybackMs,
     });
   }
 

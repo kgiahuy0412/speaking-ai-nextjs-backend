@@ -8,6 +8,7 @@ import { buildReviewedRegionalAliases } from "./regionalVocabulary";
 
 export type TranscriptCorpusRepairStrategy =
   | "asr_folded"
+  | "observed_asr_alias"
   | "regional_alias"
   | "regional_fuzzy";
 
@@ -270,6 +271,48 @@ for (const rule of regionalExactRepairRulesV1) {
   );
 }
 
+/**
+ * Provider errors confirmed from real phone/Web test turns. These aliases are
+ * deliberately explicit: broad fuzzy matching over all 5,000+ child
+ * sentences can silently change a legitimate sentence into another rule.
+ */
+const reviewedObservedAsrCorrectionsV1 = [
+  {
+    aliases: [
+      "Công mũ xem phim hòa cân",
+      "À con muốn xem phim hoặc hình",
+    ],
+    canonical: "Con muốn xem phim hoạt hình.",
+  },
+  {
+    aliases: ["Con bị vẹn rồi"],
+    canonical: "Con mệt rồi.",
+  },
+  {
+    aliases: ["Còn muốn đi sở thủ xìm càng hổ"],
+    canonical: "Con muốn đi sở thú xem con hổ.",
+  },
+  {
+    aliases: ["Con học lớp xấu rồi"],
+    canonical: "Con học lớp sáu rồi.",
+  },
+] as const;
+
+const reviewedRuleByCanonicalVietnamese = new Map(
+  reviewedExactRulesV1.map((rule) => [
+    normalizeVietnameseForExactMatch(rule.vietnamese),
+    rule,
+  ]),
+);
+const observedAsrCorrectionByFoldedText = new Map(
+  reviewedObservedAsrCorrectionsV1.flatMap((correction) =>
+    correction.aliases.map(
+      (alias) =>
+        [normalizeVietnameseForAsrRuleMatch(alias), correction] as const,
+    ),
+  ),
+);
+
 function addUnambiguousRuleAlias(
   aliases: Map<string, ExactTranslationRule | null>,
   alias: string,
@@ -342,6 +385,23 @@ export function repairVietnameseTranscriptWithCorpus(
   const exactRule = exactRuleByVietnamese.get(normalizedExact);
   if (exactRule) {
     return { text: trimmed, repaired: false, ruleId: exactRule.id };
+  }
+
+  const observedCorrection = observedAsrCorrectionByFoldedText.get(
+    normalizeVietnameseForAsrRuleMatch(trimmed),
+  );
+  if (observedCorrection) {
+    const canonicalRule = reviewedRuleByCanonicalVietnamese.get(
+      normalizeVietnameseForExactMatch(observedCorrection.canonical),
+    );
+    return {
+      text: observedCorrection.canonical,
+      repaired: true,
+      ruleId: canonicalRule?.id,
+      strategy: "observed_asr_alias",
+      score: 1,
+      margin: 1,
+    };
   }
 
   const regionalAliasRule = regionalAliasRuleByVietnamese.get(normalizedExact);

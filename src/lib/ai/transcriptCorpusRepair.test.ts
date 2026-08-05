@@ -88,6 +88,22 @@ test("repairs common regional and child-pronunciation substitutions", () => {
   }
 });
 
+test("repairs observed Cloudflare child-speech errors without broad fuzzy matching", () => {
+  const cases = new Map([
+    ["Công mũ xem phim hòa cân", "Con muốn xem phim hoạt hình."],
+    ["à con muốn xem phim hoặc hình", "Con muốn xem phim hoạt hình."],
+    ["Con bị vẹn rồi", "Con mệt rồi."],
+    ["Còn muốn đi sở thủ xìm càng hổ", "Con muốn đi sở thú xem con hổ."],
+    ["Con học lớp xấu rồi", "Con học lớp sáu rồi."],
+  ]);
+
+  for (const [source, expected] of cases) {
+    const repaired = repairVietnameseTranscriptWithCorpus(source);
+    assert.equal(repaired.text, expected, source);
+    assert.equal(repaired.strategy, "observed_asr_alias", source);
+  }
+});
+
 test("repairs reviewed North, Central, and South whole-sentence aliases", () => {
   const cases = new Map([
     ["Bữa ni con rất bui.", "Hôm nay con rất vui."],

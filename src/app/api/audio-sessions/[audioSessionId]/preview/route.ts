@@ -100,6 +100,7 @@ export async function POST(request: Request, context: RouteContext) {
     const prepared = await prepareAudioSessionPipelineOnce({
       audioSessionId,
       snapshot: body.pcm16Wav,
+      terminalSnapshot: body.terminal === true,
       request: {
         requestId,
         clientId: body.clientId?.trim() || undefined,
