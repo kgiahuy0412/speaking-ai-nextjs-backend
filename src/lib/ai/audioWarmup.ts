@@ -45,11 +45,19 @@ export type AudioWarmupOptions = {
   limit?: number;
 };
 
-const maximumAutomaticWarmupRules = 300;
+// The reviewed corpus currently contains more than five thousand rules. Keep
+// a bounded safety ceiling, but do not silently stop after the first 300: the
+// warm-up job is resumable because every item checks persistent audio storage
+// before synthesizing a cache miss.
+const maximumAutomaticWarmupRules = 10_000;
 
 export function getAudioWarmupRuleLimit(requestedLimit?: number) {
-  const configured = Number(process.env.AUDIO_WARMUP_RULE_LIMIT ?? 200);
-  const fallback = Number.isFinite(configured) ? configured : 200;
+  const configured = Number(
+    process.env.AUDIO_WARMUP_RULE_LIMIT ?? maximumAutomaticWarmupRules,
+  );
+  const fallback = Number.isFinite(configured)
+    ? configured
+    : maximumAutomaticWarmupRules;
   const candidate = requestedLimit ?? fallback;
   return Math.min(
     maximumAutomaticWarmupRules,

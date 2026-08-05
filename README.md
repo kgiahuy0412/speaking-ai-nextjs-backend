@@ -127,11 +127,13 @@ CLOUDFLARE_R2_ACCESS_KEY_ID=...
 CLOUDFLARE_R2_SECRET_ACCESS_KEY=...
 CLOUDFLARE_R2_BUCKET=...
 CLOUDFLARE_R2_PUBLIC_BASE_URL=https://audio.example.com
-AUDIO_WARMUP_RULE_LIMIT=200
+AUDIO_WARMUP_RULE_LIMIT=10000
+AUDIO_WARMUP_CONCURRENCY=4
 ```
 
-Warm-up is capped at 300 rules (200 by default). It generates only missing
-audio; all other rules are synthesized once on first use. Streaming TTS uses a
+Warm-up is capped at 10,000 rules and covers the complete reviewed corpus by
+default. It generates only missing audio; all other rules are synthesized once
+on first use. Streaming TTS uses a
 separate cache-fill response branch, so stopping playback does not cancel the
 durable R2/PostgreSQL write.
 
