@@ -140,7 +140,13 @@ export async function transcribeAudioToVietnamese(
   const body = buildCloudflareAudioTranscriptionBody(
     await audio.arrayBuffer(),
     "vi",
-    options,
+    {
+      ...options,
+      beamSize: Math.min(
+        5,
+        positiveInteger("CLOUDFLARE_ASR_BEAM_SIZE", 2),
+      ),
+    },
   );
 
   let response: Response;

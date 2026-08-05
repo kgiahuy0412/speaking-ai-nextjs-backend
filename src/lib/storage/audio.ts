@@ -4,7 +4,6 @@ import path from "node:path";
 import {
   HeadObjectCommand,
   PutObjectCommand,
-  S3Client,
 } from "@aws-sdk/client-s3";
 import {
   BlobNotFoundError,
@@ -18,14 +17,44 @@ import {
   getR2StorageConfig,
 } from "@/lib/storage/config";
 import { queryDatabase } from "@/lib/db";
+import {
+  getR2Client,
+  isR2NotFound,
+  isR2PreconditionFailed,
+} from "@/lib/storage/r2";
 
 const AUDIO_PUBLIC_DIR = "generated-audio";
 const immutableCacheSeconds = 31_536_000;
 const safeGeneratedAudioFileName = /^[a-z0-9][a-z0-9._-]{0,254}$/i;
-
-const r2Global = globalThis as typeof globalThis & {
-  __aiSpeakingR2Client?: S3Client;
+const maxGeneratedAudioMemoryEntries = 128;
+const audioStorageGlobal = globalThis as typeof globalThis & {
+  __aiSpeakingGeneratedAudioMemory?: Map<string, Buffer | true>;
 };
+
+function getGeneratedAudioMemory() {
+  audioStorageGlobal.__aiSpeakingGeneratedAudioMemory ??= new Map();
+  return audioStorageGlobal.__aiSpeakingGeneratedAudioMemory;
+}
+
+function readGeneratedAudioMemory(fileName: string) {
+  const cache = getGeneratedAudioMemory();
+  const entry = cache.get(fileName);
+  if (entry === undefined) return undefined;
+  cache.delete(fileName);
+  cache.set(fileName, entry);
+  return entry;
+}
+
+function writeGeneratedAudioMemory(fileName: string, entry: Buffer | true) {
+  const cache = getGeneratedAudioMemory();
+  cache.delete(fileName);
+  cache.set(fileName, entry);
+  while (cache.size > maxGeneratedAudioMemoryEntries) {
+    const oldest = cache.keys().next().value;
+    if (oldest === undefined) break;
+    cache.delete(oldest);
+  }
+}
 
 export type ReusableAudioDescriptor = {
   text: string;
@@ -86,40 +115,12 @@ function blobPath(fileName: string) {
   return `${AUDIO_PUBLIC_DIR}/${fileName}`;
 }
 
-function getR2Client() {
-  if (!r2Global.__aiSpeakingR2Client) {
-    const config = getR2StorageConfig();
-    r2Global.__aiSpeakingR2Client = new S3Client({
-      region: "auto",
-      endpoint: `https://${config.accountId}.r2.cloudflarestorage.com`,
-      credentials: {
-        accessKeyId: config.accessKeyId,
-        secretAccessKey: config.secretAccessKey,
-      },
-    });
-  }
-
-  return r2Global.__aiSpeakingR2Client;
-}
-
 function r2PublicUrl(fileName: string) {
   const { publicBaseUrl } = getR2StorageConfig();
   return `${publicBaseUrl}/${blobPath(fileName)
     .split("/")
     .map(encodeURIComponent)
     .join("/")}`;
-}
-
-function isR2NotFound(error: unknown) {
-  const candidate = error as {
-    name?: string;
-    $metadata?: { httpStatusCode?: number };
-  };
-  return (
-    candidate?.name === "NotFound" ||
-    candidate?.name === "NoSuchKey" ||
-    candidate?.$metadata?.httpStatusCode === 404
-  );
 }
 
 async function getR2Url(fileName: string) {
@@ -161,9 +162,7 @@ async function saveR2Audio(fileName: string, audio: ArrayBuffer) {
       }),
     );
   } catch (error) {
-    const status = (error as { $metadata?: { httpStatusCode?: number } })
-      ?.$metadata?.httpStatusCode;
-    if (status !== 409 && status !== 412) {
+    if (!isR2PreconditionFailed(error)) {
       throw error;
     }
   }
@@ -182,6 +181,10 @@ function audioContentType(fileName: string) {
 }
 
 async function readPostgresAudio(fileName: string) {
+  const memoryEntry = readGeneratedAudioMemory(fileName);
+  if (Buffer.isBuffer(memoryEntry)) {
+    return memoryEntry;
+  }
   const rows = await queryDatabase<{ content_base64: string }>(
     `SELECT content_base64
        FROM generated_audio
@@ -190,17 +193,26 @@ async function readPostgresAudio(fileName: string) {
     [fileName],
   );
   const encoded = rows[0]?.content_base64;
-  return encoded ? Buffer.from(encoded, "base64") : null;
+  const audio = encoded ? Buffer.from(encoded, "base64") : null;
+  if (audio) writeGeneratedAudioMemory(fileName, audio);
+  return audio;
 }
 
 async function postgresAudioExists(fileName: string) {
-  const rows = await queryDatabase<{ exists: boolean }>(
-    `SELECT EXISTS(
-       SELECT 1 FROM generated_audio WHERE file_name = $1
-     ) AS exists`,
+  if (readGeneratedAudioMemory(fileName) !== undefined) {
+    return true;
+  }
+  const rows = await queryDatabase<{ content_base64: string }>(
+    `SELECT content_base64
+       FROM generated_audio
+      WHERE file_name = $1
+      LIMIT 1`,
     [fileName],
   );
-  return rows[0]?.exists === true;
+  const encoded = rows[0]?.content_base64;
+  if (!encoded) return false;
+  writeGeneratedAudioMemory(fileName, Buffer.from(encoded, "base64"));
+  return true;
 }
 
 async function savePostgresAudio(fileName: string, audio: ArrayBuffer) {
@@ -217,6 +229,7 @@ async function savePostgresAudio(fileName: string, audio: ArrayBuffer) {
       buffer.byteLength,
     ],
   );
+  writeGeneratedAudioMemory(fileName, buffer);
   return localAudioUrl(fileName);
 }
 

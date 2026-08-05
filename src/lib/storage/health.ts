@@ -1,10 +1,12 @@
 import { list } from "@vercel/blob";
 import { isPostgresStorageEnabled, pingDatabase } from "@/lib/db";
 import {
+  getAudioSessionChunkStorageBackend,
   getAudioStorageBackend,
   getGeneratedAudioBlobToken,
   getStorageConfiguration,
 } from "@/lib/storage/config";
+import { pingR2Bucket } from "@/lib/storage/r2";
 import { countRecords } from "@/lib/db/records";
 
 export async function getStorageHealth() {
@@ -21,6 +23,7 @@ export async function getStorageHealth() {
       }
     : null;
   let blob = { ok: true, latencyMs: 0 };
+  let r2 = { ok: true, latencyMs: 0 };
 
   if (getAudioStorageBackend() === "vercel-blob") {
     const startedAt = Date.now();
@@ -31,12 +34,19 @@ export async function getStorageHealth() {
     });
     blob = { ok: true, latencyMs: Date.now() - startedAt };
   }
+  if (
+    getAudioStorageBackend() === "r2" ||
+    getAudioSessionChunkStorageBackend() === "r2"
+  ) {
+    r2 = await pingR2Bucket();
+  }
 
   return {
-    ok: database.ok && blob.ok,
+    ok: database.ok && blob.ok && r2.ok,
     configuration,
     database,
     blob,
+    r2,
     recordCounts,
     checkedAt: new Date().toISOString(),
   };

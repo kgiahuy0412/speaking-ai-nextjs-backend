@@ -34,6 +34,7 @@ test("builds a Cloudflare request for faithful Vietnamese transcription", () => 
   assert.equal(body.task, "transcribe");
   assert.equal(body.language, "vi");
   assert.equal(body.vad_filter, true);
+  assert.equal(body.beam_size, 2);
   assert.equal(body.condition_on_previous_text, false);
   assert.equal(body.no_speech_threshold, 0.55);
   assert.equal(body.compression_ratio_threshold, 2.2);
@@ -57,6 +58,20 @@ test("does not run Cloudflare VAD after Flutter already confirmed speech", () =>
   assert.equal(policy.mode, "client");
   assert.equal(policy.reason, "client_vad_confirmed");
   assert.equal(body.vad_filter, false);
+  assert.equal(body.beam_size, 2);
+});
+
+test("allows rolling ASR beam size back without changing the pipeline", () => {
+  const bytes = Buffer.from("audio bytes");
+  const audio = bytes.buffer.slice(
+    bytes.byteOffset,
+    bytes.byteOffset + bytes.byteLength,
+  ) as ArrayBuffer;
+  const body = buildCloudflareAudioTranscriptionBody(audio, "vi", {
+    beamSize: 5,
+  });
+
+  assert.equal(body.beam_size, 5);
 });
 
 test("keeps Cloudflare VAD for legacy or raw audio", () => {

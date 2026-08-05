@@ -50,6 +50,7 @@ export type BenchmarkMetadata = {
   chunkChecksumSha256?: boolean;
   missingChunkRecovery?: boolean;
   uploadProtocolVersion?: number;
+  chunkStorageBackend?: "local" | "postgres" | "r2";
   scopedUploadToken?: boolean;
   firstChunkAckMs?: number;
   chunkUploadP50Ms?: number;

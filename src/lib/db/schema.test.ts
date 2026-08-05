@@ -22,6 +22,7 @@ const expectedColumns = {
     "finalize_lease_until",
     "total_bytes",
     "chunk_count",
+    "chunk_storage_backend",
     "request_hash",
     "result",
   ],
@@ -31,6 +32,8 @@ const expectedColumns = {
     "sha256",
     "size_bytes",
     "content_base64",
+    "object_key",
+    "storage_backend",
     "created_at",
   ],
   generated_audio: [
@@ -70,4 +73,12 @@ test("managed schema adds every missing column idempotently", () => {
       );
     }
   }
+});
+
+test("audio chunk payload can move from PostgreSQL bytes to an R2 object key", () => {
+  assert.ok(
+    managedStorageSchemaStatements.some((statement) =>
+      statement.includes("ALTER COLUMN content_base64 DROP NOT NULL"),
+    ),
+  );
 });

@@ -10,22 +10,34 @@ import {
 } from "node:fs/promises";
 import path from "node:path";
 import { isPostgresStorageEnabled, queryDatabase } from "@/lib/db";
-import { getAudioUploadLimits } from "@/lib/storage/config";
+import {
+  getAudioSessionChunkStorageBackend,
+  getAudioUploadLimits,
+  type AudioSessionChunkStorageBackend,
+} from "@/lib/storage/config";
+import {
+  deleteAudioSessionChunkObjects,
+  putAudioSessionChunkObject,
+  readAudioSessionChunkObject,
+} from "@/lib/storage/audioSessionR2";
 
 const sessionIdPattern = /^audio_[a-z0-9-]+$/;
 const metadataFileName = "session.json";
 export const postgresAudioChunkUpsertQuery = `WITH target AS (
-         SELECT session_id, status, expires_at, total_bytes, chunk_count
+         SELECT session_id, status, expires_at, total_bytes, chunk_count,
+                chunk_storage_backend
            FROM audio_upload_sessions
           WHERE session_id = $1
           FOR UPDATE
        ), upserted AS (
          INSERT INTO audio_upload_chunks
-           (session_id, sequence, sha256, size_bytes, content_base64)
-         SELECT session_id, $2, $3, $4::integer, $7
+           (session_id, sequence, sha256, size_bytes, content_base64,
+            object_key, storage_backend)
+         SELECT session_id, $2, $3, $4::integer, $7, $8, $9
            FROM target
           WHERE status = 'uploading'
             AND expires_at > NOW()
+            AND chunk_storage_backend = $9
             AND (
               EXISTS (
                 SELECT 1
@@ -39,7 +51,8 @@ export const postgresAudioChunkUpsertQuery = `WITH target AS (
             )
          ON CONFLICT (session_id, sequence) DO UPDATE
            SET sha256 = audio_upload_chunks.sha256
-         RETURNING session_id, sha256, (xmax = 0) AS inserted
+         RETURNING session_id, sha256, object_key, storage_backend,
+                   (xmax = 0) AS inserted
        ), updated AS (
          UPDATE audio_upload_sessions AS sessions
             SET total_bytes = sessions.total_bytes + $4::integer,
@@ -64,7 +77,8 @@ export const postgresAudioChunkUpsertQuery = `WITH target AS (
                 (SELECT inserted FROM upserted),
                 FALSE
               ) AS inserted,
-              (SELECT sha256 FROM upserted) AS existing_sha256
+              (SELECT sha256 FROM upserted) AS existing_sha256,
+              target.chunk_storage_backend
          FROM target`;
 const allowedMimeTypes = new Map([
   ["audio/mp4", "speech.m4a"],
@@ -88,18 +102,9 @@ type LocalSessionMetadata = {
   finalizeLeaseUntil?: string;
   totalBytes: number;
   chunkCount: number;
+  chunkStorageBackend?: AudioSessionChunkStorageBackend;
   requestHash?: string;
   result?: unknown;
-};
-
-type DatabaseSessionRow = {
-  status: UploadStatus;
-  expires_at: string | Date;
-  finalize_lease_until: string | Date | null;
-  total_bytes: string | number;
-  chunk_count: number;
-  request_hash: string | null;
-  result: unknown;
 };
 
 export type FinalizeClaim =
@@ -151,6 +156,20 @@ const audioSessionGlobal = globalThis as AudioSessionGlobalState;
 
 function getSessionsRoot() {
   return path.join(process.cwd(), "data", "audio-sessions");
+}
+
+function getAudioSessionIdPrefix(
+  scoped: boolean,
+  chunkStorageBackend: AudioSessionChunkStorageBackend,
+) {
+  if (chunkStorageBackend === "r2") {
+    return scoped ? "audio_v2-r2-" : "audio_r2-";
+  }
+  return scoped ? "audio_v2-" : "audio_";
+}
+
+function isR2AudioSessionId(sessionId: string) {
+  return sessionId.startsWith("audio_r2-") || sessionId.startsWith("audio_v2-r2-");
 }
 
 function validateSessionId(sessionId: string) {
@@ -343,27 +362,6 @@ function assertSessionActive(
   }
 }
 
-async function getDatabaseSession(sessionId: string) {
-  const rows = await queryDatabase<DatabaseSessionRow>(
-    `SELECT status, expires_at, finalize_lease_until, total_bytes,
-            chunk_count, request_hash, result
-       FROM audio_upload_sessions
-      WHERE session_id = $1`,
-    [sessionId],
-  );
-  return rows[0] ?? null;
-}
-
-function databaseExpiry(session: DatabaseSessionRow) {
-  return new Date(session.expires_at).getTime();
-}
-
-function databaseLease(session: DatabaseSessionRow) {
-  return session.finalize_lease_until
-    ? new Date(session.finalize_lease_until).getTime()
-    : 0;
-}
-
 export async function cleanupExpiredAudioSessions(force = false) {
   const now = Date.now();
   const lastCleanup =
@@ -376,12 +374,38 @@ export async function cleanupExpiredAudioSessions(force = false) {
   audioSessionGlobal.__aiSpeakingAudioSessionLastCleanupAt = now;
 
   if (isPostgresStorageEnabled()) {
-    const rows = await queryDatabase<{ session_id: string }>(
-      `DELETE FROM audio_upload_sessions
-        WHERE expires_at <= NOW()
-        RETURNING session_id`,
+    const rows = await queryDatabase<{
+      session_id: string;
+      object_key: string | null;
+      storage_backend: AudioSessionChunkStorageBackend | null;
+    }>(
+      `WITH expired AS MATERIALIZED (
+         SELECT session_id
+           FROM audio_upload_sessions
+          WHERE expires_at <= NOW()
+       ), deleted_chunks AS (
+         DELETE FROM audio_upload_chunks AS chunks
+          USING expired
+          WHERE chunks.session_id = expired.session_id
+         RETURNING chunks.session_id, chunks.object_key, chunks.storage_backend
+       ), deleted_sessions AS (
+         DELETE FROM audio_upload_sessions AS sessions
+          USING expired
+          WHERE sessions.session_id = expired.session_id
+            AND (SELECT COUNT(*) FROM deleted_chunks) >= 0
+         RETURNING sessions.session_id
+       )
+       SELECT sessions.session_id, chunks.object_key, chunks.storage_backend
+         FROM deleted_sessions AS sessions
+         LEFT JOIN deleted_chunks AS chunks
+           ON chunks.session_id = sessions.session_id`,
     );
-    return rows.length;
+    await deleteAudioSessionChunkObjects(
+      rows
+        .filter((row) => row.storage_backend === "r2")
+        .map((row) => row.object_key ?? ""),
+    );
+    return new Set(rows.map((row) => row.session_id)).size;
   }
 
   const root = getSessionsRoot();
@@ -418,7 +442,11 @@ export async function cleanupExpiredAudioSessions(force = false) {
 
 export async function createAudioUploadSession(options?: { scoped?: boolean }) {
   await cleanupExpiredAudioSessions();
-  const sessionId = `${options?.scoped ? "audio_v2-" : "audio_"}${crypto.randomUUID()}`;
+  const chunkStorageBackend = getAudioSessionChunkStorageBackend();
+  const sessionId = `${getAudioSessionIdPrefix(
+    options?.scoped === true,
+    chunkStorageBackend,
+  )}${crypto.randomUUID()}`;
   const now = new Date();
   const expiresAt = new Date(
     now.getTime() + getAudioUploadLimits().sessionTtlSeconds * 1000,
@@ -427,9 +455,16 @@ export async function createAudioUploadSession(options?: { scoped?: boolean }) {
   if (isPostgresStorageEnabled()) {
     await queryDatabase(
       `INSERT INTO audio_upload_sessions
-        (session_id, status, created_at, updated_at, expires_at)
-       VALUES ($1, 'uploading', $2::timestamptz, $2::timestamptz, $3::timestamptz)`,
-      [sessionId, now.toISOString(), expiresAt.toISOString()],
+        (session_id, status, created_at, updated_at, expires_at,
+         chunk_storage_backend)
+       VALUES ($1, 'uploading', $2::timestamptz, $2::timestamptz,
+               $3::timestamptz, $4)`,
+      [
+        sessionId,
+        now.toISOString(),
+        expiresAt.toISOString(),
+        chunkStorageBackend,
+      ],
     );
     return sessionId;
   }
@@ -442,6 +477,7 @@ export async function createAudioUploadSession(options?: { scoped?: boolean }) {
     expiresAt: expiresAt.toISOString(),
     totalBytes: 0,
     chunkCount: 0,
+    chunkStorageBackend: "local",
   });
   return sessionId;
 }
@@ -501,81 +537,114 @@ export async function saveAudioSessionChunk(
   const limits = getAudioUploadLimits();
 
   if (isPostgresStorageEnabled()) {
-    const rows = await queryDatabase<{
-      status: UploadStatus;
-      expires_at: string | Date;
-      total_bytes: string | number;
-      chunk_count: number;
-      inserted: boolean;
-      existing_sha256: string | null;
-    }>(
-      postgresAudioChunkUpsertQuery,
-      [
+    const chunkStorageBackend: AudioSessionChunkStorageBackend =
+      isR2AudioSessionId(sessionId) ? "r2" : "postgres";
+    const r2Object =
+      chunkStorageBackend === "r2"
+        ? await putAudioSessionChunkObject(
+            sessionId,
+            sequence,
+            sha256,
+            buffer,
+          )
+        : null;
+
+    try {
+      const rows = await queryDatabase<{
+        status: UploadStatus;
+        expires_at: string | Date;
+        total_bytes: string | number;
+        chunk_count: number;
+        inserted: boolean;
+        existing_sha256: string | null;
+        chunk_storage_backend: AudioSessionChunkStorageBackend;
+      }>(postgresAudioChunkUpsertQuery, [
         sessionId,
         sequence,
         sha256,
         buffer.byteLength,
         limits.maxSessionBytes,
         limits.maxChunks,
-        buffer.toString("base64"),
-      ],
-    );
-    const session = rows[0];
+        chunkStorageBackend === "postgres"
+          ? buffer.toString("base64")
+          : null,
+        r2Object?.key ?? null,
+        chunkStorageBackend,
+      ]);
+      const session = rows[0];
 
-    if (!session) {
+      if (!session) {
+        throw new AudioUploadError(
+          "SESSION_NOT_FOUND",
+          "Audio session không tồn tại.",
+          404,
+        );
+      }
+      if (session.chunk_storage_backend !== chunkStorageBackend) {
+        throw new AudioUploadError(
+          "SESSION_NOT_FOUND",
+          "Cấu hình lưu chunk của audio session không còn hợp lệ.",
+          409,
+        );
+      }
+      assertSessionActive({
+        status: session.status,
+        expiresAt: new Date(session.expires_at).toISOString(),
+      });
+
+      if (session.inserted) {
+        return {
+          duplicate: false,
+          sha256,
+          totalBytes: Number(session.total_bytes),
+          chunkCount: session.chunk_count,
+        };
+      }
+
+      if (session.existing_sha256 === sha256) {
+        return {
+          duplicate: true,
+          sha256,
+          totalBytes: Number(session.total_bytes),
+          chunkCount: session.chunk_count,
+        };
+      }
+
+      if (session.existing_sha256) {
+        throw new AudioUploadError(
+          "CHUNK_CONFLICT",
+          "Chunk đã tồn tại nhưng nội dung không giống lần upload trước.",
+          409,
+          { sequence },
+        );
+      }
+
+      if (
+        Number(session.total_bytes) + buffer.byteLength >
+        limits.maxSessionBytes
+      ) {
+        throw new AudioUploadError(
+          "SESSION_TOO_LARGE",
+          "Tổng dung lượng audio session vượt quá giới hạn.",
+          413,
+          { maxSessionBytes: limits.maxSessionBytes },
+        );
+      }
+
       throw new AudioUploadError(
-        "SESSION_NOT_FOUND",
-        "Audio session không tồn tại.",
-        404,
-      );
-    }
-    assertSessionActive({
-      status: session.status,
-      expiresAt: new Date(session.expires_at).toISOString(),
-    });
-
-    if (session.inserted) {
-      return {
-        duplicate: false,
-        sha256,
-        totalBytes: Number(session.total_bytes),
-        chunkCount: session.chunk_count,
-      };
-    }
-
-    if (session.existing_sha256 === sha256) {
-      return {
-        duplicate: true,
-        sha256,
-        totalBytes: Number(session.total_bytes),
-        chunkCount: session.chunk_count,
-      };
-    }
-
-    if (session.existing_sha256) {
-      throw new AudioUploadError(
-        "CHUNK_CONFLICT",
-        "Chunk đã tồn tại nhưng nội dung không giống lần upload trước.",
-        409,
-        { sequence },
-      );
-    }
-
-    if (Number(session.total_bytes) + buffer.byteLength > limits.maxSessionBytes) {
-      throw new AudioUploadError(
-        "SESSION_TOO_LARGE",
-        "Tổng dung lượng audio session vượt quá giới hạn.",
+        "TOO_MANY_CHUNKS",
+        "Audio session có quá nhiều chunk.",
         413,
-        { maxSessionBytes: limits.maxSessionBytes },
+        { maxChunks: limits.maxChunks },
       );
+    } catch (error) {
+      if (r2Object?.created) {
+        await deleteAudioSessionChunkObjects([r2Object.key]).catch(
+          () => undefined,
+        );
+      }
+      throw error;
     }
-
-    throw new AudioUploadError(
-      "TOO_MANY_CHUNKS",
-      "Audio session có quá nhiều chunk.",
-      413,
-      { maxChunks: limits.maxChunks },
-    );
   }
 
   return enqueueLocalMutation(async () => {
@@ -716,7 +785,27 @@ export async function finalizeAudioUploadSession(
   let buffers: Buffer[];
 
   if (isPostgresStorageEnabled()) {
-    const session = await getDatabaseSession(sessionId);
+    const rows = await queryDatabase<{
+      status: UploadStatus;
+      expires_at: string | Date;
+      chunk_storage_backend: AudioSessionChunkStorageBackend;
+      sequence: number | null;
+      content_base64: string | null;
+      object_key: string | null;
+      storage_backend: AudioSessionChunkStorageBackend | null;
+    }>(
+      `SELECT sessions.status, sessions.expires_at,
+              sessions.chunk_storage_backend,
+              chunks.sequence, chunks.content_base64,
+              chunks.object_key, chunks.storage_backend
+         FROM audio_upload_sessions AS sessions
+         LEFT JOIN audio_upload_chunks AS chunks
+           ON chunks.session_id = sessions.session_id
+        WHERE sessions.session_id = $1
+        ORDER BY chunks.sequence ASC`,
+      [sessionId],
+    );
+    const session = rows[0];
 
     if (!session) {
       throw new AudioUploadError(
@@ -725,22 +814,47 @@ export async function finalizeAudioUploadSession(
         404,
       );
     }
-
-    const rows = await queryDatabase<{
-      sequence: number;
-      content_base64: string;
-    }>(
-      `SELECT sequence, content_base64
-         FROM audio_upload_chunks
-        WHERE session_id = $1
-        ORDER BY sequence ASC`,
-      [sessionId],
+    if (new Date(session.expires_at).getTime() <= Date.now()) {
+      throw new AudioUploadError(
+        "SESSION_EXPIRED",
+        "Audio session đã hết hạn. Vui lòng ghi âm lại.",
+        410,
+      );
+    }
+    const chunkRows = rows.filter(
+      (row): row is typeof row & { sequence: number } =>
+        row.sequence !== null,
     );
     validateChunkSequence(
-      rows.map((row) => row.sequence),
+      chunkRows.map((row) => row.sequence),
       pcmMetadata?.chunkCount,
     );
-    buffers = rows.map((row) => Buffer.from(row.content_base64, "base64"));
+    buffers = await Promise.all(
+      chunkRows.map(async (row) => {
+        const storageBackend =
+          row.storage_backend ?? session.chunk_storage_backend;
+        if (storageBackend === "r2") {
+          if (!row.object_key) {
+            throw new AudioUploadError(
+              "MISSING_CHUNKS",
+              `Chunk ${row.sequence} thiếu R2 object key.`,
+              409,
+              { missingSequences: [row.sequence] },
+            );
+          }
+          return readAudioSessionChunkObject(row.object_key);
+        }
+        if (!row.content_base64) {
+          throw new AudioUploadError(
+            "MISSING_CHUNKS",
+            `Chunk ${row.sequence} không có dữ liệu.`,
+            409,
+            { missingSequences: [row.sequence] },
+          );
+        }
+        return Buffer.from(row.content_base64, "base64");
+      }),
+    );
   } else {
     const metadata = await readLocalMetadata(sessionId);
 
@@ -807,57 +921,85 @@ export async function claimAudioSessionFinalize(
   const leaseUntil = new Date(now + limits.finalizeLeaseSeconds * 1000);
 
   if (isPostgresStorageEnabled()) {
-    const session = await getDatabaseSession(sessionId);
+    const rows = await queryDatabase<{
+      state:
+        | "not_found"
+        | "expired"
+        | "conflict"
+        | "completed"
+        | "in_progress"
+        | "claimed";
+      result: unknown;
+    }>(
+      `WITH current AS MATERIALIZED (
+         SELECT status, expires_at, finalize_lease_until,
+                request_hash, result
+           FROM audio_upload_sessions
+          WHERE session_id = $1
+       ), claimed AS (
+         UPDATE audio_upload_sessions
+            SET status = 'finalizing', request_hash = $2,
+                finalize_lease_until = $3::timestamptz, updated_at = NOW()
+          WHERE session_id = $1
+            AND expires_at > NOW()
+            AND status <> 'finalized'
+            AND (status = 'uploading' OR finalize_lease_until <= NOW())
+         RETURNING session_id
+       )
+       SELECT CASE
+                WHEN NOT EXISTS (SELECT 1 FROM current)
+                  THEN 'not_found'
+                WHEN (SELECT expires_at FROM current) <= NOW()
+                  THEN 'expired'
+                WHEN (SELECT status FROM current) = 'finalized'
+                  AND (SELECT request_hash FROM current) IS DISTINCT FROM $2
+                  THEN 'conflict'
+                WHEN (SELECT status FROM current) = 'finalized'
+                  THEN 'completed'
+                WHEN (SELECT status FROM current) = 'finalizing'
+                  AND (SELECT finalize_lease_until FROM current) > NOW()
+                  AND (SELECT request_hash FROM current) IS NOT NULL
+                  AND (SELECT request_hash FROM current) IS DISTINCT FROM $2
+                  THEN 'conflict'
+                WHEN (SELECT status FROM current) = 'finalizing'
+                  AND (SELECT finalize_lease_until FROM current) > NOW()
+                  THEN 'in_progress'
+                WHEN EXISTS (SELECT 1 FROM claimed)
+                  THEN 'claimed'
+                ELSE 'in_progress'
+              END AS state,
+              (SELECT result FROM current) AS result`,
+      [sessionId, requestHash, leaseUntil.toISOString()],
+    );
+    const claim = rows[0];
 
-    if (!session) {
+    if (!claim || claim.state === "not_found") {
       throw new AudioUploadError(
         "SESSION_NOT_FOUND",
         "Audio session không tồn tại.",
         404,
       );
     }
-
-    if (databaseExpiry(session) <= now) {
+    if (claim.state === "expired") {
       throw new AudioUploadError(
         "SESSION_EXPIRED",
         "Audio session đã hết hạn. Vui lòng ghi âm lại.",
         410,
       );
     }
-
-    if (session.status === "finalized") {
-      if (session.request_hash !== requestHash) {
-        throw new AudioUploadError(
-          "IDEMPOTENCY_CONFLICT",
-          "Finalize đã hoàn tất với nội dung yêu cầu khác.",
-          409,
-        );
-      }
-      return { state: "completed", result: session.result };
+    if (claim.state === "conflict") {
+      throw new AudioUploadError(
+        "IDEMPOTENCY_CONFLICT",
+        "Finalize đang chạy hoặc đã hoàn tất với nội dung yêu cầu khác.",
+        409,
+      );
     }
-
-    if (session.status === "finalizing" && databaseLease(session) > now) {
-      if (session.request_hash && session.request_hash !== requestHash) {
-        throw new AudioUploadError(
-          "IDEMPOTENCY_CONFLICT",
-          "Finalize đang chạy với nội dung yêu cầu khác.",
-          409,
-        );
-      }
-      return { state: "in_progress" };
+    if (claim.state === "completed") {
+      return { state: "completed", result: claim.result };
     }
-
-    const rows = await queryDatabase<{ session_id: string }>(
-      `UPDATE audio_upload_sessions
-          SET status = 'finalizing', request_hash = $2,
-              finalize_lease_until = $3::timestamptz, updated_at = NOW()
-        WHERE session_id = $1
-          AND status <> 'finalized'
-          AND (status = 'uploading' OR finalize_lease_until <= NOW())
-        RETURNING session_id`,
-      [sessionId, requestHash, leaseUntil.toISOString()],
-    );
-    return rows.length > 0 ? { state: "claimed" } : { state: "in_progress" };
+    return claim.state === "claimed"
+      ? { state: "claimed" }
+      : { state: "in_progress" };
   }
 
   return enqueueLocalMutation(async () => {
@@ -917,27 +1059,55 @@ export async function completeAudioSessionFinalize(
   ).toISOString();
 
   if (isPostgresStorageEnabled()) {
-    const rows = await queryDatabase<{ session_id: string }>(
-      `UPDATE audio_upload_sessions
-          SET status = 'finalized', result = $3::jsonb,
-              expires_at = $4::timestamptz, finalize_lease_until = NULL,
-              updated_at = NOW()
-        WHERE session_id = $1 AND request_hash = $2
-        RETURNING session_id`,
+    const rows = await queryDatabase<{
+      finalized_count: number | string;
+      deleted_chunks: Array<{
+        objectKey: string | null;
+        storageBackend: AudioSessionChunkStorageBackend;
+      }>;
+    }>(
+      `WITH finalized AS (
+         UPDATE audio_upload_sessions
+            SET status = 'finalized', result = $3::jsonb,
+                expires_at = $4::timestamptz, finalize_lease_until = NULL,
+                updated_at = NOW()
+         WHERE session_id = $1 AND request_hash = $2
+         RETURNING session_id
+       )
+       SELECT (SELECT COUNT(*) FROM finalized)::integer AS finalized_count,
+              COALESCE(
+                jsonb_agg(
+                  jsonb_build_object(
+                    'objectKey', chunks.object_key,
+                    'storageBackend', chunks.storage_backend
+                  )
+                ) FILTER (WHERE chunks.session_id IS NOT NULL),
+                '[]'::jsonb
+              ) AS deleted_chunks
+         FROM finalized
+         LEFT JOIN audio_upload_chunks AS chunks
+           ON chunks.session_id = finalized.session_id`,
       [sessionId, requestHash, JSON.stringify(result), expiresAt],
     );
 
-    if (rows.length === 0) {
+    const completion = rows[0];
+    if (!completion || Number(completion.finalized_count) === 0) {
       throw new AudioUploadError(
         "IDEMPOTENCY_CONFLICT",
         "Không thể lưu kết quả finalize vì khóa yêu cầu không khớp.",
         409,
       );
     }
-
-    await queryDatabase(`DELETE FROM audio_upload_chunks WHERE session_id = $1`, [
-      sessionId,
-    ]);
+    await deleteAudioSessionChunkObjects(
+      completion.deleted_chunks
+        .filter((chunk) => chunk.storageBackend === "r2")
+        .map((chunk) => chunk.objectKey ?? ""),
+    );
+    await queryDatabase(
+      `DELETE FROM audio_upload_chunks
+        WHERE session_id = $1`,
+      [sessionId],
+    );
     return;
   }
 
@@ -1008,9 +1178,38 @@ export async function discardAudioUploadSession(sessionId: string) {
   validateSessionId(sessionId);
 
   if (isPostgresStorageEnabled()) {
-    await queryDatabase(
-      `DELETE FROM audio_upload_sessions WHERE session_id = $1`,
+    const rows = await queryDatabase<{
+      deleted_chunks: Array<{
+        objectKey: string | null;
+        storageBackend: AudioSessionChunkStorageBackend;
+      }>;
+    }>(
+      `WITH deleted_chunks AS (
+         DELETE FROM audio_upload_chunks
+          WHERE session_id = $1
+         RETURNING object_key, storage_backend
+       ), deleted_session AS (
+         DELETE FROM audio_upload_sessions
+          WHERE session_id = $1
+            AND (SELECT COUNT(*) FROM deleted_chunks) >= 0
+         RETURNING session_id
+       )
+       SELECT COALESCE(
+                jsonb_agg(
+                  jsonb_build_object(
+                    'objectKey', object_key,
+                    'storageBackend', storage_backend
+                  )
+                ),
+                '[]'::jsonb
+              ) AS deleted_chunks
+         FROM deleted_chunks`,
       [sessionId],
+    );
+    await deleteAudioSessionChunkObjects(
+      (rows[0]?.deleted_chunks ?? [])
+        .filter((chunk) => chunk.storageBackend === "r2")
+        .map((chunk) => chunk.objectKey ?? ""),
     );
     return;
   }

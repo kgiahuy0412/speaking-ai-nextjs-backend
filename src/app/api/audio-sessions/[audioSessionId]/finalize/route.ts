@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { after } from "next/server";
 import { runConversationPipeline } from "@/lib/ai/pipeline";
 import { scheduleConversationPostResponseTasks } from "@/lib/ai/postResponseTasks";
 import { AppError, toErrorResponse } from "@/lib/errors";
@@ -77,7 +78,6 @@ export async function POST(request: Request, context: RouteContext) {
   let claimMs = 0;
   let assembleMs = 0;
   let pipelineMs = 0;
-  let completeMs = 0;
 
   try {
     const uploadClaims = authorizeAudioSessionRequest(request, audioSessionId);
@@ -206,22 +206,56 @@ export async function POST(request: Request, context: RouteContext) {
     pipelineMs = Math.round(performance.now() - pipelineStartedAt);
 
     const responsePayload = { ...result, learning: null };
-    const completeStartedAt = performance.now();
-    await completeAudioSessionFinalize(
-      audioSessionId,
-      requestHash,
-      responsePayload,
-    );
-    completeMs = Math.round(performance.now() - completeStartedAt);
-    logEvent("info", "audio_session_finalize_completed", {
+    const responseReadyMs = Math.round(performance.now() - startedAt);
+    after(async () => {
+      const completeStartedAt = performance.now();
+      let lastError: unknown;
+
+      for (let attempt = 1; attempt <= 3; attempt += 1) {
+        try {
+          await completeAudioSessionFinalize(
+            audioSessionId,
+            requestHash,
+            responsePayload,
+          );
+          logEvent("info", "audio_session_finalize_completed", {
+            requestId,
+            audioSessionId,
+            background: true,
+            attempts: attempt,
+            timing: {
+              completeMs: Math.round(performance.now() - completeStartedAt),
+              responseReadyMs,
+            },
+          });
+          return;
+        } catch (error) {
+          lastError = error;
+          if (attempt < 3) {
+            await new Promise((resolve) =>
+              setTimeout(resolve, attempt === 1 ? 100 : 300),
+            );
+          }
+        }
+      }
+
+      logEvent("error", "audio_session_finalize_completion_failed", {
+        requestId,
+        audioSessionId,
+        background: true,
+        attempts: 3,
+        completeMs: Math.round(performance.now() - completeStartedAt),
+        error: lastError,
+      });
+    });
+    logEvent("info", "audio_session_finalize_response_ready", {
       requestId,
       audioSessionId,
       timing: {
         claimMs,
         assembleMs,
         pipelineMs,
-        completeMs,
-        totalMs: Math.round(performance.now() - startedAt),
+        totalMs: responseReadyMs,
       },
     });
     scheduleConversationPostResponseTasks(result, "audio");

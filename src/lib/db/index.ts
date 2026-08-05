@@ -46,14 +46,20 @@ export async function ensureDatabaseSchema() {
   }
 
   if (!schemaPromise) {
-    schemaPromise = (async () => {
-      for (const statement of managedStorageSchemaStatements) {
-        await queryWithoutSchema(statement);
-      }
-    })().catch((error) => {
+    // Neon can submit every idempotent DDL statement in one HTTP transaction.
+    // Sending them one-by-one added one remote round trip per statement to the
+    // first audio request of every cold server instance.
+    schemaPromise = getDatabaseClient()
+      .transaction((transaction) =>
+        managedStorageSchemaStatements.map((statement) =>
+          transaction.query(statement),
+        ),
+      )
+      .then(() => undefined)
+      .catch((error) => {
       schemaPromise = null;
       throw error;
-    });
+      });
   }
 
   await schemaPromise;

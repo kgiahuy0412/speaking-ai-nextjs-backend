@@ -72,7 +72,7 @@ export function buildCloudflareAudioTranslationBody(
 export function buildCloudflareAudioTranscriptionBody(
   audio: ArrayBuffer,
   sourceLanguage: string,
-  options: { vadFilter?: boolean } = {},
+  options: { vadFilter?: boolean; beamSize?: number } = {},
 ) {
   return {
     audio: Buffer.from(audio).toString("base64"),
@@ -83,6 +83,9 @@ export function buildCloudflareAudioTranscriptionBody(
     // pass from removing quiet first/last syllables. Legacy/raw clients keep
     // the provider VAD through the default value below.
     vad_filter: options.vadFilter ?? true,
+    // Cloudflare defaults to 5 beams. Short child utterances use a smaller
+    // configurable beam to reduce decode latency while retaining a rollback.
+    beam_size: options.beamSize ?? 2,
     condition_on_previous_text: false,
     // Client VAD has already confirmed speech. These values stay conservative
     // against noise while avoiding false rejection of short or quiet child

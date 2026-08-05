@@ -49,9 +49,36 @@ const textCacheNamespace = "ai_text_cache";
 
 type TextCacheGlobalState = typeof globalThis & {
   __aiSpeakingTextCacheMutationQueue?: Promise<void>;
+  __aiSpeakingTextCacheMemory?: Map<string, AiTextCacheEntry>;
 };
 
 const textCacheGlobal = globalThis as TextCacheGlobalState;
+const maxMemoryCacheEntries = 256;
+
+function getTextMemoryCache() {
+  textCacheGlobal.__aiSpeakingTextCacheMemory ??= new Map();
+  return textCacheGlobal.__aiSpeakingTextCacheMemory;
+}
+
+function readTextMemoryCache(key: string) {
+  const cache = getTextMemoryCache();
+  const entry = cache.get(key);
+  if (!entry) return null;
+  cache.delete(key);
+  cache.set(key, entry);
+  return entry;
+}
+
+function writeTextMemoryCache(key: string, entry: AiTextCacheEntry) {
+  const cache = getTextMemoryCache();
+  cache.delete(key);
+  cache.set(key, entry);
+  while (cache.size > maxMemoryCacheEntries) {
+    const oldest = cache.keys().next().value;
+    if (oldest === undefined) break;
+    cache.delete(oldest);
+  }
+}
 
 function getCacheKey(
   context: PracticeContext,
@@ -152,6 +179,27 @@ export async function getCachedAiEnglishText(
       normalizedVietnameseText,
       childAge,
     );
+    const legacyCacheKey = clientId
+      ? getLegacyClientCacheKey(
+          context,
+          normalizedVietnameseText,
+          childAge,
+          clientId,
+        )
+      : null;
+    const memoryEntry =
+      readTextMemoryCache(sharedCacheKey) ??
+      (legacyCacheKey ? readTextMemoryCache(legacyCacheKey) : null);
+    if (memoryEntry) {
+      return {
+        englishText: memoryEntry.englishText,
+        normalizedVietnameseText,
+        textProvider: memoryEntry.textProvider,
+        textModel: memoryEntry.textModel,
+        textFallbackUsed: memoryEntry.textFallbackUsed,
+        textFallbackReason: memoryEntry.textFallbackReason,
+      };
+    }
     const sharedEntry = await getRecord<AiTextCacheEntry>(
       textCacheNamespace,
       sharedCacheKey,
@@ -163,15 +211,16 @@ export async function getCachedAiEnglishText(
       !sharedEntry && clientId
         ? await getRecord<AiTextCacheEntry>(
             textCacheNamespace,
-            getLegacyClientCacheKey(
-              context,
-              normalizedVietnameseText,
-              childAge,
-              clientId,
-            ),
+            legacyCacheKey!,
           )
         : null;
     const matched = sharedEntry?.value ?? legacyEntry?.value;
+    if (matched) {
+      writeTextMemoryCache(
+        sharedEntry ? sharedCacheKey : legacyCacheKey!,
+        matched,
+      );
+    }
 
     return matched
       ? {
@@ -266,6 +315,7 @@ export async function saveAiEnglishText(
       createdAt: entry.createdAt,
       value: entry,
     });
+    writeTextMemoryCache(key, entry);
     return;
   }
 
@@ -308,6 +358,8 @@ export async function removeAiEnglishText(
   if (!normalizedVietnameseText) {
     return 0;
   }
+
+  getTextMemoryCache().clear();
 
   if (isPostgresStorageEnabled()) {
     const entries = await listRecords<AiTextCacheEntry>(textCacheNamespace, {

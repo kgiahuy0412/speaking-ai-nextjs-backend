@@ -7,6 +7,7 @@ import {
 } from "@/lib/storage/audioSessionSecurity";
 import { createAudioUploadSession } from "@/lib/storage/audioSessions";
 import {
+  getAudioSessionChunkStorageBackend,
   getAudioUploadLimits,
   getAudioUploadSecurityConfig,
 } from "@/lib/storage/config";
@@ -72,6 +73,7 @@ export async function POST(request: Request) {
     }
 
     const scoped = Boolean(requestedConfig && security.scopedTokensEnabled);
+    const chunkStorageBackend = getAudioSessionChunkStorageBackend();
     const audioSessionId = await createAudioUploadSession({ scoped });
     const issued =
       scoped && requestedConfig
@@ -83,6 +85,7 @@ export async function POST(request: Request) {
       audioSessionId,
       protocolVersion: scoped ? 2 : 1,
       scopedUploadToken: scoped,
+      chunkStorageBackend,
     });
     return withRequestId(
       Response.json({
@@ -99,6 +102,7 @@ export async function POST(request: Request) {
           missingChunkRecovery: true,
           scopedUploadToken: scoped,
           uploadProtocolVersion: scoped ? 2 : 1,
+          chunkStorageBackend,
           sessionTtlSeconds: limits.sessionTtlSeconds,
         },
       }),

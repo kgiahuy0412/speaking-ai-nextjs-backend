@@ -1,5 +1,6 @@
 export type PersistenceBackend = "local" | "postgres";
 export type AudioStorageBackend = "local" | "postgres" | "vercel-blob" | "r2";
+export type AudioSessionChunkStorageBackend = "local" | "postgres" | "r2";
 
 function positiveInteger(name: string, fallback: number) {
   const parsed = Number(process.env[name]);
@@ -45,6 +46,33 @@ export function getAudioStorageBackend(): AudioStorageBackend {
   return getPersistenceBackend() === "postgres" ? "postgres" : "local";
 }
 
+export function getAudioSessionChunkStorageBackend(): AudioSessionChunkStorageBackend {
+  const persistenceBackend = getPersistenceBackend();
+  const configuredBackend = process.env.AUDIO_SESSION_CHUNK_STORAGE_BACKEND
+    ?.trim()
+    .toLowerCase();
+
+  if (persistenceBackend === "local") {
+    if (configuredBackend && configuredBackend !== "local") {
+      throw new Error(
+        "Audio session dùng R2/PostgreSQL cần PERSISTENCE_BACKEND=postgres.",
+      );
+    }
+    return "local";
+  }
+
+  if (configuredBackend === "r2" || configuredBackend === "postgres") {
+    return configuredBackend;
+  }
+  if (configuredBackend && configuredBackend !== "local") {
+    throw new Error(
+      "AUDIO_SESSION_CHUNK_STORAGE_BACKEND chỉ hỗ trợ postgres hoặc r2 trong production.",
+    );
+  }
+
+  return getAudioStorageBackend() === "r2" ? "r2" : "postgres";
+}
+
 export function getAudioUploadLimits() {
   return {
     maxChunkBytes: positiveInteger("AUDIO_UPLOAD_MAX_CHUNK_BYTES", 1_048_576),
@@ -83,23 +111,15 @@ export function getGeneratedAudioBlobToken() {
   return token;
 }
 
-export function getR2StorageConfig() {
+export function getR2CredentialsConfig() {
   const accountId = process.env.CLOUDFLARE_R2_ACCOUNT_ID?.trim();
   const accessKeyId = process.env.CLOUDFLARE_R2_ACCESS_KEY_ID?.trim();
   const secretAccessKey = process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY?.trim();
   const bucket = process.env.CLOUDFLARE_R2_BUCKET?.trim();
-  const publicBaseUrl = process.env.CLOUDFLARE_R2_PUBLIC_BASE_URL?.trim()
-    .replace(/\/+$/, "");
 
-  if (
-    !accountId ||
-    !accessKeyId ||
-    !secretAccessKey ||
-    !bucket ||
-    !publicBaseUrl
-  ) {
+  if (!accountId || !accessKeyId || !secretAccessKey || !bucket) {
     throw new Error(
-      "AUDIO_STORAGE_BACKEND=r2 nhưng chưa cấu hình đủ CLOUDFLARE_R2_ACCOUNT_ID, CLOUDFLARE_R2_ACCESS_KEY_ID, CLOUDFLARE_R2_SECRET_ACCESS_KEY, CLOUDFLARE_R2_BUCKET và CLOUDFLARE_R2_PUBLIC_BASE_URL.",
+      "R2 chưa được cấu hình đủ CLOUDFLARE_R2_ACCOUNT_ID, CLOUDFLARE_R2_ACCESS_KEY_ID, CLOUDFLARE_R2_SECRET_ACCESS_KEY và CLOUDFLARE_R2_BUCKET.",
     );
   }
 
@@ -108,8 +128,21 @@ export function getR2StorageConfig() {
     accessKeyId,
     secretAccessKey,
     bucket,
-    publicBaseUrl,
   };
+}
+
+export function getR2StorageConfig() {
+  const credentials = getR2CredentialsConfig();
+  const publicBaseUrl = process.env.CLOUDFLARE_R2_PUBLIC_BASE_URL?.trim()
+    .replace(/\/+$/, "");
+
+  if (!publicBaseUrl) {
+    throw new Error(
+      "AUDIO_STORAGE_BACKEND=r2 cần CLOUDFLARE_R2_PUBLIC_BASE_URL để phát audio cache.",
+    );
+  }
+
+  return { ...credentials, publicBaseUrl };
 }
 
 export function getAudioUploadSecurityConfig() {
@@ -138,10 +171,19 @@ export function getAudioUploadSecurityConfig() {
 export function getStorageConfiguration() {
   const persistenceBackend = getPersistenceBackend();
   const audioStorageBackend = getAudioStorageBackend();
+  const audioSessionChunkStorageBackend =
+    getAudioSessionChunkStorageBackend();
+  const r2CredentialsConfigured = Boolean(
+    process.env.CLOUDFLARE_R2_ACCOUNT_ID?.trim() &&
+      process.env.CLOUDFLARE_R2_ACCESS_KEY_ID?.trim() &&
+      process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY?.trim() &&
+      process.env.CLOUDFLARE_R2_BUCKET?.trim(),
+  );
 
   return {
     persistenceBackend,
     audioStorageBackend,
+    audioSessionChunkStorageBackend,
     postgresConfigured: Boolean(process.env.DATABASE_URL?.trim()),
     postgresAudioConfigured:
       audioStorageBackend === "postgres" &&
@@ -150,11 +192,9 @@ export function getStorageConfiguration() {
       process.env.GENERATED_AUDIO_BLOB_READ_WRITE_TOKEN?.trim() ||
         process.env.BLOB_READ_WRITE_TOKEN?.trim(),
     ),
+    r2CredentialsConfigured,
     r2Configured: Boolean(
-      process.env.CLOUDFLARE_R2_ACCOUNT_ID?.trim() &&
-        process.env.CLOUDFLARE_R2_ACCESS_KEY_ID?.trim() &&
-        process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY?.trim() &&
-        process.env.CLOUDFLARE_R2_BUCKET?.trim() &&
+      r2CredentialsConfigured &&
         process.env.CLOUDFLARE_R2_PUBLIC_BASE_URL?.trim(),
     ),
     uploadLimits: getAudioUploadLimits(),

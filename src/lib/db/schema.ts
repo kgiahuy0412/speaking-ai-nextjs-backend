@@ -34,6 +34,7 @@ export const managedStorageSchemaStatements = [
     finalize_lease_until TIMESTAMPTZ,
     total_bytes BIGINT NOT NULL DEFAULT 0,
     chunk_count INTEGER NOT NULL DEFAULT 0,
+    chunk_storage_backend TEXT NOT NULL DEFAULT 'postgres',
     request_hash TEXT,
     result JSONB
   )`,
@@ -47,6 +48,7 @@ export const managedStorageSchemaStatements = [
     ADD COLUMN IF NOT EXISTS finalize_lease_until TIMESTAMPTZ,
     ADD COLUMN IF NOT EXISTS total_bytes BIGINT NOT NULL DEFAULT 0,
     ADD COLUMN IF NOT EXISTS chunk_count INTEGER NOT NULL DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS chunk_storage_backend TEXT NOT NULL DEFAULT 'postgres',
     ADD COLUMN IF NOT EXISTS request_hash TEXT,
     ADD COLUMN IF NOT EXISTS result JSONB`,
   `CREATE INDEX IF NOT EXISTS audio_upload_sessions_expires_idx
@@ -56,7 +58,9 @@ export const managedStorageSchemaStatements = [
     sequence INTEGER NOT NULL,
     sha256 TEXT NOT NULL,
     size_bytes INTEGER NOT NULL,
-    content_base64 TEXT NOT NULL,
+    content_base64 TEXT,
+    object_key TEXT,
+    storage_backend TEXT NOT NULL DEFAULT 'postgres',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     PRIMARY KEY (session_id, sequence)
   )`,
@@ -66,7 +70,11 @@ export const managedStorageSchemaStatements = [
     ADD COLUMN IF NOT EXISTS sha256 TEXT,
     ADD COLUMN IF NOT EXISTS size_bytes INTEGER,
     ADD COLUMN IF NOT EXISTS content_base64 TEXT,
+    ADD COLUMN IF NOT EXISTS object_key TEXT,
+    ADD COLUMN IF NOT EXISTS storage_backend TEXT NOT NULL DEFAULT 'postgres',
     ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`,
+  `ALTER TABLE audio_upload_chunks
+    ALTER COLUMN content_base64 DROP NOT NULL`,
   `CREATE TABLE IF NOT EXISTS generated_audio (
     file_name TEXT PRIMARY KEY,
     content_base64 TEXT NOT NULL,

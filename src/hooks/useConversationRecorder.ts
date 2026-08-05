@@ -7,10 +7,16 @@ import {
 } from "@/components/UiLocaleProvider";
 import type {
   AsrMode,
+  BenchmarkMetadata,
   ConversationResponse,
   PracticeContext,
 } from "@/types/conversation";
 import { trimRecordedAudio } from "@/lib/audio/trimRecordedAudio";
+import {
+  BrowserAudioSessionUploader,
+  supportsProgressiveEncodedAudioUpload,
+  type AudioSessionUploadStats,
+} from "@/lib/client/audioSessionUploader";
 
 type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
 
@@ -56,6 +62,8 @@ const maximumAdaptiveSpeechThreshold = 0.04;
 const noiseToSpeechRatio = 2.5;
 const minimumStreamingConfidence = 0.55;
 const initialNoiseWindowMs = 500;
+const progressiveChunkIntervalMs = 500;
+const progressiveMaxConcurrentUploads = 2;
 const preferredAudioConstraints: MediaTrackConstraints = {
   channelCount: { ideal: 1 },
   echoCancellation: { ideal: true },
@@ -215,6 +223,23 @@ export function useConversationRecorder({
   const vadFrameRef = useRef<number | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const speechDetectedRef = useRef(false);
+  const progressiveUploaderRef = useRef<BrowserAudioSessionUploader | null>(
+    null,
+  );
+  const preSpeechChunkRef = useRef<Blob | null>(null);
+  const recordingSampleRateRef = useRef<number | undefined>(undefined);
+
+  function enqueueProgressiveChunk(chunk: Blob) {
+    progressiveUploaderRef.current?.enqueue(chunk);
+  }
+
+  function flushPreSpeechChunk() {
+    const chunk = preSpeechChunkRef.current;
+    preSpeechChunkRef.current = null;
+    if (chunk) {
+      enqueueProgressiveChunk(chunk);
+    }
+  }
 
   function stopVad() {
     if (vadFrameRef.current !== null) {
@@ -293,6 +318,9 @@ export function useConversationRecorder({
       }
 
       if (rms >= adaptiveSpeechThreshold) {
+        if (!heardSpeech) {
+          flushPreSpeechChunk();
+        }
         heardSpeech = true;
         speechDetectedRef.current = true;
         lastSpeechAt = now;
@@ -355,6 +383,31 @@ export function useConversationRecorder({
       const completeAudio = new Blob(recordedChunksRef.current, {
         type: mimeType,
       });
+      const progressiveUploader = progressiveUploaderRef.current;
+      let progressiveStats: AudioSessionUploadStats | undefined;
+      let batchFallbackReason: string | undefined;
+
+      if (
+        !canTrustStreamingTranscript &&
+        progressiveUploader &&
+        progressiveUploader.queuedChunkCount > 0
+      ) {
+        try {
+          progressiveStats = await progressiveUploader.drain(
+            stoppedAtRef.current,
+          );
+        } catch (error) {
+          batchFallbackReason =
+            error instanceof Error ? error.name : "progressive_upload_failed";
+          void progressiveUploader.discard();
+        }
+      } else if (progressiveUploader) {
+        void progressiveUploader.discard();
+      }
+
+      const utteranceDurationMs = Math.round(
+        stoppedAtRef.current - recordingStartedAtRef.current,
+      );
       const trimmedAudio = canTrustStreamingTranscript
         ? {
             blob: completeAudio,
@@ -364,10 +417,19 @@ export function useConversationRecorder({
             retainedDurationMs: undefined,
             threshold: undefined,
           }
-        : await trimRecordedAudio(
-            completeAudio,
-            initialNoiseRmsRef.current,
-          );
+        : progressiveStats
+          ? {
+              blob: completeAudio,
+              trimmed: true,
+              reason: "progressive_upload_client_vad" as const,
+              originalDurationMs: utteranceDurationMs,
+              retainedDurationMs: utteranceDurationMs,
+              threshold: initialNoiseRmsRef.current,
+            }
+          : await trimRecordedAudio(
+              completeAudio,
+              initialNoiseRmsRef.current,
+            );
       const uploadAudio = trimmedAudio.blob;
       const benchmark = {
         browser: getBrowserLabel(),
@@ -375,9 +437,7 @@ export function useConversationRecorder({
           ? ("mobile" as const)
           : ("desktop" as const),
         network: getNetworkLabel(),
-        utteranceDurationMs: Math.round(
-          stoppedAtRef.current - recordingStartedAtRef.current,
-        ),
+        utteranceDurationMs,
         vadSilenceMs,
         requestedAsrMode: asrMode,
         streamingFallbackReason: fallbackReasonRef.current,
@@ -390,19 +450,43 @@ export function useConversationRecorder({
         clientAudioOriginalDurationMs: trimmedAudio.originalDurationMs,
         clientAudioRetainedDurationMs: trimmedAudio.retainedDurationMs,
         clientAudioTrimThreshold: trimmedAudio.threshold,
+        recordingSampleRate: recordingSampleRateRef.current,
         batchTransport: canTrustStreamingTranscript
           ? "browser_transcript_no_audio"
+          : progressiveStats
+            ? "progressive_encoded_chunks"
           : trimmedAudio.trimmed
             ? "single_complete_file_vad_trimmed"
             : "single_complete_file",
+        batchFallbackReason,
+        chunkIntervalMs: progressiveStats?.sourceChunkIntervalMs,
+        sourceChunkIntervalMs: progressiveStats?.sourceChunkIntervalMs,
         audioChunkCount: recordedChunksRef.current.length,
-        transportChunkCount: canTrustStreamingTranscript ? 0 : 1,
+        transportChunkCount: canTrustStreamingTranscript
+          ? 0
+          : progressiveStats?.transportChunkCount ?? 1,
+        maxConcurrentChunkUploads:
+          progressiveStats?.maxConcurrentChunkUploads,
         uploadedAudioBytes: canTrustStreamingTranscript
           ? 0
-          : uploadAudio.size,
-        retainedAudioBytes: uploadAudio.size,
+          : progressiveStats?.uploadedAudioBytes ?? uploadAudio.size,
+        retainedAudioBytes:
+          progressiveStats?.uploadedAudioBytes ?? uploadAudio.size,
         originalRecordedAudioBytes: completeAudio.size,
-      };
+        chunkChecksumSha256: progressiveStats?.chunkChecksumSha256,
+        missingChunkRecovery: progressiveStats?.missingChunkRecovery,
+        uploadProtocolVersion: progressiveStats?.uploadProtocolVersion,
+        chunkStorageBackend: progressiveStats?.chunkStorageBackend,
+        scopedUploadToken: progressiveStats?.scopedUploadToken,
+        firstChunkAckMs: progressiveStats?.firstChunkAckMs,
+        chunkUploadP50Ms: progressiveStats?.chunkUploadP50Ms,
+        chunkUploadP95Ms: progressiveStats?.chunkUploadP95Ms,
+        chunkRetryCount: progressiveStats?.chunkRetryCount,
+        batchUploadSessionMs: progressiveStats?.batchUploadSessionMs,
+        sessionCreateMs: progressiveStats?.sessionCreateMs,
+        uploadDrainAfterStopMs: progressiveStats?.uploadDrainAfterStopMs,
+        retryStrategy: progressiveStats?.retryStrategy,
+      } satisfies BenchmarkMetadata;
       const finalizeRequestStartedAt = performance.now();
       let response: Response;
 
@@ -420,6 +504,14 @@ export function useConversationRecorder({
             asrMode: sessionAsrMode,
             benchmark,
           }),
+        });
+      } else if (progressiveStats && progressiveUploader) {
+        response = await progressiveUploader.finalize({
+          context,
+          childAge: 6,
+          asrMode: "batch_chunks",
+          mimeType,
+          benchmark,
         });
       } else {
         if (uploadAudio.size === 0) {
@@ -468,21 +560,24 @@ export function useConversationRecorder({
       const latency = {
         asrFirstDeltaMs: firstDeltaMsRef.current,
         asrFinalAfterStopMs,
-        ...(canTrustStreamingTranscript
-          ? { uploadDrainAfterStopMs: 0 }
-          : {}),
+        uploadDrainAfterStopMs: canTrustStreamingTranscript
+          ? 0
+          : progressiveStats?.uploadDrainAfterStopMs,
       };
 
       result.latency = { ...result.latency, ...latency };
-      await fetch("/api/history", {
+      onResult(result, stoppedAtRef.current);
+      // Latency reporting is useful for tuning, but it must never delay the
+      // result callback that starts audio playback.
+      void fetch("/api/history", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
+        keepalive: true,
         body: JSON.stringify({
           conversationId: result.conversationId,
           latency,
         }),
-      });
-      onResult(result, stoppedAtRef.current);
+      }).catch(() => undefined);
     } catch (error) {
       onError(
         error instanceof Error
@@ -512,6 +607,9 @@ export function useConversationRecorder({
     asrFinalAtRef.current = undefined;
     stopRequestedRef.current = false;
     speechDetectedRef.current = false;
+    progressiveUploaderRef.current = null;
+    preSpeechChunkRef.current = null;
+    recordingSampleRateRef.current = undefined;
 
     if (!navigator.mediaDevices?.getUserMedia) {
       onError(pick("Trình duyệt không hỗ trợ ghi âm.", "浏览器不支持录音。"));
@@ -521,9 +619,11 @@ export function useConversationRecorder({
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: preferredAudioConstraints,
     });
+    const audioTrack = stream.getAudioTracks()[0];
     const inputLabel =
-      stream.getAudioTracks()[0]?.label ||
+      audioTrack?.label ||
       pick("Micro mặc định", "默认麦克风");
+    recordingSampleRateRef.current = audioTrack?.getSettings().sampleRate;
     audioInputLabelRef.current = inputLabel;
     isBluetoothInputRef.current = isBluetoothLabel(inputLabel);
     setAudioInputLabel(inputLabel);
@@ -544,6 +644,19 @@ export function useConversationRecorder({
         : "batch_chunks";
     effectiveAsrModeRef.current = sessionAsrMode;
     setEffectiveAsrMode(sessionAsrMode);
+
+    if (
+      sessionAsrMode === "batch_chunks" &&
+      supportsProgressiveEncodedAudioUpload(mimeType)
+    ) {
+      progressiveUploaderRef.current = new BrowserAudioSessionUploader({
+        mimeType,
+        requestedSampleRate: recordingSampleRateRef.current ?? 48_000,
+        sourceChunkIntervalMs: progressiveChunkIntervalMs,
+        maxDurationMs: recordingTimeoutMs,
+        maxConcurrentUploads: progressiveMaxConcurrentUploads,
+      });
+    }
 
     if (unavailableReason) {
       fallbackReasonRef.current = unavailableReason;
@@ -637,6 +750,16 @@ export function useConversationRecorder({
       }
 
       recordedChunksRef.current.push(event.data);
+      if (progressiveUploaderRef.current) {
+        if (speechDetectedRef.current) {
+          flushPreSpeechChunk();
+          enqueueProgressiveChunk(event.data);
+        } else {
+          // Keep only one pre-roll chunk until VAD confirms speech. This drops
+          // long leading silence without decoding the complete recording.
+          preSpeechChunkRef.current = event.data;
+        }
+      }
     };
     recorder.onstop = () => {
       stream.getTracks().forEach((track) => track.stop());
@@ -646,10 +769,14 @@ export function useConversationRecorder({
     };
 
     mediaRecorderRef.current = recorder;
-    // A single complete MediaRecorder file is more reliable on Safari than
-    // hundreds of 250 ms fragments. It is uploaded only after the end of
-    // speech, and is not uploaded at all when browser ASR is trustworthy.
-    recorder.start();
+    // WebM/Ogg chunks are uploaded while the user speaks. Safari/MP4 keeps the
+    // complete-file fallback because fragmented MP4 concatenation is not
+    // reliable across browser versions.
+    if (progressiveUploaderRef.current) {
+      recorder.start(progressiveChunkIntervalMs);
+    } else {
+      recorder.start();
+    }
     setIsRecording(true);
     startVad(stream);
     timeoutRef.current = window.setTimeout(
