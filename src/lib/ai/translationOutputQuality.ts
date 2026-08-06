@@ -8,7 +8,13 @@ const metaResponsePatterns = [
   /\b(?:vietnamese|source) (?:utterance|sentence|text).*(?:missing|not provided)\b/i,
   /\b(?:as an ai|i (?:cannot|can't|am unable to) translate)\b/i,
   /\bhere(?:'s| is) (?:the )?(?:english )?translation\b/i,
+  /\b(?:however|alternatively|another (?:option|translation)|this means)\b/i,
 ];
+
+function containsMultipleSentences(value: string) {
+  const prose = value.replace(/\b(?:Mr|Mrs|Ms|Dr)\./g, "");
+  return /[.!?]\s+[A-Z]/.test(prose) || /[;\n\r]/.test(prose);
+}
 
 export function normalizeTranslationOutput(text: string) {
   let value = text.trim();
@@ -25,7 +31,8 @@ export function normalizeTranslationOutput(text: string) {
 
   if (
     !value ||
-    value.length > 500 ||
+    value.length > 240 ||
+    containsMultipleSentences(value) ||
     containsUnexpectedEastAsianScript(value) ||
     /^(vietnamese|source)\s*:/i.test(value) ||
     metaResponsePatterns.some((pattern) => pattern.test(value))

@@ -18,7 +18,7 @@ test("builds a deterministic faithful-translation request for Cloudflare", () =>
     "@cf/meta/llama-4-scout-17b-16e-instruct",
   );
   assert.equal(body.temperature, 0);
-  assert.equal(body.max_completion_tokens, 80);
+  assert.equal(body.max_completion_tokens, 48);
   assert.deepEqual(body.messages, [
     { role: "system", content: "Translate faithfully. English only." },
     { role: "user", content: "Mẹ ơi, con muốn mua cái này." },

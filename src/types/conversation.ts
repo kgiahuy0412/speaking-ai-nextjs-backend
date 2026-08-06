@@ -49,6 +49,15 @@ export type BenchmarkMetadata = {
   workerTerminalSnapshotByteLength?: number;
   workerTerminalLeadBeforeFinalizeMs?: number;
   workerTerminalFinalizeWaitMs?: number;
+  workerPrepareAttempted?: boolean;
+  workerPreparedCommit?: boolean;
+  workerPrepareDuplicateSuppressed?: number;
+  workerPrepareInvalidated?: number;
+  workerStartedAtSessionMs?: number;
+  workerStartedBeforeStopMs?: number;
+  workerTranscriptReadyAtSessionMs?: number;
+  workerPreparationReadyAtSessionMs?: number;
+  workerTailVadEligible?: boolean;
   batchTransport?: string;
   batchFallbackReason?: string;
   chunkIntervalMs?: number;

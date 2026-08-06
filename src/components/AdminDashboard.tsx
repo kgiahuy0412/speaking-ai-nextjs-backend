@@ -768,6 +768,39 @@ export function AdminDashboard() {
                             : "no"}
                         </span>
                       ) : null}
+                      {conversation.benchmark?.workerPrepareAttempted ? (
+                        <span>
+                          Worker prepare {conversation.benchmark.workerPreparedCommit
+                            ? "committed"
+                            : "Worker-only"}
+                        </span>
+                      ) : null}
+                      {conversation.benchmark?.workerStartedBeforeStopMs !== undefined ? (
+                        <span>
+                          Worker lead {conversation.benchmark.workerStartedBeforeStopMs} ms
+                        </span>
+                      ) : null}
+                      {conversation.benchmark?.workerTailVadEligible !== undefined ? (
+                        <span>
+                          Worker tail {conversation.benchmark.workerTailVadEligible
+                            ? "eligible"
+                            : "not prepared"}
+                        </span>
+                      ) : null}
+                      {conversation.benchmark?.workerPrepareDuplicateSuppressed !== undefined ? (
+                        <span>
+                          Worker duplicates suppressed{" "}
+                          {conversation.benchmark.workerPrepareDuplicateSuppressed}
+                        </span>
+                      ) : null}
+                      {conversation.benchmark?.workerTranscriptReadyAtSessionMs !== undefined ||
+                      conversation.benchmark?.workerPreparationReadyAtSessionMs !== undefined ? (
+                        <span>
+                          Worker ready ASR {conversation.benchmark.workerTranscriptReadyAtSessionMs ?? "-"}
+                          {" → prepare "}
+                          {conversation.benchmark.workerPreparationReadyAtSessionMs ?? "-"} ms
+                        </span>
+                      ) : null}
                     </div>
                   </div>
 
