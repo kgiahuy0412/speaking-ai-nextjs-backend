@@ -7,7 +7,6 @@ import {
 
 const scopedSessionPrefix = "audio_v2-";
 const sha256Pattern = /^[a-f0-9]{64}$/;
-const workerPipelineClockSkewSeconds = 30;
 
 export type AudioSessionCreateConfig = {
   protocolVersion: 2;
@@ -201,54 +200,6 @@ export function authorizeAudioSessionRequest(
     );
   }
   return claims;
-}
-
-/**
- * Proves that a speculative transcript came from the Worker, not from a Web
- * client that merely holds the scoped upload token. Both services already own
- * AUDIO_UPLOAD_TOKEN_SECRET; the browser never receives this HMAC key.
- */
-export function authorizeWorkerAudioSessionPipeline(
-  request: Request,
-  input: {
-    audioSessionId: string;
-    snapshotChunkCount: number;
-    sourceText: string;
-  },
-) {
-  const secret = getAudioUploadSecurityConfig().tokenSecret;
-  if (!secret) {
-    unauthorized("Máy chủ không thể xác thực Worker pipeline.", 503);
-  }
-  const rawTimestamp =
-    request.headers.get("x-worker-pipeline-timestamp")?.trim() ?? "";
-  const timestamp = Number(rawTimestamp);
-  if (
-    !/^\d+$/.test(rawTimestamp) ||
-    !Number.isSafeInteger(timestamp) ||
-    Math.abs(Math.floor(Date.now() / 1000) - timestamp) >
-      workerPipelineClockSkewSeconds
-  ) {
-    unauthorized("Worker pipeline có timestamp không hợp lệ.", 403);
-  }
-  const suppliedSignature =
-    request.headers.get("x-worker-pipeline-signature")?.trim() ?? "";
-  const payload = JSON.stringify([
-    input.audioSessionId,
-    input.snapshotChunkCount,
-    timestamp,
-    input.sourceText,
-  ]);
-  const expectedSignature = signPayload(payload, secret);
-  const expectedBytes = Buffer.from(expectedSignature);
-  const suppliedBytes = Buffer.from(suppliedSignature);
-  if (
-    !suppliedSignature ||
-    expectedBytes.byteLength !== suppliedBytes.byteLength ||
-    !timingSafeEqual(expectedBytes, suppliedBytes)
-  ) {
-    unauthorized("Worker pipeline có chữ ký không hợp lệ.", 403);
-  }
 }
 
 export function validateScopedChunkHeaders(

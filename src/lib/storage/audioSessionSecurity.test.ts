@@ -1,10 +1,8 @@
 import assert from "node:assert/strict";
-import { createHmac } from "node:crypto";
 import { after, before, test } from "node:test";
 import { AppError } from "@/lib/appError";
 import {
   authorizeAudioSessionRequest,
-  authorizeWorkerAudioSessionPipeline,
   issueAudioSessionToken,
   parseAudioSessionCreateConfig,
   validateScopedChunkHeaders,
@@ -68,48 +66,5 @@ test("scoped chunk requires stable idempotency and SHA-256 headers", () => {
     (error: unknown) =>
       error instanceof AppError &&
       error.code === "AUDIO_CHUNK_IDEMPOTENCY_INVALID",
-  );
-});
-
-test("Worker pipeline transcript requires a fresh server-side HMAC", () => {
-  const audioSessionId = "audio_v2-worker-test";
-  const snapshotChunkCount = 4;
-  const sourceText = "Con muốn uống nước";
-  const timestamp = Math.floor(Date.now() / 1000);
-  const payload = JSON.stringify([
-    audioSessionId,
-    snapshotChunkCount,
-    timestamp,
-    sourceText,
-  ]);
-  const signature = createHmac(
-    "sha256",
-    process.env.AUDIO_UPLOAD_TOKEN_SECRET!,
-  )
-    .update(payload)
-    .digest("base64url");
-  const signedRequest = new Request("https://example.test/api/audio", {
-    headers: {
-      "x-worker-pipeline-timestamp": timestamp.toString(),
-      "x-worker-pipeline-signature": signature,
-    },
-  });
-
-  assert.doesNotThrow(() =>
-    authorizeWorkerAudioSessionPipeline(signedRequest, {
-      audioSessionId,
-      snapshotChunkCount,
-      sourceText,
-    }),
-  );
-  assert.throws(
-    () =>
-      authorizeWorkerAudioSessionPipeline(signedRequest, {
-        audioSessionId,
-        snapshotChunkCount,
-        sourceText: "Câu bị thay đổi từ trình duyệt",
-      }),
-    (error: unknown) =>
-      error instanceof AppError && error.code === "AUDIO_SESSION_UNAUTHORIZED",
   );
 });

@@ -1,5 +1,4 @@
 import { prepareAudioSessionPipelineOnce } from "@/lib/ai/audioSessionPipeline";
-import { prepareConversationPipeline } from "@/lib/ai/pipeline";
 import {
   beginBatchPrefetchOperation,
   reserveBatchPrefetchAttempt,
@@ -17,10 +16,7 @@ import {
   finalizeAudioUploadSession,
   type Pcm16WavMetadata,
 } from "@/lib/storage/audioSessions";
-import {
-  authorizeAudioSessionRequest,
-  authorizeWorkerAudioSessionPipeline,
-} from "@/lib/storage/audioSessionSecurity";
+import { authorizeAudioSessionRequest } from "@/lib/storage/audioSessionSecurity";
 import type {
   BenchmarkMetadata,
   PracticeContext,
@@ -40,9 +36,6 @@ type PreviewRequest = {
   childAge?: number;
   terminal?: boolean;
   previousPrefetchId?: string;
-  sourceText?: string;
-  sourceTextAsrMs?: number;
-  workerPilot?: boolean;
   pcm16Wav?: Pcm16WavMetadata;
   benchmark?: BenchmarkMetadata;
 };
@@ -71,25 +64,6 @@ export async function POST(request: Request, context: RouteContext) {
         "Dữ liệu Batch prefetch không hợp lệ.",
       );
     }
-    const workerSourceText = body.workerPilot === true
-      ? body.sourceText?.trim() ?? ""
-      : "";
-    if (
-      body.workerPilot === true &&
-      (!workerSourceText || workerSourceText.length > 500)
-    ) {
-      throw new AppError(
-        "BAD_REQUEST",
-        "Transcript Worker prefetch không hợp lệ.",
-      );
-    }
-    if (body.workerPilot === true) {
-      authorizeWorkerAudioSessionPipeline(request, {
-        audioSessionId,
-        snapshotChunkCount: body.pcm16Wav.chunkCount ?? 0,
-        sourceText: workerSourceText,
-      });
-    }
     if (
       body.pcm16Wav.chunkCount === undefined ||
       body.pcm16Wav.chunkCount < 2 ||
@@ -109,6 +83,18 @@ export async function POST(request: Request, context: RouteContext) {
 
     prefetchOperation = beginBatchPrefetchOperation(audioSessionId);
 
+    let assemblySource: AudioAssemblySource | undefined;
+    const audio = await finalizeAudioUploadSession(
+      audioSessionId,
+      "audio/wav",
+      body.pcm16Wav,
+      {
+        allowTrailingChunks: true,
+        onAssemblySource: (source) => {
+          assemblySource = source;
+        },
+      },
+    );
     const utteranceDurationMs = Math.round(
       (body.pcm16Wav.pcmByteLength /
         (body.pcm16Wav.sampleRate *
@@ -135,81 +121,28 @@ export async function POST(request: Request, context: RouteContext) {
         chunkCount: body.pcm16Wav.chunkCount,
       });
     }
-    let assemblySource: AudioAssemblySource | undefined;
-    let asrSharedFlightJoined = false;
-    let asrWaitLatencyMs = 0;
-    let pipelineSharedFlightJoined = false;
-    const pipeline = workerSourceText
-      ? await prepareConversationPipeline(
-          {
-            requestId,
-            clientId: body.clientId?.trim() || undefined,
-            context: body.context,
-            childAge: body.childAge ?? 6,
-            targetLanguage: "en",
-            sourceText: workerSourceText,
-            asrMode: "browser_streaming",
-            benchmark: {
-              ...body.benchmark,
-              utteranceDurationMs,
-              clientVadApplied: true,
-              workerAsrPilotAsrMs:
-                typeof body.sourceTextAsrMs === "number"
-                  ? Math.max(0, Math.round(body.sourceTextAsrMs))
-                  : undefined,
-            },
-          },
-          {
-            deferTextCacheWrite: true,
-            streamAudioOnCacheMiss: true,
-            prefetchedTranscript: {
-              sourceText: workerSourceText,
-              latencyMs:
-                typeof body.sourceTextAsrMs === "number"
-                  ? Math.max(0, Math.round(body.sourceTextAsrMs))
-                  : 0,
-            },
-          },
-        )
-      : await (async () => {
-          const audio = await finalizeAudioUploadSession(
-            audioSessionId,
-            "audio/wav",
-            body.pcm16Wav!,
-            {
-              allowTrailingChunks: true,
-              onAssemblySource: (source) => {
-                assemblySource = source;
-              },
-            },
-          );
-          const prepared = await prepareAudioSessionPipelineOnce({
-            audioSessionId,
-            snapshot: body.pcm16Wav!,
-            terminalSnapshot: body.terminal === true,
-            request: {
-              requestId,
-              clientId: body.clientId?.trim() || undefined,
-              context: body.context!,
-              childAge: body.childAge ?? 6,
-              targetLanguage: "en",
-              audioFile: audio,
-              asrMode: "batch_chunks",
-              benchmark: {
-                utteranceDurationMs,
-                clientVadApplied: body.terminal === true,
-              },
-            },
-          });
-          asrSharedFlightJoined = prepared.asrSharedFlightJoined;
-          asrWaitLatencyMs = prepared.asrWaitLatencyMs;
-          pipelineSharedFlightJoined = prepared.pipelineSharedFlightJoined;
-          return prepared.pipeline;
-        })();
-    const sourceText = pipeline.asr.value;
-    const asrLatencyMs = pipeline.asr.latencyMs;
-    const translation = pipeline.llm.value;
-    const translationLatencyMs = pipeline.llm.latencyMs;
+    const prepared = await prepareAudioSessionPipelineOnce({
+      audioSessionId,
+      snapshot: body.pcm16Wav,
+      terminalSnapshot: body.terminal === true,
+      request: {
+        requestId,
+        clientId: body.clientId?.trim() || undefined,
+        context: body.context,
+        childAge: body.childAge ?? 6,
+        targetLanguage: "en",
+        audioFile: audio,
+        asrMode: "batch_chunks",
+        benchmark: {
+          utteranceDurationMs,
+          clientVadApplied: body.terminal === true,
+        },
+      },
+    });
+    const sourceText = prepared.pipeline.asr.value;
+    const asrLatencyMs = prepared.pipeline.asr.latencyMs;
+    const translation = prepared.pipeline.llm.value;
+    const translationLatencyMs = prepared.pipeline.llm.latencyMs;
     const speculativeAi =
       translation.source === "cloudflare" || translation.source === "openai";
     const unsafeTranslation =
@@ -245,7 +178,7 @@ export async function POST(request: Request, context: RouteContext) {
 
     // This is the exact audio result retained by the full snapshot pipeline.
     // Finalize joins it and returns the same URL, so Safari keeps one source.
-    const audioResult = pipeline.tts.value;
+    const audioResult = prepared.pipeline.tts.value;
     if (
       audioResult.source !== "cache" &&
       audioResult.source !== "cloudflare_tts"
@@ -271,7 +204,6 @@ export async function POST(request: Request, context: RouteContext) {
         chunkCount: body.pcm16Wav.chunkCount,
       } as Pcm16WavMetadata & { chunkCount: number },
       terminalSnapshot: body.terminal === true,
-      workerPilot: Boolean(workerSourceText),
       previewLatencyMs,
       asrLatencyMs,
     });
@@ -285,13 +217,12 @@ export async function POST(request: Request, context: RouteContext) {
       textSource: candidate.translation.source,
       audioSource: candidate.audioSource,
       speculativeAi,
-      workerPilot: Boolean(workerSourceText),
       assemblySource,
       asrLatencyMs,
-      asrSharedFlightJoined,
-      asrWaitLatencyMs,
-      pipelineSharedFlightJoined,
-      sharedPipelinePreparationMs: pipeline.preparationMs,
+      asrSharedFlightJoined: prepared.asrSharedFlightJoined,
+      asrWaitLatencyMs: prepared.asrWaitLatencyMs,
+      pipelineSharedFlightJoined: prepared.pipelineSharedFlightJoined,
+      sharedPipelinePreparationMs: prepared.pipeline.preparationMs,
       translationLatencyMs,
       previewLatencyMs,
     });
@@ -307,7 +238,6 @@ export async function POST(request: Request, context: RouteContext) {
         audioSource: candidate.audioSource,
         snapshotChunkCount: candidate.snapshot.chunkCount,
         terminalSnapshot: candidate.terminalSnapshot,
-        workerPilot: Boolean(workerSourceText),
         asrLatencyMs,
         translationLatencyMs,
         previewLatencyMs,

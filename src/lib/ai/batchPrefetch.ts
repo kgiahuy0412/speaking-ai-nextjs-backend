@@ -21,8 +21,6 @@ export type BatchPrefetchCandidate = {
   audioSource: "cache" | "cloudflare_tts";
   snapshot: BatchPrefetchPcmSnapshot;
   terminalSnapshot: boolean;
-  /** Transcript/pipeline was prepared by the Web-only Worker pilot. */
-  workerPilot?: boolean;
   stabilityCount: number;
   createdAt: number;
   previewLatencyMs: number;
