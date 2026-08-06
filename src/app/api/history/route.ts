@@ -183,6 +183,10 @@ export async function PATCH(request: Request) {
       audioLoadMs: body.latency.audioLoadMs,
       audioFromDeviceCache: body.latency.audioFromDeviceCache,
       responseToPlaybackMs: body.latency.responseToPlaybackMs,
+      audioPreloadLoadedData: body.latency.audioPreloadLoadedData,
+      audioPreloadCanPlay: body.latency.audioPreloadCanPlay,
+      audioPreloadLoadedDataMs: body.latency.audioPreloadLoadedDataMs,
+      audioPreloadCanPlayMs: body.latency.audioPreloadCanPlayMs,
     });
   }
 

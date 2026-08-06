@@ -656,6 +656,30 @@ export function AdminDashboard() {
                           Safari sau response {conversation.latency.responseToPlaybackMs} ms
                         </span>
                       ) : null}
+                      {conversation.latency.audioFromDeviceCache !== undefined ? (
+                        <span>
+                          Reuse preload {conversation.latency.audioFromDeviceCache ? "yes" : "no"}
+                        </span>
+                      ) : null}
+                      {conversation.latency.audioPreloadLoadedData !== undefined ? (
+                        <span>
+                          loadeddata {conversation.latency.audioPreloadLoadedData ? "yes" : "no"}
+                          {conversation.latency.audioPreloadLoadedDataMs !== undefined
+                            ? ` (${conversation.latency.audioPreloadLoadedDataMs} ms)`
+                            : ""}
+                        </span>
+                      ) : null}
+                      {conversation.latency.audioPreloadCanPlay !== undefined ? (
+                        <span>
+                          canplay {conversation.latency.audioPreloadCanPlay ? "yes" : "no"}
+                          {conversation.latency.audioPreloadCanPlayMs !== undefined
+                            ? ` (${conversation.latency.audioPreloadCanPlayMs} ms)`
+                            : ""}
+                        </span>
+                      ) : null}
+                      <span>
+                        Audio cache hit {conversation.audioSource === "cache" ? "yes" : "no"}
+                      </span>
                       {conversation.benchmark
                         ?.batchTerminalPreviewLeadBeforeFinalizeMs !== undefined ? (
                         <span>
@@ -672,6 +696,32 @@ export function AdminDashboard() {
                         <span>
                           Shared pipeline{" "}
                           {conversation.benchmark.batchPipelineSharedFlightJoined
+                            ? "yes"
+                            : "no"}
+                        </span>
+                      ) : null}
+                      {conversation.benchmark?.batchPrefetchRaceWinner !== undefined ? (
+                        <span>
+                          Race winner {conversation.benchmark.batchPrefetchRaceWinner}
+                        </span>
+                      ) : null}
+                      {conversation.benchmark?.batchTerminalPipelineAgeMs !== undefined ? (
+                        <span>
+                          Terminal pipeline age {conversation.benchmark.batchTerminalPipelineAgeMs} ms
+                        </span>
+                      ) : null}
+                      {conversation.benchmark
+                        ?.batchTerminalPipelineTailEligible !== undefined ? (
+                        <span>
+                          Terminal tail {conversation.benchmark.batchTerminalPipelineTailEligible
+                            ? "eligible"
+                            : "rejected"}
+                        </span>
+                      ) : null}
+                      {conversation.benchmark
+                        ?.batchTerminalPipelineSharedFlightJoined !== undefined ? (
+                        <span>
+                          Terminal shared {conversation.benchmark.batchTerminalPipelineSharedFlightJoined
                             ? "yes"
                             : "no"}
                         </span>

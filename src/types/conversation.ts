@@ -125,6 +125,10 @@ export type ConversationLatency = {
   browserAudioStartedMs?: number;
   audioStartedAfterStopMs?: number;
   responseToPlaybackMs?: number;
+  audioPreloadLoadedData?: boolean;
+  audioPreloadCanPlay?: boolean;
+  audioPreloadLoadedDataMs?: number;
+  audioPreloadCanPlayMs?: number;
 };
 
 export type ProcessingMode = "rule" | "ai" | "fallback";
