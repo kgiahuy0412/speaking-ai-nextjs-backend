@@ -272,6 +272,7 @@ export async function POST(request: Request, context: RouteContext) {
             }
         >
       | undefined;
+    let startAuthoritativeBatchPipeline: (() => void) | undefined;
 
     if (asrMode === "batch_chunks") {
       const assembleStartedAt = performance.now();
@@ -294,11 +295,43 @@ export async function POST(request: Request, context: RouteContext) {
           400,
         );
       }
-      hedgedAsrPromise = transcribeAudioSessionOnce({
-        audioSessionId,
-        snapshot: body.pcm16Wav,
-        transcribe: () =>
-          transcribeVietnamese({
+      startAuthoritativeBatchPipeline = () => {
+        if (hedgedAsrPromise || preparedPipelinePromise) return;
+        hedgedAsrPromise = transcribeAudioSessionOnce({
+          audioSessionId,
+          snapshot: body.pcm16Wav!,
+          transcribe: () =>
+            transcribeVietnamese({
+              requestId,
+              clientId: body.clientId?.trim() || undefined,
+              context: practiceContext,
+              childAge: body.childAge ?? 6,
+              targetLanguage: "en",
+              sessionId: body.sessionId,
+              audioFile,
+              asrMode: "batch_chunks",
+              benchmark: { ...body.benchmark },
+            }),
+        }).then(
+          (shared) => ({
+            ok: true as const,
+            sourceText: shared.sourceText,
+            latencyMs: shared.asrLatencyMs,
+            waitLatencyMs: shared.waitLatencyMs,
+            joined: shared.joined,
+          }),
+          (error: unknown) => ({
+            ok: false as const,
+            error,
+            latencyMs: 0,
+            waitLatencyMs: 0,
+            joined: false,
+          }),
+        );
+        preparedPipelinePromise = prepareAudioSessionPipelineOnce({
+          audioSessionId,
+          snapshot: body.pcm16Wav!,
+          request: {
             requestId,
             clientId: body.clientId?.trim() || undefined,
             context: practiceContext,
@@ -308,42 +341,19 @@ export async function POST(request: Request, context: RouteContext) {
             audioFile,
             asrMode: "batch_chunks",
             benchmark: { ...body.benchmark },
-          }),
-      }).then(
-        (shared) => ({
-          ok: true as const,
-          sourceText: shared.sourceText,
-          latencyMs: shared.asrLatencyMs,
-          waitLatencyMs: shared.waitLatencyMs,
-          joined: shared.joined,
-        }),
-        (error: unknown) => ({
-          ok: false as const,
-          error,
-          latencyMs: 0,
-          waitLatencyMs: 0,
-          joined: false,
-        }),
-      );
-      preparedPipelinePromise = prepareAudioSessionPipelineOnce({
-        audioSessionId,
-        snapshot: body.pcm16Wav,
-        request: {
-          requestId,
-          clientId: body.clientId?.trim() || undefined,
-          context: practiceContext,
-          childAge: body.childAge ?? 6,
-          targetLanguage: "en",
-          sessionId: body.sessionId,
-          audioFile,
-          asrMode: "batch_chunks",
-          benchmark: { ...body.benchmark },
-        },
-      });
-      // A validated older prefetch may win first. Keep a rejection observer on
-      // the exact-snapshot preparation until it is either used or awaited in
-      // the post-response task.
-      void preparedPipelinePromise.catch(() => undefined);
+          },
+        });
+        // A validated older prefetch may win first. Keep a rejection observer
+        // on the exact-snapshot preparation until it is either used or awaited
+        // in the post-response task.
+        void preparedPipelinePromise.catch(() => undefined);
+      };
+      // The Worker pilot already owns ASR -> translation -> audio. Do not burn
+      // a second Workers AI ASR call in parallel. Tail validation below either
+      // accepts that candidate or starts this authoritative Batch fallback.
+      if (prefetchCandidate?.workerPilot !== true) {
+        startAuthoritativeBatchPipeline();
+      }
 
       // The terminal preview normally represents the same speech plus only a
       // short silent tail. Registering happens before preview ASR starts, so
@@ -471,6 +481,10 @@ export async function POST(request: Request, context: RouteContext) {
         prefetchCandidate,
         prefetchCandidateOrigin,
       );
+    }
+
+    if (!prefetchedSourceText && asrMode === "batch_chunks") {
+      startAuthoritativeBatchPipeline?.();
     }
 
     const waitForValidPrefetchCandidate = async () => {
