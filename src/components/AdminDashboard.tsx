@@ -728,6 +728,30 @@ export function AdminDashboard() {
                           Terminal pipeline age {conversation.benchmark.batchTerminalPipelineAgeMs} ms
                         </span>
                       ) : null}
+                      {conversation.benchmark?.batchTerminalUploadWaitMs !== undefined ? (
+                        <span>
+                          Terminal upload wait {conversation.benchmark.batchTerminalUploadWaitMs} ms
+                        </span>
+                      ) : null}
+                      {conversation.benchmark
+                        ?.batchTerminalDuplicateSuppressed !== undefined ? (
+                        <span>
+                          Terminal duplicates suppressed{" "}
+                          {conversation.benchmark.batchTerminalDuplicateSuppressed}
+                        </span>
+                      ) : null}
+                      {conversation.benchmark
+                        ?.batchTerminalSnapshotAckedChunkCount !== undefined ? (
+                        <span>
+                          Terminal ACK snapshot{" "}
+                          {conversation.benchmark.batchTerminalSnapshotAckedChunkCount} chunks
+                        </span>
+                      ) : null}
+                      {conversation.benchmark?.batchFinalSnapshotChunkCount !== undefined ? (
+                        <span>
+                          Final snapshot {conversation.benchmark.batchFinalSnapshotChunkCount} chunks
+                        </span>
+                      ) : null}
                       {conversation.benchmark
                         ?.batchTerminalPipelineTailEligible !== undefined ? (
                         <span>

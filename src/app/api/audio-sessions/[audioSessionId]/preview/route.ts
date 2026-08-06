@@ -113,6 +113,11 @@ export async function POST(request: Request, context: RouteContext) {
           body.benchmark?.batchTerminalRequestSentAtSessionMs,
         terminalPipelineStartedAtSessionMs:
           body.benchmark?.batchTerminalPipelineStartedAtSessionMs,
+        terminalUploadWaitMs: body.benchmark?.batchTerminalUploadWaitMs,
+        terminalDuplicateSuppressed:
+          body.benchmark?.batchTerminalDuplicateSuppressed,
+        terminalSnapshotAckedChunkCount:
+          body.benchmark?.batchTerminalSnapshotAckedChunkCount,
         chunkCount: body.pcm16Wav.chunkCount,
       });
     }

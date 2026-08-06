@@ -925,6 +925,14 @@ export async function POST(request: Request, context: RouteContext) {
           body.benchmark?.batchTerminalPipelineStartedAtSessionMs,
         finalizeRequestSentAtSessionMs:
           body.benchmark?.batchFinalizeRequestSentAtSessionMs,
+        terminalUploadWaitMs:
+          body.benchmark?.batchTerminalUploadWaitMs,
+        terminalDuplicateSuppressed:
+          body.benchmark?.batchTerminalDuplicateSuppressed,
+        terminalSnapshotAckedChunkCount:
+          body.benchmark?.batchTerminalSnapshotAckedChunkCount,
+        finalSnapshotChunkCount:
+          body.benchmark?.batchFinalSnapshotChunkCount,
         finalizeRequestReceivedAt,
         assemblySource,
         batchPrefetchUsed,

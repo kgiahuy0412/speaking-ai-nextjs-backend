@@ -95,6 +95,10 @@ export type BenchmarkMetadata = {
   batchTerminalRequestSentAtSessionMs?: number;
   batchTerminalPipelineStartedAtSessionMs?: number;
   batchFinalizeRequestSentAtSessionMs?: number;
+  batchTerminalUploadWaitMs?: number;
+  batchTerminalDuplicateSuppressed?: number;
+  batchTerminalSnapshotAckedChunkCount?: number;
+  batchFinalSnapshotChunkCount?: number;
   batchFinalizeHedgedAsrMs?: number;
   batchFinalizeHedgedAsrWaitMs?: number;
   batchFinalizeHedgedAsrSharedFlightJoined?: boolean;
