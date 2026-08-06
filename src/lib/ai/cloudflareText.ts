@@ -74,7 +74,10 @@ export function buildCloudflareTextTranslationBody(
       { role: "user", content: vietnameseText },
     ],
     temperature: 0,
-    max_completion_tokens: 80,
+    // One short child-facing sentence is the entire product output. A tighter
+    // budget prevents the model from appending alternatives or explanations,
+    // and reduces both text latency and the downstream TTS duration.
+    max_completion_tokens: 48,
     stream: false,
   } as const;
 }

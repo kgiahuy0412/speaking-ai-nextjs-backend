@@ -227,6 +227,20 @@ test("translation output guard rejects provider instructions before caching or T
   );
 });
 
+test("translation output guard rejects explanations and multiple alternatives", () => {
+  assert.equal(
+    normalizeTranslationOutput(
+      "I don't want to go there. However, this may also mean a narrow place.",
+    ),
+    null,
+  );
+  assert.equal(
+    normalizeTranslationOutput("I want some water. Another translation: I need water."),
+    null,
+  );
+  assert.equal(normalizeTranslationOutput("I want some water."), "I want some water.");
+});
+
 test("device manifest publishes reviewed rules as exact full-sentence samples", async () => {
   const manifest = await getOfflineIntentManifest(500);
   const exactRule = manifest.items.find((item) => item.id === "exact-V1-001");

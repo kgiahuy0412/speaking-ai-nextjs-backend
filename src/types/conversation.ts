@@ -37,6 +37,30 @@ export type BenchmarkMetadata = {
   asrConfidence?: number;
   asrFirstDeltaMs?: number;
   asrFinalAfterStopMs?: number;
+<<<<<<< HEAD
+=======
+  workerAsrPilotRttMs?: number;
+  workerAsrPilotAsrMs?: number;
+  workerAsrPilotAudioBytes?: number;
+  workerAsrPilotAttempted?: boolean;
+  workerAsrPilotFallbackCode?: string;
+  workerAsrPilotFallbackMs?: number;
+  workerTerminalPipelineStartedEarly?: boolean;
+  workerTerminalDuplicateSuppressed?: number;
+  workerTerminalSnapshotChunkCount?: number;
+  workerTerminalSnapshotByteLength?: number;
+  workerTerminalLeadBeforeFinalizeMs?: number;
+  workerTerminalFinalizeWaitMs?: number;
+  workerPrepareAttempted?: boolean;
+  workerPreparedCommit?: boolean;
+  workerPrepareDuplicateSuppressed?: number;
+  workerPrepareInvalidated?: number;
+  workerStartedAtSessionMs?: number;
+  workerStartedBeforeStopMs?: number;
+  workerTranscriptReadyAtSessionMs?: number;
+  workerPreparationReadyAtSessionMs?: number;
+  workerTailVadEligible?: boolean;
+>>>>>>> e08316ae2640d400538ed7e201cac7fce7ca143f
   batchTransport?: string;
   batchFallbackReason?: string;
   chunkIntervalMs?: number;
