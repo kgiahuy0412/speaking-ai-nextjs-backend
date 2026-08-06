@@ -17,7 +17,11 @@ import {
   type Pcm16WavMetadata,
 } from "@/lib/storage/audioSessions";
 import { authorizeAudioSessionRequest } from "@/lib/storage/audioSessionSecurity";
-import type { PracticeContext, TextSource } from "@/types/conversation";
+import type {
+  BenchmarkMetadata,
+  PracticeContext,
+  TextSource,
+} from "@/types/conversation";
 
 export const runtime = "nodejs";
 export const maxDuration = 35;
@@ -33,6 +37,7 @@ type PreviewRequest = {
   terminal?: boolean;
   previousPrefetchId?: string;
   pcm16Wav?: Pcm16WavMetadata;
+  benchmark?: BenchmarkMetadata;
 };
 
 const contexts = new Set<PracticeContext>(["home", "school", "outside"]);
@@ -97,6 +102,20 @@ export async function POST(request: Request, context: RouteContext) {
           (body.pcm16Wav.bitsPerSample / 8))) *
         1_000,
     );
+    const terminalPipelineStartedAt = Date.now();
+    if (body.terminal === true) {
+      logEvent("info", "audio_session_terminal_pipeline_started", {
+        requestId,
+        audioSessionId,
+        terminalPipelineStartedAt,
+        vadSilenceAtSessionMs: body.benchmark?.batchVadSilenceAtSessionMs,
+        terminalRequestSentAtSessionMs:
+          body.benchmark?.batchTerminalRequestSentAtSessionMs,
+        terminalPipelineStartedAtSessionMs:
+          body.benchmark?.batchTerminalPipelineStartedAtSessionMs,
+        chunkCount: body.pcm16Wav.chunkCount,
+      });
+    }
     const prepared = await prepareAudioSessionPipelineOnce({
       audioSessionId,
       snapshot: body.pcm16Wav,

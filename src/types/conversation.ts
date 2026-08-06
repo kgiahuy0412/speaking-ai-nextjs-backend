@@ -91,6 +91,10 @@ export type BenchmarkMetadata = {
   batchTerminalPipelineSharedFlightJoined?: boolean;
   batchTerminalPreviewStartedAfterSilenceMs?: number;
   batchTerminalPreviewLeadBeforeFinalizeMs?: number;
+  batchVadSilenceAtSessionMs?: number;
+  batchTerminalRequestSentAtSessionMs?: number;
+  batchTerminalPipelineStartedAtSessionMs?: number;
+  batchFinalizeRequestSentAtSessionMs?: number;
   batchFinalizeHedgedAsrMs?: number;
   batchFinalizeHedgedAsrWaitMs?: number;
   batchFinalizeHedgedAsrSharedFlightJoined?: boolean;

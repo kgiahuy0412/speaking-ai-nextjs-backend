@@ -94,6 +94,7 @@ function publicAudioUploadError(error: AudioUploadError) {
 
 export async function POST(request: Request, context: RouteContext) {
   const requestId = getRequestId(request);
+  const finalizeRequestReceivedAt = Date.now();
   const startedAt = performance.now();
   const { audioSessionId } = await context.params;
   let requestHash = "";
@@ -237,6 +238,7 @@ export async function POST(request: Request, context: RouteContext) {
     let hedgedAsrUsed = false;
     let preparedPipelineSharedFlightJoined: boolean | undefined;
     let terminalPipelineAgeMs: number | undefined;
+    let terminalPipelineLeadBeforeFinalizeMs: number | undefined;
     let terminalPipelineTailEligible: boolean | undefined;
     let terminalPipelineSharedFlightJoined: boolean | undefined;
     let terminalPreparedPipeline: PreparedAudioSessionPipeline | undefined;
@@ -244,6 +246,11 @@ export async function POST(request: Request, context: RouteContext) {
       | Promise<PreparedAudioSessionPipeline>
       | undefined;
     let supersededPipelinePromise: Promise<unknown> | undefined;
+    let supersededPipelineWinner:
+      | "prefetch"
+      | "late_prefetch"
+      | "terminal_pipeline"
+      | undefined;
     let preparedPipelinePromise:
       | ReturnType<typeof prepareAudioSessionPipelineOnce>
       | undefined;
@@ -359,6 +366,10 @@ export async function POST(request: Request, context: RouteContext) {
           0,
           Date.now() - terminalFlight.startedAt,
         );
+        terminalPipelineLeadBeforeFinalizeMs = Math.max(
+          0,
+          finalizeRequestReceivedAt - terminalFlight.startedAt,
+        );
         const validationStartedAt = performance.now();
         const terminalTail = await validateAudioSessionPrefetchTail(
           audioSessionId,
@@ -384,6 +395,7 @@ export async function POST(request: Request, context: RouteContext) {
           eligible: terminalTail.eligible,
           reason: terminalTail.reason,
           terminalPipelineAgeMs,
+          terminalPipelineLeadBeforeFinalizeMs,
           terminalValidationMs,
           tailDurationMs: terminalTail.tailDurationMs,
           activeFrameRatio: terminalTail.activeFrameRatio,
@@ -628,6 +640,9 @@ export async function POST(request: Request, context: RouteContext) {
         batchTerminalPipelineTailEligible: terminalPipelineTailEligible,
         batchTerminalPipelineSharedFlightJoined:
           terminalPipelineSharedFlightJoined,
+        batchTerminalPreviewLeadBeforeFinalizeMs:
+          terminalPipelineLeadBeforeFinalizeMs ??
+          body.benchmark?.batchTerminalPreviewLeadBeforeFinalizeMs,
         batchFinalizeHedgedAsrMs: hedgedAsrLatencyMs,
         batchFinalizeHedgedAsrWaitMs: hedgedAsrWaitMs,
         batchFinalizeHedgedAsrSharedFlightJoined:
@@ -659,12 +674,14 @@ export async function POST(request: Request, context: RouteContext) {
     let result: ConversationResponse;
     if (terminalPreparedPipeline) {
       supersededPipelinePromise = preparedPipelinePromise;
+      supersededPipelineWinner = "terminal_pipeline";
       result = completePreparedConversationPipeline(
         pipelineInput(true),
         terminalPreparedPipeline.pipeline,
       );
     } else if (prefetchedSourceText && prefetchCandidate) {
       supersededPipelinePromise = preparedPipelinePromise;
+      supersededPipelineWinner = "prefetch";
       result = await runPrefetchedPipeline();
     } else {
       const authoritativePipelinePromise = preparedPipelinePromise
@@ -738,6 +755,7 @@ export async function POST(request: Request, context: RouteContext) {
           candidateMonitorCancelled = true;
           cancelCandidateWait?.();
           supersededPipelinePromise = authoritativePipelinePromise;
+          supersededPipelineWinner = "terminal_pipeline";
           result = completePreparedConversationPipeline(
             pipelineInput(true),
             processingWinner.prepared.pipeline,
@@ -749,6 +767,7 @@ export async function POST(request: Request, context: RouteContext) {
           prefetchRaceWinner = "late_prefetch";
           batchPrefetchUsed = true;
           supersededPipelinePromise = authoritativePipelinePromise;
+          supersededPipelineWinner = "late_prefetch";
           result = await runPrefetchedPipeline();
         } else {
           prefetchRaceWinner = "pipeline";
@@ -860,7 +879,7 @@ export async function POST(request: Request, context: RouteContext) {
           logEvent("info", "audio_session_pipeline_superseded", {
             requestId,
             audioSessionId,
-            winner: "late_prefetch",
+            winner: supersededPipelineWinner ?? prefetchRaceWinner,
           });
         } catch (error) {
           logEvent("warn", "audio_session_superseded_pipeline_failed", {
@@ -890,12 +909,23 @@ export async function POST(request: Request, context: RouteContext) {
         hedgedAsrUsed,
         preparedPipelineSharedFlightJoined,
         terminalPipelineAgeMs,
+        terminalPipelineLeadBeforeFinalizeMs,
         terminalPipelineTailEligible,
         terminalPipelineSharedFlightJoined,
         terminalPreviewStartedAfterSilenceMs:
           body.benchmark?.batchTerminalPreviewStartedAfterSilenceMs,
         terminalPreviewLeadBeforeFinalizeMs:
+          terminalPipelineLeadBeforeFinalizeMs ??
           body.benchmark?.batchTerminalPreviewLeadBeforeFinalizeMs,
+        vadSilenceAtSessionMs:
+          body.benchmark?.batchVadSilenceAtSessionMs,
+        terminalRequestSentAtSessionMs:
+          body.benchmark?.batchTerminalRequestSentAtSessionMs,
+        terminalPipelineStartedAtSessionMs:
+          body.benchmark?.batchTerminalPipelineStartedAtSessionMs,
+        finalizeRequestSentAtSessionMs:
+          body.benchmark?.batchFinalizeRequestSentAtSessionMs,
+        finalizeRequestReceivedAt,
         assemblySource,
         batchPrefetchUsed,
         totalMs: responseReadyMs,

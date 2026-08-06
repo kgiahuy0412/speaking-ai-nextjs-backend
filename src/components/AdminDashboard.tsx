@@ -691,6 +691,24 @@ export function AdminDashboard() {
                           ms
                         </span>
                       ) : null}
+                      {conversation.benchmark?.batchVadSilenceAtSessionMs !==
+                        undefined ||
+                      conversation.benchmark
+                        ?.batchTerminalRequestSentAtSessionMs !== undefined ||
+                      conversation.benchmark
+                        ?.batchTerminalPipelineStartedAtSessionMs !== undefined ||
+                      conversation.benchmark
+                        ?.batchFinalizeRequestSentAtSessionMs !== undefined ? (
+                        <span>
+                          Terminal timeline VAD {conversation.benchmark?.batchVadSilenceAtSessionMs ?? "-"}
+                          {" → request "}
+                          {conversation.benchmark?.batchTerminalRequestSentAtSessionMs ?? "-"}
+                          {" → pipeline "}
+                          {conversation.benchmark?.batchTerminalPipelineStartedAtSessionMs ?? "-"}
+                          {" → finalize "}
+                          {conversation.benchmark?.batchFinalizeRequestSentAtSessionMs ?? "-"} ms
+                        </span>
+                      ) : null}
                       {conversation.benchmark
                         ?.batchPipelineSharedFlightJoined !== undefined ? (
                         <span>
