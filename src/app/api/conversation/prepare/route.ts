@@ -1,5 +1,4 @@
 import type { BenchmarkMetadata, PracticeContext } from "@/types/conversation";
-import { after } from "next/server";
 import { AppError, toErrorResponse } from "@/lib/errors";
 import {
   getRequestId,
@@ -65,9 +64,6 @@ export async function POST(request: Request) {
       asrLatencyMs: Math.max(0, Math.round(Number(body?.asrLatencyMs ?? 0))),
       benchmark: body?.benchmark,
     });
-    if (prepared.persistence) {
-      after(() => prepared.persistence!);
-    }
     logEvent("info", "conversation_prepare_completed", {
       requestId,
       prepareId: prepared.preparation.prepareId,

@@ -53,14 +53,10 @@ export type BenchmarkMetadata = {
   workerPreparedCommit?: boolean;
   workerPrepareDuplicateSuppressed?: number;
   workerPrepareInvalidated?: number;
-  workerPrepareJoinedAtFinalize?: boolean;
-  workerPrepareFailureCode?: string;
   workerStartedAtSessionMs?: number;
   workerStartedBeforeStopMs?: number;
   workerTranscriptReadyAtSessionMs?: number;
-  workerTranscriptReadyBeforeStopMs?: number;
   workerPreparationReadyAtSessionMs?: number;
-  workerPreparationReadyBeforeStopMs?: number;
   workerTailVadEligible?: boolean;
   batchTransport?: string;
   batchFallbackReason?: string;

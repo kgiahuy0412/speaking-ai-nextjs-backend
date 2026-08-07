@@ -780,23 +780,6 @@ export function AdminDashboard() {
                           Worker lead {conversation.benchmark.workerStartedBeforeStopMs} ms
                         </span>
                       ) : null}
-                      {conversation.benchmark?.workerTranscriptReadyBeforeStopMs !== undefined ? (
-                        <span>
-                          Transcript lead {conversation.benchmark.workerTranscriptReadyBeforeStopMs} ms
-                        </span>
-                      ) : null}
-                      {conversation.benchmark?.workerPreparationReadyBeforeStopMs !== undefined ? (
-                        <span>
-                          Prepare lead {conversation.benchmark.workerPreparationReadyBeforeStopMs} ms
-                        </span>
-                      ) : null}
-                      {conversation.benchmark?.workerPrepareJoinedAtFinalize !== undefined ? (
-                        <span>
-                          Finalize joined prepare {conversation.benchmark.workerPrepareJoinedAtFinalize
-                            ? "yes"
-                            : "no"}
-                        </span>
-                      ) : null}
                       {conversation.benchmark?.workerTailVadEligible !== undefined ? (
                         <span>
                           Worker tail {conversation.benchmark.workerTailVadEligible
