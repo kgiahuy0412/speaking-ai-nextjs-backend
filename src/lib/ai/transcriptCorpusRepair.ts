@@ -5,9 +5,11 @@ import {
   type ExactTranslationRule,
 } from "./exactRules";
 import { buildReviewedRegionalAliases } from "./regionalVocabulary";
+import { findObservedChildSpeechAlias } from "./observedChildSpeechAliases";
 
 export type TranscriptCorpusRepairStrategy =
   | "asr_folded"
+  | "observed_child_alias"
   | "observed_asr_alias"
   | "regional_alias"
   | "regional_fuzzy";
@@ -16,6 +18,7 @@ export type TranscriptCorpusRepairResult = {
   text: string;
   repaired: boolean;
   ruleId?: string;
+  correctionId?: string;
   strategy?: TranscriptCorpusRepairStrategy;
   score?: number;
   margin?: number;
@@ -385,6 +388,25 @@ export function repairVietnameseTranscriptWithCorpus(
   const exactRule = exactRuleByVietnamese.get(normalizedExact);
   if (exactRule) {
     return { text: trimmed, repaired: false, ruleId: exactRule.id };
+  }
+
+  // Real child-speech transcripts are exact whole-sentence aliases. They run
+  // before accent-folded/fuzzy matching so a reviewed observation wins over a
+  // merely similar corpus sentence, without adding any network or DB lookup.
+  const observedChildAlias = findObservedChildSpeechAlias(trimmed);
+  if (observedChildAlias) {
+    const canonicalRule = reviewedRuleByCanonicalVietnamese.get(
+      normalizeVietnameseForExactMatch(observedChildAlias.canonical),
+    );
+    return {
+      text: canonicalRule?.vietnamese ?? observedChildAlias.canonical,
+      repaired: true,
+      ruleId: canonicalRule?.id,
+      correctionId: observedChildAlias.id,
+      strategy: "observed_child_alias",
+      score: 1,
+      margin: 1,
+    };
   }
 
   const observedCorrection = observedAsrCorrectionByFoldedText.get(

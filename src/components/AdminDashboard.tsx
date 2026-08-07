@@ -825,6 +825,32 @@ export function AdminDashboard() {
                           Worker lead {conversation.benchmark.workerStartedBeforeStopMs} ms
                         </span>
                       ) : null}
+                      {conversation.benchmark?.clientStopReason ? (
+                        <span>
+                          Client stop {conversation.benchmark.clientStopReason}
+                        </span>
+                      ) : null}
+                      {conversation.benchmark?.clientTerminalRequestedBeforeStopMs !== undefined ? (
+                        <span>
+                          Client terminal lead {conversation.benchmark.clientTerminalRequestedBeforeStopMs} ms
+                        </span>
+                      ) : null}
+                      {conversation.benchmark?.clientTerminalTimerCanceledCount !== undefined ? (
+                        <span>
+                          Terminal timer cancelled {conversation.benchmark.clientTerminalTimerCanceledCount}
+                          {conversation.benchmark.clientTerminalTimerLastCancelReason
+                            ? ` (${conversation.benchmark.clientTerminalTimerLastCancelReason})`
+                            : ""}
+                        </span>
+                      ) : null}
+                      {conversation.benchmark?.clientPcmSilenceDetectedAtRecordingMs !== undefined ||
+                      conversation.benchmark?.clientTerminalTimerScheduledAtRecordingMs !== undefined ? (
+                        <span>
+                          Client PCM silence {conversation.benchmark.clientPcmSilenceDetectedAtRecordingMs ?? "-"}
+                          {" → terminal timer "}
+                          {conversation.benchmark.clientTerminalTimerScheduledAtRecordingMs ?? "-"} ms
+                        </span>
+                      ) : null}
                       {conversation.benchmark?.workerTailVadEligible !== undefined ? (
                         <span>
                           Worker tail {conversation.benchmark.workerTailVadEligible
