@@ -15,6 +15,7 @@ import {
   prepareConversationPipeline,
 } from "./pipeline";
 import { scheduleConversationPostResponseTasks } from "./postResponseTasks";
+import { logEvent } from "@/lib/observability";
 
 const preparationNamespace = "conversation_preparations_v1";
 const commitNamespace = "conversation_preparation_commits_v1";
@@ -39,11 +40,46 @@ type PreparationGlobalState = typeof globalThis & {
     string,
     ConversationPreparation
   >;
+  __aiSpeakingConversationPreparationPersistence?: Map<string, Promise<void>>;
+  __aiSpeakingConversationPreparationCommits?: Map<string, Promise<boolean>>;
 };
 
 const state = globalThis as PreparationGlobalState;
 const flights = state.__aiSpeakingConversationPreparationFlights ??= new Map();
 const memory = state.__aiSpeakingConversationPreparationMemory ??= new Map();
+const persistenceFlights =
+  state.__aiSpeakingConversationPreparationPersistence ??= new Map();
+const commitFlights =
+  state.__aiSpeakingConversationPreparationCommits ??= new Map();
+
+function persistPreparation(
+  preparation: ConversationPreparation,
+  clientId?: string,
+) {
+  const active = persistenceFlights.get(preparation.prepareId);
+  if (active) return active;
+
+  const operation = putRecord({
+    namespace: preparationNamespace,
+    key: preparation.prepareId,
+    clientId,
+    expiresAt: preparation.expiresAt,
+    value: preparation,
+  }).catch((error) => {
+    logEvent("warn", "conversation_prepare_persist_failed", {
+      prepareId: preparation.prepareId,
+      audioSessionId: preparation.audioSessionId,
+      error,
+    });
+  });
+  persistenceFlights.set(preparation.prepareId, operation);
+  void operation.finally(() => {
+    if (persistenceFlights.get(preparation.prepareId) === operation) {
+      persistenceFlights.delete(preparation.prepareId);
+    }
+  });
+  return operation;
+}
 
 function preparationKey(input: {
   audioSessionId: string;
@@ -84,24 +120,27 @@ export async function prepareWorkerConversation(input: {
   const prepareId = `prep_${key.slice(0, 32)}`;
   const memoryValue = memory.get(prepareId);
   if (isLive(memoryValue)) {
-    return { preparation: memoryValue!, joined: true };
+    return {
+      preparation: memoryValue!,
+      joined: true,
+      persistence: persistenceFlights.get(prepareId),
+    };
   }
 
   const active = flights.get(prepareId);
   if (active) {
-    return { preparation: await active, joined: true };
+    return {
+      preparation: await active,
+      joined: true,
+      persistence: persistenceFlights.get(prepareId),
+    };
   }
 
   const operation = (async () => {
-    const stored = await getRecord<ConversationPreparation>(
-      preparationNamespace,
-      prepareId,
-    );
-    if (isLive(stored?.value)) {
-      memory.set(prepareId, stored!.value);
-      return stored!.value;
-    }
-
+    // audioSessionId + snapshotHash makes a fresh preparation unique. Avoid a
+    // Neon lookup before every new AI sentence; duplicate requests in this
+    // process are already joined by `flights`, while durable storage remains
+    // available to the later commit if the process changes.
     const request: ConversationRequest = {
       requestId: input.requestId,
       clientId: input.clientId,
@@ -131,20 +170,19 @@ export async function prepareWorkerConversation(input: {
       expiresAt: new Date(now + preparationTtlMs).toISOString(),
       result: completePreparedConversationPipeline(request, pipeline),
     };
-    await putRecord({
-      namespace: preparationNamespace,
-      key: prepareId,
-      clientId: input.clientId,
-      expiresAt: preparation.expiresAt,
-      value: preparation,
-    });
     memory.set(prepareId, preparation);
+    persistPreparation(preparation, input.clientId);
     return preparation;
   })();
 
   flights.set(prepareId, operation);
   try {
-    return { preparation: await operation, joined: false };
+    const preparation = await operation;
+    return {
+      preparation,
+      joined: false,
+      persistence: persistenceFlights.get(prepareId),
+    };
   } finally {
     if (flights.get(prepareId) === operation) flights.delete(prepareId);
   }
@@ -176,17 +214,35 @@ export async function commitPreparedWorkerConversation(input: {
     ...preparation!.result,
     benchmark: input.benchmark ?? preparation!.result.benchmark,
   };
-  const firstCommit = await insertRecordIfAbsent({
-    namespace: commitNamespace,
-    key: input.prepareId,
-    clientId: result.clientId,
-    value: {
-      committedAt: new Date().toISOString(),
-      conversationId: result.conversationId,
-    },
-  });
-  if (firstCommit) {
-    scheduleConversationPostResponseTasks(result, "audio");
+  let completion = commitFlights.get(input.prepareId);
+  if (!completion) {
+    completion = insertRecordIfAbsent({
+      namespace: commitNamespace,
+      key: input.prepareId,
+      clientId: result.clientId,
+      value: {
+        committedAt: new Date().toISOString(),
+        conversationId: result.conversationId,
+      },
+    }).then((firstCommit) => {
+      if (firstCommit) {
+        scheduleConversationPostResponseTasks(result, "audio");
+      }
+      return firstCommit;
+    });
+    commitFlights.set(input.prepareId, completion);
+    void completion.then(
+      () => {
+        if (commitFlights.get(input.prepareId) === completion) {
+          commitFlights.delete(input.prepareId);
+        }
+      },
+      () => {
+        if (commitFlights.get(input.prepareId) === completion) {
+          commitFlights.delete(input.prepareId);
+        }
+      },
+    );
   }
-  return { result, firstCommit };
+  return { result, completion };
 }

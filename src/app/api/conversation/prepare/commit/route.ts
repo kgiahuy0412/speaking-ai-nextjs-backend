@@ -1,4 +1,5 @@
 import type { BenchmarkMetadata } from "@/types/conversation";
+import { after } from "next/server";
 import { AppError, toErrorResponse } from "@/lib/errors";
 import {
   getRequestId,
@@ -51,11 +52,28 @@ export async function POST(request: Request) {
         409,
       );
     }
-    logEvent("info", "conversation_prepare_committed", {
+    logEvent("info", "conversation_prepare_commit_accepted", {
       requestId,
       prepareId,
       audioSessionId,
-      firstCommit: committed.firstCommit,
+    });
+    after(async () => {
+      try {
+        const firstCommit = await committed.completion;
+        logEvent("info", "conversation_prepare_committed", {
+          requestId,
+          prepareId,
+          audioSessionId,
+          firstCommit,
+        });
+      } catch (error) {
+        logEvent("warn", "conversation_prepare_commit_persist_failed", {
+          requestId,
+          prepareId,
+          audioSessionId,
+          error,
+        });
+      }
     });
     return withRequestId(
       Response.json({ ...committed.result, learning: null }),

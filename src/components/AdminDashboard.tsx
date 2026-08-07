@@ -775,6 +775,42 @@ export function AdminDashboard() {
                             : "Worker-only"}
                         </span>
                       ) : null}
+                      {conversation.benchmark?.workerPrepareJoinedAtFinalize !== undefined ? (
+                        <span>
+                          Worker prepare joined at finalize{" "}
+                          {conversation.benchmark.workerPrepareJoinedAtFinalize
+                            ? "yes"
+                            : "no"}
+                        </span>
+                      ) : null}
+                      {conversation.benchmark?.workerPrepareFailureCode ? (
+                        <span>
+                          Worker prepare failure {conversation.benchmark.workerPrepareFailureCode}
+                        </span>
+                      ) : null}
+                      {conversation.benchmark?.workerFinalizeStartedAtSessionMs !== undefined ? (
+                        <span>
+                          Worker finalize at {conversation.benchmark.workerFinalizeStartedAtSessionMs} ms
+                        </span>
+                      ) : null}
+                      {conversation.benchmark?.workerTranscriptReadyBeforeStopMs !== undefined ? (
+                        <span>
+                          Worker ASR ready {conversation.benchmark.workerTranscriptReadyBeforeStopMs} ms before stop
+                        </span>
+                      ) : conversation.benchmark?.workerTranscriptReadyAfterStopMs !== undefined ? (
+                        <span>
+                          Worker ASR ready {conversation.benchmark.workerTranscriptReadyAfterStopMs} ms after stop
+                        </span>
+                      ) : null}
+                      {conversation.benchmark?.workerPreparationReadyBeforeStopMs !== undefined ? (
+                        <span>
+                          Worker prepare ready {conversation.benchmark.workerPreparationReadyBeforeStopMs} ms before stop
+                        </span>
+                      ) : conversation.benchmark?.workerPreparationReadyAfterStopMs !== undefined ? (
+                        <span>
+                          Worker prepare ready {conversation.benchmark.workerPreparationReadyAfterStopMs} ms after stop
+                        </span>
+                      ) : null}
                       {conversation.benchmark?.workerStartedBeforeStopMs !== undefined ? (
                         <span>
                           Worker lead {conversation.benchmark.workerStartedBeforeStopMs} ms
