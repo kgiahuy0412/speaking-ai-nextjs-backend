@@ -783,6 +783,15 @@ export function AdminDashboard() {
                             : "no"}
                         </span>
                       ) : null}
+                      {conversation.benchmark?.workerPrepareSkippedLowLead ? (
+                        <span>Worker prepare skipped: lead too low</span>
+                      ) : null}
+                      {conversation.benchmark?.workerPrepareAbandonedAtFinalize ? (
+                        <span>Worker prepare: ASR pending at finalize</span>
+                      ) : null}
+                      {conversation.benchmark?.workerLatePrepareSkipped ? (
+                        <span>Worker prepare skipped: recorder-stop terminal</span>
+                      ) : null}
                       {conversation.benchmark?.workerPrepareFailureCode ? (
                         <span>
                           Worker prepare failure {conversation.benchmark.workerPrepareFailureCode}

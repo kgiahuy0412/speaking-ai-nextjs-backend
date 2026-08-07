@@ -52,6 +52,9 @@ export type BenchmarkMetadata = {
   workerPrepareAttempted?: boolean;
   workerPreparedCommit?: boolean;
   workerPrepareJoinedAtFinalize?: boolean;
+  workerPrepareSkippedLowLead?: boolean;
+  workerPrepareAbandonedAtFinalize?: boolean;
+  workerLatePrepareSkipped?: boolean;
   workerPrepareFailureCode?: string;
   workerPrepareDuplicateSuppressed?: number;
   workerPrepareInvalidated?: number;
