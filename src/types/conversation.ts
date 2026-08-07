@@ -68,14 +68,6 @@ export type BenchmarkMetadata = {
   workerPreparationReadyBeforeStopMs?: number;
   workerPreparationReadyAfterStopMs?: number;
   workerTailVadEligible?: boolean;
-  clientStopReason?: "manual" | "vad";
-  clientPcmSilenceDetectedAtRecordingMs?: number;
-  clientTerminalTimerScheduledAtRecordingMs?: number;
-  clientTerminalRequestedAtRecordingMs?: number;
-  clientStopRequestedAtRecordingMs?: number;
-  clientTerminalRequestedBeforeStopMs?: number;
-  clientTerminalTimerCanceledCount?: number;
-  clientTerminalTimerLastCancelReason?: string;
   batchTransport?: string;
   batchFallbackReason?: string;
   chunkIntervalMs?: number;

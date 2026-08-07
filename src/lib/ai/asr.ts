@@ -18,7 +18,7 @@ function repairTranscriptFromChildSpeech(
 ) {
   const subjectRepaired = repairVietnameseChildTranscript(text);
   const corpusRepair = repairVietnameseTranscriptWithCorpus(subjectRepaired);
-  const regionalNormalization = corpusRepair.ruleId || corpusRepair.repaired
+  const regionalNormalization = corpusRepair.ruleId
     ? null
     : normalizeRegionalVietnameseOutsideCorpus(corpusRepair.text);
 
@@ -33,7 +33,6 @@ function repairTranscriptFromChildSpeech(
       subjectRepairApplied: subjectRepaired !== text,
       corpusRepairApplied: corpusRepair.repaired,
       corpusRuleId: corpusRepair.ruleId,
-      correctionId: corpusRepair.correctionId,
       strategy: corpusRepair.strategy,
       score: corpusRepair.score,
       margin: corpusRepair.margin,
